@@ -231,8 +231,24 @@ export function LessonPage() {
           <div className="lesson-header__right" />
         </header>
         <main className="lesson-main">
-          <p style={{ color: 'var(--text-2)', marginBottom: '1rem' }}>Lesson complete.</p>
-          <Link to="/" className="btn btn--primary">Back to course</Link>
+          <div className="lesson-nav">
+            <button type="button" className="lesson-nav__btn" onClick={handleBack}>
+              ← Previous
+            </button>
+            <button type="button" className="lesson-nav__btn lesson-nav__btn--restart" onClick={handleRestart}>
+              ↺ Start over
+            </button>
+          </div>
+          <div className="lesson-complete-splash">
+            <div className="lesson-complete-splash__icon">🎉</div>
+            <h2 className="lesson-complete-splash__title">Lesson complete!</h2>
+            <p className="lesson-complete-splash__body">
+              {lesson.title} — all done. Review any step or head back to choose your next lesson.
+            </p>
+            <div className="lesson-complete-splash__actions">
+              <Link to="/" className="btn btn--primary">Back to course →</Link>
+            </div>
+          </div>
         </main>
       </div>
     )

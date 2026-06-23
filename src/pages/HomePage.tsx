@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { type CSSProperties, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SignInPanel } from '../components/SignInPanel'
 import { useAuth } from '../contexts/AuthContext'
@@ -9,6 +9,8 @@ import {
   type StoredLessonProgress,
 } from '../lib/progressFirestore'
 import { displayFirstName } from '../lib/displayName'
+
+const LESSON_COLORS = ['#3a86ff', '#00b894', '#fd9f28', '#8338ec', '#e74c3c', '#f9c74f']
 
 export function HomePage() {
   const { user, isSignedIn, loading, signOut, authReady } = useAuth()
@@ -69,7 +71,7 @@ export function HomePage() {
 
           {!isSignedIn && !loading && authReady && (
             <p className="home-hero__guest">
-              Lesson 1 is free — sign in to save progress across devices.
+              Start for free — sign in to save progress across devices.
             </p>
           )}
         </div>
@@ -91,10 +93,12 @@ export function HomePage() {
               const complete = prog?.status === 'completed'
               const inProgress = prog?.status === 'in_progress'
               const statusClass = complete ? 'completed' : inProgress ? 'in_progress' : 'not_started'
+              const accent = LESSON_COLORS[(lesson.order - 1) % LESSON_COLORS.length]
+              const cardStyle = { '--accent': accent } as CSSProperties
 
               if (locked) {
                 return (
-                  <div key={lesson.id} className="lesson-card lesson-card--locked">
+                  <div key={lesson.id} className="lesson-card lesson-card--locked" style={cardStyle}>
                     <div className="lesson-card__num-badge">{lesson.order}</div>
                     <div className="lesson-card__body">
                       <div className="lesson-card__eyebrow">Lesson {lesson.order}</div>
@@ -110,6 +114,7 @@ export function HomePage() {
                   key={lesson.id}
                   to={`/lesson/${lesson.id}`}
                   className={`lesson-card lesson-card--${statusClass}`}
+                  style={cardStyle}
                 >
                   <div className="lesson-card__num-badge">
                     {complete ? '✓' : lesson.order}
@@ -122,11 +127,6 @@ export function HomePage() {
                     )}
                     {inProgress && (
                       <span className="lesson-card__tag lesson-card__tag--progress">In progress</span>
-                    )}
-                    {!isSignedIn && prog && (
-                      <span className="lesson-card__tag lesson-card__tag--progress" style={{ marginLeft: '0.3rem' }}>
-                        this device only
-                      </span>
                     )}
                   </div>
                   <div className="lesson-card__arrow">→</div>
