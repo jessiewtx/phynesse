@@ -36,7 +36,7 @@ const BLOCK_MID_Y = GROUND_Y - BLOCK_H / 2
 export function PushWorkDemo({ onTried }: Props) {
   const [force, setForce] = useState(8)
   const [distance, setDistance] = useState(2)
-  const [phase, setPhase] = useState<'idle' | 'pushing' | 'done'>('idle')
+  const [phase, setPhase] = useState<'idle' | 'pushing' | 'done' | 'resetting'>('idle')
   const [blockOffset, setBlockOffset] = useState(0)
 
   const svgRef = useRef<SVGSVGElement>(null)
@@ -100,8 +100,11 @@ export function PushWorkDemo({ onTried }: Props) {
   }
 
   const reset = () => {
-    setBlockOffset(0)
-    setPhase('idle')
+    setPhase('resetting')
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => setBlockOffset(0))
+    )
+    setTimeout(() => setPhase('idle'), 450)
   }
 
   return (
@@ -111,7 +114,9 @@ export function PushWorkDemo({ onTried }: Props) {
           ? 'Drag the handle ↕ to set force · drag the flag ↔ to set distance'
           : phase === 'pushing'
             ? 'Transferring energy…'
-            : `${force} N × ${distance} m = ${work} J`}
+            : phase === 'resetting'
+              ? 'Resetting…'
+              : `${force} N × ${distance} m = ${work} J`}
       </p>
 
       <svg
@@ -154,7 +159,7 @@ export function PushWorkDemo({ onTried }: Props) {
         <g
           style={{
             transform: `translateX(${blockOffset}px)`,
-            transition: phase === 'pushing' ? 'transform 0.75s cubic-bezier(0.25,0,0.5,1)' : 'none',
+            transition: phase === 'pushing' ? 'transform 0.75s cubic-bezier(0.25,0,0.5,1)' : phase === 'resetting' ? 'transform 0.4s ease-in' : 'none',
           }}
         >
           <rect
@@ -274,9 +279,9 @@ export function PushWorkDemo({ onTried }: Props) {
         type="button"
         className="btn btn--primary push-demo__push"
         onClick={phase === 'done' ? reset : push}
-        disabled={phase === 'pushing'}
+        disabled={phase === 'pushing' || phase === 'resetting'}
       >
-        {phase === 'done' ? 'Reset' : 'Push the block!'}
+        {phase === 'done' ? 'Push again' : 'Push the block!'}
       </button>
 
       {/* energy bars */}
