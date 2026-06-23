@@ -6,7 +6,7 @@
 
 ## 1. What we're building
 
-Phynesse is a web app that teaches **AP Physics 1 Unit 4 (Work, Power, Energy)** through short, interactive labs — not videos.
+Phynesse is a web app that teaches **AP Physics 1 Unit 4 (Work, Power, Energy)** through short, interactive labs.
 
 **Core loop:** predict → run simulation → get feedback → retry.
 
