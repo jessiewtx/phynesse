@@ -148,7 +148,7 @@ export function PushWorkDemo({ onTried, onPushed }: Props) {
           y1={GROUND_Y + 9}
           x2={markerX}
           y2={GROUND_Y + 9}
-          stroke="#34d399"
+          stroke="#fb923c"
           strokeWidth="1.5"
           strokeDasharray="4 3"
         />
@@ -156,7 +156,7 @@ export function PushWorkDemo({ onTried, onPushed }: Props) {
           x={(BLOCK_START_X + BLOCK_W + markerX) / 2}
           y={GROUND_Y + 21}
           textAnchor="middle"
-          fill="#34d399"
+          fill="#fb923c"
           fontSize="10"
           fontWeight="600"
           style={{ pointerEvents: 'none', userSelect: 'none' }}
@@ -194,10 +194,9 @@ export function PushWorkDemo({ onTried, onPushed }: Props) {
           </text>
         </g>
 
-        {/* force arrow (only while idle) */}
-        {phase === 'idle' && (
+        {/* force arrow — draggable when idle, static when done */}
+        {(phase === 'idle' || phase === 'done') && (
           <>
-            {/* filled arrow polygon: shaft + head as one shape */}
             <polygon
               points={[
                 `${tailX},${BLOCK_MID_Y - SHAFT_H / 2}`,
@@ -209,11 +208,12 @@ export function PushWorkDemo({ onTried, onPushed }: Props) {
                 `${tailX},${BLOCK_MID_Y + SHAFT_H / 2}`,
               ].join(' ')}
               fill="#4f8cff"
-              opacity={0.9}
+              opacity={phase === 'done' ? 0.6 : 0.9}
+              style={{ pointerEvents: 'none' }}
             />
 
-            {/* grip lines at the tail — visual cue to drag */}
-            {[0, 4, 8].map(dx => (
+            {/* grip lines — only when idle */}
+            {phase === 'idle' && [0, 4, 8].map(dx => (
               <line
                 key={dx}
                 x1={tailX + 3 + dx}
@@ -227,21 +227,22 @@ export function PushWorkDemo({ onTried, onPushed }: Props) {
               />
             ))}
 
-            {/* invisible drag hit area at tail — wider than shaft for easy grab */}
-            <rect
-              x={tailX - 4}
-              y={BLOCK_MID_Y - 16}
-              width={arrowLen * 0.55}
-              height={32}
-              fill="transparent"
-              style={{ cursor: 'ew-resize' }}
-              onPointerDown={onForcePtrDown}
-              onPointerMove={onForcePtrMove}
-              onPointerUp={onForcePtrUp}
-              onPointerCancel={onForcePtrUp}
-            />
+            {/* drag hit area — only when idle */}
+            {phase === 'idle' && (
+              <rect
+                x={tailX - 4}
+                y={BLOCK_MID_Y - 16}
+                width={arrowLen * 0.55}
+                height={32}
+                fill="transparent"
+                style={{ cursor: 'ew-resize' }}
+                onPointerDown={onForcePtrDown}
+                onPointerMove={onForcePtrMove}
+                onPointerUp={onForcePtrUp}
+                onPointerCancel={onForcePtrUp}
+              />
+            )}
 
-            {/* force label */}
             <text
               x={(tailX + ARROW_TIP_X) / 2}
               y={BLOCK_MID_Y - 14}
@@ -262,12 +263,12 @@ export function PushWorkDemo({ onTried, onPushed }: Props) {
           y1={GROUND_Y - 34}
           x2={markerX}
           y2={GROUND_Y}
-          stroke="#34d399"
+          stroke="#fb923c"
           strokeWidth="2"
         />
         <polygon
           points={`${markerX},${GROUND_Y - 34} ${markerX + 18},${GROUND_Y - 27} ${markerX},${GROUND_Y - 20}`}
-          fill="#34d399"
+          fill="#fb923c"
         />
         {/* drag hit area (larger than flag for easy touch) */}
         <rect

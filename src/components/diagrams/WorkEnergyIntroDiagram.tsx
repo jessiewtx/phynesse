@@ -28,6 +28,9 @@ export function WorkEnergyIntroDiagram({ values }: Props) {
           <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L6,3 L0,6 Z" fill="#34d399" />
           </marker>
+          <marker id="arrowOrange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#fb923c" />
+          </marker>
         </defs>
 
         {/* ground */}
@@ -46,9 +49,9 @@ export function WorkEnergyIntroDiagram({ values }: Props) {
           {values ? `F = ${values.force} N` : 'F'}
         </text>
 
-        {/* displacement */}
-        <line x1="118" y1="168" x2="210" y2="168" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" markerEnd="url(#arrowBlue)" />
-        <text x="164" y="184" textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="system-ui">
+        {/* displacement — orange to match distance flag in demo */}
+        <line x1="118" y1="168" x2="210" y2="168" stroke="#fb923c" strokeWidth="1.5" markerEnd="url(#arrowOrange)" />
+        <text x="164" y="184" textAnchor="middle" fill="#fb923c" fontSize="11" fontFamily="system-ui">
           {values ? `d = ${values.distance} m` : 'distance d'}
         </text>
 
