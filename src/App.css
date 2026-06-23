@@ -566,19 +566,22 @@
 .bar-drag__fill {
   width: 100%;
   border-radius: 0.45rem 0.45rem 0.1rem 0.1rem;
-  min-height: 0.5rem;
-  display: flex;
-  justify-content: center;
   transition: height 0.05s linear;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .bar-drag__handle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   width: 3rem;
   height: 0.65rem;
-  margin-top: -0.35rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: bottom 0.05s linear;
 }
 
 .bar-drag__track-row {
@@ -616,6 +619,14 @@
   opacity: 0.5;
   font-variant-numeric: tabular-nums;
   line-height: 1;
+}
+
+.bar-drag__unit-note {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 400;
+  opacity: 0.5;
+  letter-spacing: 0.01em;
 }
 
 .bar-drag__hint {

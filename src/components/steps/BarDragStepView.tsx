@@ -106,6 +106,9 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
           </span>
           <span className="bar-drag__value">
             {value} {step.unit}
+            {step.unit === 'J' && (
+              <span className="bar-drag__unit-note">Joule = N·m</span>
+            )}
           </span>
         </div>
 
@@ -124,15 +127,16 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
             aria-valuenow={value}
             aria-label={`Drag to set ${step.barLabel}`}
           >
+            {value > 0 && (
+              <div
+                className="bar-drag__fill"
+                style={{ height: `${heightPct}%`, background: step.barColor }}
+              />
+            )}
             <div
-              className="bar-drag__fill"
-              style={{
-                height: `${heightPct}%`,
-                background: step.barColor,
-              }}
-            >
-              <div className="bar-drag__handle" />
-            </div>
+              className="bar-drag__handle"
+              style={{ bottom: `calc(${heightPct}% - 0.325rem)` }}
+            />
           </div>
 
           <div className="bar-drag__ticks" style={{ height: TRACK_PX }}>
