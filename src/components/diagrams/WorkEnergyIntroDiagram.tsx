@@ -30,18 +30,10 @@ export function WorkEnergyIntroDiagram() {
           block
         </text>
 
-        {/* push hand */}
-        <path
-          d="M 72 118 Q 88 112 98 118 L 108 118 L 108 128 L 98 128 Q 88 134 72 128 Z"
-          fill="#f4b860"
-          stroke="#d4954a"
-          strokeWidth="1"
-        />
-
-        {/* force arrow */}
-        <line x1="108" y1="123" x2="112" y2="123" stroke="#4f8cff" strokeWidth="3" markerEnd="url(#arrowBlue)" />
-        <text x="78" y="108" fill="#4f8cff" fontSize="12" fontWeight="600" fontFamily="system-ui">
-          F →
+        {/* force arrow — simple horizontal arrow pointing at block */}
+        <line x1="52" y1="128" x2="114" y2="128" stroke="#4f8cff" strokeWidth="3" markerEnd="url(#arrowBlue)" />
+        <text x="80" y="118" textAnchor="middle" fill="#4f8cff" fontSize="12" fontWeight="600" fontFamily="system-ui">
+          F
         </text>
 
         {/* displacement */}

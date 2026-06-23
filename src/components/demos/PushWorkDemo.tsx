@@ -124,7 +124,7 @@ export function PushWorkDemo({ onTried }: Props) {
     <div className="push-demo">
       <p className="push-demo__lead">
         {phase === 'idle'
-          ? 'Drag the arrow tail ↔ to set force · drag the flag ↔ to set distance'
+          ? 'Drag the arrow left or right to set force. Drag the flag to set distance.'
           : phase === 'pushing'
             ? 'Transferring energy…'
             : phase === 'resetting'
