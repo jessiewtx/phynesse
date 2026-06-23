@@ -45,29 +45,9 @@
       ]
     },
     {
-      "type": "bar_drag",
-      "prompt": "Now friction is on. Some energy becomes heat instead of motion. Drag **E_th** (thermal energy) to show how much.",
-      "barLabel": "E_th",
-      "barColor": "#f59e0b",
-      "maxValue": 20,
-      "correctValue": 12,
-      "unit": "J",
-      "tolerance": 0.05,
-      "givens": [
-        { "label": "μ_k", "value": "0.3" },
-        { "label": "m", "value": "2 kg" },
-        { "label": "d", "value": "2 m" },
-        { "label": "g", "value": "10 m/s²" }
-      ],
-      "hints": [
-        "Friction force: f_k = μ_k × m × g. Thermal energy = f_k × d.",
-        "f_k = 0.3 × 2 × 10 = 6 N → E_th = 6 × 2 = 12 J."
-      ]
-    },
-    {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You sized work, kinetic energy change, and thermal energy — all with energy bars.",
+      "body": "You sized work and kinetic energy change — and saw that W_net = ΔKE every time.",
       "nextLessonId": "L2",
       "nextLessonTitle": "Kinetic Energy"
     }
