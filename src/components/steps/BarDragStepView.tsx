@@ -30,6 +30,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
   )
   const dragging = useRef(false)
   const trackRef = useRef<HTMLDivElement>(null)
+  const lastSnappedValue = useRef<number | null>(null)
 
   const heightPct = (value / step.maxValue) * 100
 
@@ -41,6 +42,10 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
       const fromBottom = rect.bottom - clientY
       const ratio = Math.max(0, Math.min(1, fromBottom / TRACK_PX))
       const next = Math.round(ratio * step.maxValue)
+      if (next !== lastSnappedValue.current) {
+        lastSnappedValue.current = next
+        navigator.vibrate?.(8)
+      }
       setValue(next)
       onDraftChange({
         answer: next,
