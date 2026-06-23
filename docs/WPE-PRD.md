@@ -16,17 +16,7 @@ Phynesse is a web app that teaches **AP Physics 1 Unit 4 (Work, Power, Energy)**
 
 ---
 
-## 2. Persona
-
-**Alex, 17 — AP Physics 1 student**
-
-- Exam in ~6 weeks. Fine with kinematics; energy problems feel like memorizing formulas.
-- Studies on phone in 10–15 min chunks. Quits if instructions are long or UI is confusing.
-- **Wins when:** they can draw an energy bar chart before calculating, and know when to use work-energy vs conservation.
-
----
-
-## 3. MVP scope
+## 2. MVP scope
 
 ### In
 
@@ -43,7 +33,17 @@ Phynesse is a web app that teaches **AP Physics 1 Unit 4 (Work, Power, Energy)**
 
 ### Done when
 
-Alex can finish the unit in **≤2 hours**, pass the capstone at **≥70%**, and resume where they left off on any device.
+A student can finish the unit in **≤2 hours**, pass the capstone at **≥70%**, and resume where they left off on any device.
+
+---
+
+## 3. Persona
+
+**Alex, 17 — AP Physics 1 student**
+
+- Exam in ~6 weeks. Fine with kinematics; energy problems feel like memorizing formulas.
+- Studies on phone in 10–15 min chunks. Quits if instructions are long or UI is confusing.
+- **Wins when:** they can draw an energy bar chart before calculating, and know when to use work-energy vs conservation.
 
 ---
 
