@@ -1,39 +1,62 @@
 # Phynesse — AP Physics 1: Work, Power & Energy
 
-**Product:** Phynesse · **Scope:** WPE unit only · **Status:** MVP PRD
+**Product:** Phynesse · **Subject:** AP Physics 1 Unit 4 (WPE) · **Phase:** 1 — MVP · **Status:** PRD v0.3
 
 ---
 
 ## 1. What we're building
 
-Phynesse is a web app that teaches **AP Physics 1 Unit 4 (Work, Power, Energy)** through short, interactive labs.
+Phynesse is a **learn-by-doing** web app that teaches the full **AP Physics 1 Unit 4: Work, Power, and Energy** — one subject, taught deep, Brilliant-style.
 
-**Core loop:** predict → run simulation → get feedback → retry.
+Students **predict, manipulate simulations, get instant feedback, and retry** until concepts click. The through-line across the whole unit: **motion + live energy bar charts + AP-style problems**.
 
-**Visual language:** motion + live energy bar charts + AP-style questions.
+**Topics covered (the whole unit):** work and sign conventions · work-energy theorem · kinetic & potential energy · conservation of mechanical energy · when energy is *not* conserved (friction → thermal) · power · choosing work-energy vs other methods · mixed AP problem-solving.
 
-**Prerequisite:** students know basic kinematics and forces. We don't re-teach FBDs or Newton's laws.
+**Prerequisite:** basic kinematics and forces. We reference FBDs only where needed.
+
+**Phase 1 rule:** no AI. Every interaction, hint, and problem is hand-authored. Prove the app teaches on its own before adding intelligence later.
 
 ---
 
-## 2. MVP scope
+## 2. MVP scope (Phase 1)
 
 ### In
 
-- **6 interactive labs** (sliders, drag targets, live energy bars)
-- **~8 lessons** on a linear path; next lesson unlocks after checkpoint pass
-- **Checkpoints** per lesson: multiple-choice + numeric (AP-style wording)
-- **Unit capstone:** 8 mixed problems; ≥70% = pass
-- **Accounts:** Google or email sign-in; progress saved
-- **Platform:** responsive web (React + Vite)
+| Area | Deliverable |
+|---|---|
+| **Subject** | Full WPE unit — linear course path from work → conservation → power → mixed practice → capstone |
+| **Interactives** | Multiple problem types (sliders, drag-to-balance bar charts, predictions, numeric entry) — not just MC |
+| **Visuals** | Canvas simulations + energy bar charts that respond in real time to learner input |
+| **Feedback** | Instant, specific, author-written hints on every answer |
+| **Content model** | Lessons as JSON step sequences — add new problems without rewriting UI |
+| **Progress** | Step-level state; resume mid-lesson on any device |
+| **Auth** | Firebase Auth (Google + email); display name |
+| **Course path** | Locked/unlocked lessons; "next up" recommendation; streak + milestones |
+| **Platform** | Responsive web; touch-friendly; deployed publicly |
 
-### Out (for now)
+### Build order (how we ship it)
 
-- Other AP units, AI tutor, native apps, LMS integration, offline mode, teacher dashboard
+Start vertical, then widen:
+
+1. **Content model + step renderer** — JSON steps → UI
+2. **First interaction:** slider sim (Push the block) — proves sim + bar chart + grading loop
+3. **More interaction types** — bar chart balancing, ramp/spring sims, etc.
+4. **Fill the course path** — lessons across the full WPE arc
+5. **Auth, progress, streaks, deploy**
+
+We don't need every lesson on day one. We need the **platform and one rich interaction working first**, then stack content on the same rails.
+
+### Out — not Phase 1
+
+| Area | When |
+|---|---|
+| AI (generation, adaptive hints, chat) | Phase 2 |
+| Spaced repetition, interleaving, mastery algorithms | Phase 3 |
+| Teacher dashboard, LMS, native apps | Post-MVP |
 
 ### Done when
 
-A student can finish the unit in **≤2 hours**, pass the capstone at **≥70%**, and resume where they left off on any device.
+Alex can work through the **WPE course** — predict, manipulate visuals, recover from wrong answers, resume progress, and finish with a unit capstone at ≥70%. The app runs at **≥60 fps**, feedback in **<100ms**, first interaction in **<2s** on mobile.
 
 ---
 
@@ -43,7 +66,7 @@ A student can finish the unit in **≤2 hours**, pass the capstone at **≥70%**
 
 - Exam in ~6 weeks. Fine with kinematics; energy problems feel like memorizing formulas.
 - Studies on phone in 10–15 min chunks. Quits if instructions are long or UI is confusing.
-- **Wins when:** they can draw an energy bar chart before calculating, and know when to use work-energy vs conservation.
+- **Wins when:** they can draw an energy bar chart before calculating, know when conservation applies, and pick work-energy over kinematics when it is easier.
 
 ---
 
@@ -51,83 +74,118 @@ A student can finish the unit in **≤2 hours**, pass the capstone at **≥70%**
 
 | Story | Acceptance |
 |---|---|
-| Predict before sim | Every lab requires a prediction (MC or number) before the simulation runs |
-| Manipulate & see energy | Sliders change mass, height, friction, spring k; bar chart updates in real time |
-| Get useful feedback | Wrong answers show a hint tied to the mistake (e.g. forgot thermal energy) |
-| Resume progress | Last completed lesson restored on login |
-| Pass the capstone | 8-question summative mixes ramp, spring, and power; ≥70% marks completion |
+| Learn by doing | Every lesson has hands-on steps — manipulate, predict, or build — not passive reading |
+| Predict before reveal | Key sim steps require a prediction before the answer is shown |
+| Manipulate & watch | Inputs (sliders, drags, taps) update sim + bar chart live |
+| Balance energy | Drag bar heights to show before/after energy accounting; instant check |
+| Instant feedback | Every answer: <100ms, specific hint on wrong |
+| Resume anywhere | Mid-lesson exit → return → same step, same state |
+| Follow the path | Lessons unlock in order; capstone gates unit completion |
+| Come back | Streak + progress visible on home screen |
 
 ---
 
-## 5. Curriculum
+## 5. WPE curriculum
 
-| # | Topic | Lab |
+| # | Topic | Focus |
 |---|---|---|
-| 1 | Work & work-energy theorem | Lab 1: Push the block |
-| 2 | Kinetic energy | Lab 2: Launch speed |
-| 3 | Gravitational PE | Lab 3: Ramp racer |
-| 4 | Elastic PE | Lab 4: Spring launcher |
-| 5 | Conservation (+ friction) | Labs 3 & 4 |
-| 6 | Power | Lab 5: Power climb |
-| 7 | Mixed AP practice | Lab 6: Problem studio |
-| 8 | **Capstone** | Review + 8-question test |
+| 1 | Work & work-energy theorem | W = Fd cos θ, sign of work, W_net = ΔKE |
+| 2 | Kinetic energy | KE = ½mv², work → speed |
+| 3 | Gravitational PE | U_g = mgh, reference level |
+| 4 | Elastic PE | U_s = ½kx² |
+| 5 | Conservation of energy | KE + U = const; bar charts before/after |
+| 6 | Non-conservative forces | Friction; energy to thermal; when conservation breaks |
+| 7 | Power | P = W/Δt, P = Fv |
+| 8 | Mixed AP practice + **capstone** | Multi-step problems; ≥70% to complete unit |
 
-### Labs (one sentence each)
+**Formulas (in-app reference):** W = Fd cos θ · W_net = ΔKE · KE = ½mv² · U_g = mgh · U_s = ½kx² · KE_i + U_i = KE_f + U_f + E_th · P = W/Δt
 
-| Lab | What student does | Point |
-|---|---|---|
-| 1 — Push the block | Apply force over distance with friction | W_net = ΔKE |
-| 2 — Launch speed | Set net work, read speed | Work → KE |
-| 3 — Ramp racer | Release from height, add friction slider | Conservation; energy to thermal |
-| 4 — Spring launcher | Compress spring, launch mass | U_s ↔ KE |
-| 5 — Power climb | Compare climbing scenarios over time | P = W/t |
-| 6 — Problem studio | Pick scenario, build bar chart, solve | Synthesis / AP FRQ style |
+### Interaction families (not exhaustive)
 
-**Key formulas (in-app reference):** W = Fd cos θ · W_net = ΔKE · KE = ½mv² · U_g = mgh · U_s = ½kx² · P = W/Δt
+Problems mix these patterns across lessons — specifics are authored in content, not hardcoded in the PRD:
+
+| Type | Teaches |
+|---|---|
+| **Slider sim** | Change force, height, k, μ — watch motion + bars update |
+| **Drag bar chart** | Set bar heights to match a before/after energy story; balance the system |
+| **Predict → reveal** | MC or numeric guess before sim confirms |
+| **Tap to label** | Mark which forces do positive/negative/zero work |
+| **Scenario compare** | Two setups side-by-side (e.g. steep vs gentle ramp, same height) |
+| **Build the equation** | Drag terms into W_net = ΔKE or conservation equation |
+| **Path trace** | Release from height on ramp; predict speed at bottom |
+
+**First build target:** slider sim (Push the block) — everything else reuses the same step renderer and bar chart component.
 
 ---
 
-## 6. Tech stack
+## 6. Content model
+
+Lessons are JSON arrays of typed steps. New lessons and problem types plug in without new pages.
+
+```typescript
+type Step =
+  | { type: 'concept'; body: string }
+  | { type: 'predict_mc'; prompt: string; choices: string[]; correctIndex: number; hints: string[] }
+  | { type: 'predict_numeric'; prompt: string; correctValue: number; unit: string; tolerance: number; hints: string[] }
+  | { type: 'sim'; labId: string; defaultParams: Record<string, number> }
+  | { type: 'bar_chart_drag'; /* initial state, target bars, hints */ }
+  | { type: 'complete'; nextLessonId: string };
+
+type Lesson = { id: string; title: string; order: number; steps: Step[] };
+```
+
+Content in repo as JSON → seeded to Firestore. Progress: `{ lessonId, stepIndex, params, attempts[] }`.
+
+**Grading:** numeric ±2% tolerance; MC exact match; bar charts compare category totals; all physics via closed-form formulas.
+
+---
+
+## 7. Tech stack
 
 | Layer | Choice | Role |
 |---|---|---|
-| **Frontend** | React + TypeScript + Vite | SPA; fast dev; typed sim logic |
-| **Simulations** | HTML Canvas + `requestAnimationFrame` | 2D motion + live energy bar charts at ≥30 fps |
-| **Physics engine** | Deterministic analytic formulas | Closed-form solutions only (no numerical integration) — predictable grading |
-| **Auth** | Firebase Auth (Google + email) | Low-friction sign-in for students |
-| **Database** | Firestore | User progress, attempts, lesson content; real-time sync across devices |
-| **Hosting** | Firebase Hosting | Static SPA + CDN; deploy on merge |
-| **Content seeding** | JSON in repo → Firestore seed script | Lessons/checkpoints version-controlled; push updates without redeploying app code |
+| **Frontend** | React + TypeScript + Vite | SPA; generic step renderer + sim components |
+| **Simulations** | HTML Canvas + `requestAnimationFrame` | Motion + bar charts at 60 fps |
+| **Physics** | Deterministic analytic formulas | Predictable grading; no physics engine library |
+| **Auth** | Firebase Auth (Google + email) | Sign-in + display name |
+| **Database** | Firestore | Progress, attempts, lesson JSON, streaks |
+| **Hosting** | Firebase Hosting | Public deploy; CDN |
+| **Content** | JSON in repo → seed script | Version-controlled; add lessons without refactoring |
 
-**Architecture:** client reads/writes Firestore directly via security rules. No custom API server for MVP — keeps scope small and avoids ops overhead.
-
-**Explicitly not building (MVP):** PostgreSQL, Redis, custom backend, AI/LLM layer, native mobile apps. Revisit only if we outgrow Firestore (~5k MAU target).
+**Architecture:** client ↔ Firestore via security rules. No custom API. No AI in Phase 1.
 
 ---
 
-## 7. Data
+## 8. Data
 
-**Store:**
-- User profile + role
-- Per-lesson progress (locked / in progress / completed)
-- Lab & checkpoint attempts (prediction, answer, correct/incorrect, timestamp)
-- Lesson & checkpoint content (team-authored, seeded to Firestore)
-
-**Don't store:** frame-by-frame sim telemetry, chat logs, payment data
-
----
-
-## 8. Success metrics
-
-| Metric | Target |
+| What | Why |
 |---|---|
-| Capstone pass rate (students who start L1) | ≥60% |
-| Complete L1 + Lab 1 in first session | ≥70% |
-| Page load on 4G | <3s |
+| User profile (uid, name, email) | Auth + personalization |
+| Lesson progress (step, params, status) | Resume mid-lesson |
+| Step attempts (answer, correct, hint, timestamp) | Feedback + future mastery |
+| Streak (last active, count) | Habit loop |
+| Lesson content (JSON) | Render without redeploy |
+
+**Don't store:** frame telemetry, chat logs, AI data.
 
 ---
 
-## 9. Open questions
+## 9. Testing & performance
 
-1. Allow L1 without sign-in, or require account at start?
-2. In-app badge only, or exportable completion certificate?
+| Test | Pass criteria |
+|---|---|
+| Full lesson flow | Wrong → hint → recover → complete |
+| Live interaction | Input → sim + bar chart update same frame |
+| Persistence | Leave mid-lesson → return → restored |
+| Course path | Finish lesson → sensible next step unlocked |
+| Mobile | Touch-friendly; full flow on phone viewport |
+| Feedback | <100ms |
+| Sim | ≥60 fps while interacting |
+| Load | <2s to first interaction on 4G |
+
+---
+
+## 10. Open questions
+
+1. Sign-in required at start, or one free step then gate?
+2. Capstone: in-app badge only, or exportable certificate?
