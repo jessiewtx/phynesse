@@ -1,7 +1,7 @@
 import { useRef, useState, type PointerEvent } from 'react'
 import { PhysicsEquation } from '../../lib/physicsText'
 
-type Props = { onTried: () => void }
+type Props = { onTried: () => void; onPushed?: (force: number, distance: number) => void }
 
 const W = 340
 const H = 118
@@ -45,7 +45,7 @@ function arrowLenToForce(len: number) {
   return Math.round(MIN_FORCE + ((len - MIN_ARROW_LEN) / (MAX_ARROW_LEN - MIN_ARROW_LEN)) * (MAX_FORCE - MIN_FORCE))
 }
 
-export function PushWorkDemo({ onTried }: Props) {
+export function PushWorkDemo({ onTried, onPushed }: Props) {
   const [force, setForce] = useState(5)
   const [distance, setDistance] = useState(2)
   const [phase, setPhase] = useState<'idle' | 'pushing' | 'done' | 'resetting'>('idle')
@@ -109,6 +109,7 @@ export function PushWorkDemo({ onTried }: Props) {
     setTimeout(() => {
       setPhase('done')
       onTried()
+      onPushed?.(force, distance)
     }, 780)
   }
 

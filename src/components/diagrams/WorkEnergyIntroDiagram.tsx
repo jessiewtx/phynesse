@@ -1,4 +1,14 @@
-export function WorkEnergyIntroDiagram() {
+type Props = {
+  values?: { force: number; distance: number } | null
+}
+
+export function WorkEnergyIntroDiagram({ values }: Props) {
+  const work = values ? values.force * values.distance : null
+  const maxWork = 20 * 5
+  const keFillRatio = work ? Math.min(1, work / maxWork) : 0.5
+  const keBarH = 72
+  const keFillH = Math.max(6, Math.round(keFillRatio * keBarH))
+
   return (
     <figure className="concept-diagram" aria-labelledby="work-energy-diagram-caption">
       <svg
@@ -30,19 +40,19 @@ export function WorkEnergyIntroDiagram() {
           block
         </text>
 
-        {/* force arrow — simple horizontal arrow pointing at block */}
+        {/* force arrow */}
         <line x1="52" y1="128" x2="114" y2="128" stroke="#4f8cff" strokeWidth="3" markerEnd="url(#arrowBlue)" />
         <text x="80" y="118" textAnchor="middle" fill="#4f8cff" fontSize="12" fontWeight="600" fontFamily="system-ui">
-          F
+          {values ? `F = ${values.force} N` : 'F'}
         </text>
 
         {/* displacement */}
         <line x1="118" y1="168" x2="210" y2="168" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" markerEnd="url(#arrowBlue)" />
         <text x="164" y="184" textAnchor="middle" fill="rgba(255,255,255,0.65)" fontSize="11" fontFamily="system-ui">
-          distance d
+          {values ? `d = ${values.distance} m` : 'distance d'}
         </text>
 
-        {/* energy transfer arc — ends just left of bar so arrowhead doesn't overlap */}
+        {/* energy transfer arc */}
         <path
           d="M 148 98 Q 210 44 260 90"
           fill="none"
@@ -55,21 +65,23 @@ export function WorkEnergyIntroDiagram() {
           energy in
         </text>
 
-        {/* KE bar sketch — bottom sits on ground line (y=148) */}
-        <rect x="268" y="76" width="28" height="72" rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" />
-        <rect x="268" y="112" width="28" height="36" rx="4" fill="#34d399" opacity="0.85" />
+        {/* KE bar — height reflects actual work done */}
+        <rect x="268" y="76" width="28" height={keBarH} rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" />
+        <rect x="268" y={76 + keBarH - keFillH} width="28" height={keFillH} rx="4" fill="#34d399" opacity="0.85" />
         <text x="282" y="70" textAnchor="middle" fill="#34d399" fontSize="11" fontWeight="600" fontFamily="system-ui">
-          KE ↑
+          {work ? `${work} J` : 'KE ↑'}
         </text>
 
-        {/* work label */}
-        <rect x="24" y="24" width="108" height="36" rx="8" fill="rgba(79,140,255,0.12)" stroke="rgba(79,140,255,0.35)" />
-        <text x="78" y="47" textAnchor="middle" fill="#93c5fd" fontSize="12" fontWeight="600" fontFamily="system-ui">
-          W = F · d
+        {/* work label box */}
+        <rect x="24" y="24" width="120" height="36" rx="8" fill="rgba(79,140,255,0.12)" stroke="rgba(79,140,255,0.35)" />
+        <text x="84" y="47" textAnchor="middle" fill="#93c5fd" fontSize="12" fontWeight="600" fontFamily="system-ui">
+          {work ? `W = ${work} J` : 'W = F · d'}
         </text>
       </svg>
       <figcaption id="work-energy-diagram-caption" className="concept-diagram__caption">
-        Push with force over a distance → work → kinetic energy increases
+        {work
+          ? `${values!.force} N × ${values!.distance} m = ${work} J of work → ${work} J of kinetic energy`
+          : 'Push with force over a distance → work → kinetic energy increases'}
       </figcaption>
     </figure>
   )

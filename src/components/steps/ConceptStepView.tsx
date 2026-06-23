@@ -12,6 +12,7 @@ type Props = {
 export function ConceptStepView({ step, onContinue }: Props) {
   const needsDemo = step.demo === 'push_work'
   const [demoDone, setDemoDone] = useState(!needsDemo)
+  const [pushedValues, setPushedValues] = useState<{ force: number; distance: number } | null>(null)
 
   return (
     <div className="step step--concept">
@@ -21,9 +22,14 @@ export function ConceptStepView({ step, onContinue }: Props) {
 
       {step.equation && <PhysicsEquation text={step.equation} />}
 
-      {needsDemo && <PushWorkDemo onTried={() => setDemoDone(true)} />}
+      {needsDemo && (
+        <PushWorkDemo
+          onTried={() => setDemoDone(true)}
+          onPushed={(f, d) => setPushedValues({ force: f, distance: d })}
+        />
+      )}
 
-      {step.visual === 'work_energy_intro' && <WorkEnergyIntroDiagram />}
+      {step.visual === 'work_energy_intro' && <WorkEnergyIntroDiagram values={pushedValues} />}
 
       <button
         type="button"
