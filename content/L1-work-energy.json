@@ -34,6 +34,11 @@
       "correctValue": 20,
       "unit": "J",
       "tolerance": 0.05,
+      "givens": [
+        { "label": "F", "value": "10 N" },
+        { "label": "d", "value": "2 m" },
+        { "label": "W_net", "value": "20 J" }
+      ],
       "hints": [
         "W_net = ΔKE. You already found W_net.",
         "If 20 J of work went into the block, ΔKE = 20 J."
