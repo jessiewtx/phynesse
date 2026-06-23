@@ -29,12 +29,21 @@ function markerXToDistance(x: number) {
   return Math.round(clamp(MIN_DIST + ratio * (MAX_DIST - MIN_DIST), MIN_DIST, MAX_DIST))
 }
 
-const HANDLE_X = 22
-const ARROW_TIP_X = BLOCK_START_X - 5
+const ARROW_TIP_X = BLOCK_START_X - 5  // fixed arrowhead, always at block
 const BLOCK_MID_Y = GROUND_Y - BLOCK_H / 2
+const MIN_ARROW_LEN = 10  // px at MIN_FORCE
+const MAX_ARROW_LEN = 72  // px at MAX_FORCE
+
+function forceToArrowLen(f: number) {
+  return MIN_ARROW_LEN + ((f - MIN_FORCE) / (MAX_FORCE - MIN_FORCE)) * (MAX_ARROW_LEN - MIN_ARROW_LEN)
+}
+
+function arrowLenToForce(len: number) {
+  return Math.round(MIN_FORCE + ((len - MIN_ARROW_LEN) / (MAX_ARROW_LEN - MIN_ARROW_LEN)) * (MAX_FORCE - MIN_FORCE))
+}
 
 export function PushWorkDemo({ onTried }: Props) {
-  const [force, setForce] = useState(8)
+  const [force, setForce] = useState(5)
   const [distance, setDistance] = useState(2)
   const [phase, setPhase] = useState<'idle' | 'pushing' | 'done' | 'resetting'>('idle')
   const [blockOffset, setBlockOffset] = useState(0)
@@ -42,30 +51,30 @@ export function PushWorkDemo({ onTried }: Props) {
   const svgRef = useRef<SVGSVGElement>(null)
   const forceDragging = useRef(false)
   const distDragging = useRef(false)
-  const forceAnchorY = useRef(0)
-  const forceAnchorVal = useRef(8)
 
   const work = force * distance
   const maxWork = MAX_FORCE * MAX_DIST
   const workPct = Math.min(100, (work / maxWork) * 100)
 
-  const forceRatio = (force - MIN_FORCE) / (MAX_FORCE - MIN_FORCE)
-  const arrowStrokeW = 2.5 + forceRatio * 4.5
+  const arrowLen = forceToArrowLen(force)
+  const handleX = ARROW_TIP_X - arrowLen
+  const arrowStrokeW = 2 + ((force - MIN_FORCE) / (MAX_FORCE - MIN_FORCE)) * 4
   const markerX = distanceToMarkerX(distance)
 
-  // Force drag
+  // Force drag — horizontal: drag tail left = more force
   const onForcePtrDown = (e: PointerEvent<SVGCircleElement>) => {
     if (phase !== 'idle') return
     forceDragging.current = true
-    forceAnchorY.current = e.clientY
-    forceAnchorVal.current = force
     e.currentTarget.setPointerCapture(e.pointerId)
   }
   const onForcePtrMove = (e: PointerEvent<SVGCircleElement>) => {
     if (!forceDragging.current) return
-    const dy = forceAnchorY.current - e.clientY
-    const dF = (dy / 55) * (MAX_FORCE - MIN_FORCE)
-    setForce(Math.round(clamp(forceAnchorVal.current + dF, MIN_FORCE, MAX_FORCE)))
+    const svg = svgRef.current
+    if (!svg) return
+    const rect = svg.getBoundingClientRect()
+    const svgX = ((e.clientX - rect.left) / rect.width) * W
+    const len = clamp(ARROW_TIP_X - svgX, MIN_ARROW_LEN, MAX_ARROW_LEN)
+    setForce(arrowLenToForce(len))
   }
   const onForcePtrUp = () => { forceDragging.current = false }
 
@@ -111,7 +120,7 @@ export function PushWorkDemo({ onTried }: Props) {
     <div className="push-demo">
       <p className="push-demo__lead">
         {phase === 'idle'
-          ? 'Drag the handle ↕ to set force · drag the flag ↔ to set distance'
+          ? 'Drag the arrow tail ↔ to set force · drag the flag ↔ to set distance'
           : phase === 'pushing'
             ? 'Transferring energy…'
             : phase === 'resetting'
@@ -188,8 +197,9 @@ export function PushWorkDemo({ onTried }: Props) {
         {/* force arrow + drag handle (only while idle) */}
         {phase === 'idle' && (
           <>
+            {/* arrow shaft */}
             <line
-              x1={HANDLE_X + 14}
+              x1={handleX + 12}
               y1={BLOCK_MID_Y}
               x2={ARROW_TIP_X}
               y2={BLOCK_MID_Y}
@@ -199,43 +209,34 @@ export function PushWorkDemo({ onTried }: Props) {
               markerEnd="url(#arrowF)"
             />
 
-            {/* drag handle circle */}
+            {/* drag handle — sits at the tail, drag left/right */}
             <circle
-              cx={HANDLE_X + 14}
+              cx={handleX}
               cy={BLOCK_MID_Y}
-              r={15}
+              r={13}
               fill="#4f8cff"
-              opacity={0.88}
-              style={{ cursor: 'ns-resize' }}
+              opacity={0.9}
+              style={{ cursor: 'ew-resize' }}
               onPointerDown={onForcePtrDown}
               onPointerMove={onForcePtrMove}
               onPointerUp={onForcePtrUp}
               onPointerCancel={onForcePtrUp}
             />
-            {/* up/down hint glyphs */}
+            {/* left/right hint glyphs */}
             <text
-              x={HANDLE_X + 14}
-              y={BLOCK_MID_Y - 3}
+              x={handleX}
+              y={BLOCK_MID_Y + 1}
               textAnchor="middle"
-              dominantBaseline="auto"
+              dominantBaseline="middle"
               fill="white"
-              fontSize="9"
+              fontSize="11"
               style={{ pointerEvents: 'none', userSelect: 'none' }}
-            >▲</text>
-            <text
-              x={HANDLE_X + 14}
-              y={BLOCK_MID_Y + 10}
-              textAnchor="middle"
-              dominantBaseline="auto"
-              fill="white"
-              fontSize="9"
-              style={{ pointerEvents: 'none', userSelect: 'none' }}
-            >▼</text>
+            >◀▶</text>
 
             {/* force label */}
             <text
-              x={(HANDLE_X + 14 + ARROW_TIP_X) / 2}
-              y={BLOCK_MID_Y - 11}
+              x={(handleX + ARROW_TIP_X) / 2}
+              y={BLOCK_MID_Y - 12}
               textAnchor="middle"
               fill="#4f8cff"
               fontSize="11"
