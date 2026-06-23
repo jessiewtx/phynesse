@@ -1,5 +1,5 @@
 import { useRef, useState, type PointerEvent } from 'react'
-import { PhysicsEquation } from '../../lib/physicsText'
+import { PhysicsText } from '../../lib/physicsText'
 
 type Props = { onTried: () => void; onPushed?: (force: number, distance: number) => void }
 
@@ -322,7 +322,21 @@ export function PushWorkDemo({ onTried, onPushed }: Props) {
 
       {phase === 'done' && (
         <div className="push-demo__insight">
-          {force} × {distance} = {work} J, so <PhysicsEquation text="W_net = ΔKE" />.
+          <p className="push-demo__insight-step">
+            <span className="push-demo__insight-tag">1. Net work</span>
+            <PhysicsText text="W_net = F·d" /> = {force} N × {distance} m ={' '}
+            <strong>{work} J</strong>
+          </p>
+          <p className="push-demo__insight-step">
+            <span className="push-demo__insight-tag">2. Theorem</span>
+            With no friction, all of that work becomes motion. The work-energy
+            theorem says <PhysicsText text="W_net = ΔKE" />.
+          </p>
+          <p className="push-demo__insight-step">
+            <span className="push-demo__insight-tag">3. So</span>
+            <PhysicsText text="ΔKE = W_net" /> = <strong>{work} J</strong> — the two
+            bars match because the theorem guarantees it, not just the numbers.
+          </p>
         </div>
       )}
     </div>

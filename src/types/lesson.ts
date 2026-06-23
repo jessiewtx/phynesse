@@ -9,6 +9,7 @@ export type BarDragStep = {
   tolerance: number
   hints: string[]
   givens?: { label: string; value: string }[]
+  formulas?: string[]
 }
 
 export type ConceptStep = {

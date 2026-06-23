@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { HomePage } from './pages/HomePage'
 import { LessonPage } from './pages/LessonPage'
+import { ProgressPage } from './pages/ProgressPage'
 import './index.css'
 import './App.css'
 
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/progress" element={<ProgressPage />} />
           <Route path="/lesson/:lessonId" element={<LessonRoute />} />
         </Routes>
       </BrowserRouter>

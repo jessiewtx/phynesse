@@ -28,8 +28,8 @@
       ],
       "correctIndex": 2,
       "hints": [
-        "W = F·d. The force didn't change, only the distance.",
-        "Double d → double the work."
+        "Not quite — take another look at W = F·d. The force didn't change here; only the distance did.",
+        "You're close. Work scales directly with distance, so if the distance grows by a factor, the work grows by that same factor."
       ]
     },
     {
@@ -45,10 +45,10 @@
       "slotLabels": { "F": "force", "d": "distance" },
       "tokens": [2, 10, 20],
       "result": { "value": 20, "unit": "J", "tolerance": 0.05 },
-      "fillHint": "Force goes in the F spot, distance in the d spot. Here F = 10 and d = 2.",
+      "fillHint": "Almost — force goes in the F spot and distance in the d spot. Here that's F = 10 and d = 2.",
       "computeHints": [
-        "W = F × d = 10 × 2.",
-        "W = 10 × 2 = 20 J."
+        "So close — work is force times distance, so multiply your two values together.",
+        "One step at a time: compute 10 × 2, and that product (in joules) is the work."
       ]
     },
     {
@@ -66,14 +66,15 @@
       "correctValue": 20,
       "unit": "J",
       "tolerance": 0.05,
+      "formulas": ["W = F·d", "W_net = ΔKE"],
       "givens": [
         { "label": "F", "value": "10 N" },
         { "label": "d", "value": "2 m" },
         { "label": "W_net", "value": "20 J" }
       ],
       "hints": [
-        "W_net = ΔKE. You already found W_net.",
-        "If 20 J of work went into the block, ΔKE = 20 J."
+        "Not quite — by the work-energy theorem, W_net = ΔKE, and you already found W_net just above.",
+        "With no friction, every joule of net work turns into motion — so ΔKE ends up the same size as that W_net."
       ]
     },
     {

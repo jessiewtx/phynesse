@@ -32,8 +32,8 @@
       ],
       "correctIndex": 1,
       "hints": [
-        "U_s = ½kx² — the stretch is squared.",
-        "Double x → x² grows by 4. So the energy quadruples."
+        "Good try — but in U_s = ½kx², the stretch x is squared.",
+        "You're close. Doubling x means 2 × 2 in the squared term — think about what that does to the stored energy."
       ]
     },
     {
@@ -50,10 +50,10 @@
       "slotLabels": { "k": "stiffness", "x": "squeeze" },
       "tokens": [0.3, 200, 0.09],
       "result": { "value": 9, "unit": "J", "tolerance": 0.05 },
-      "fillHint": "Stiffness goes in the k spot, squeeze in the x spot. Here k = 200 and x = 0.3.",
+      "fillHint": "Almost — stiffness goes in the k spot and squeeze in the x spot. Here k = 200 and x = 0.3.",
       "computeHints": [
-        "Square x first: 0.3² = 0.09.",
-        "U_s = ½ × 200 × 0.09 = 9 J."
+        "So close — square the squeeze first (x × x), then bring in k and the ½.",
+        "Step by step: square x, multiply by k, then take half of the result."
       ]
     },
     {
@@ -65,13 +65,14 @@
       "correctValue": 16,
       "unit": "J",
       "tolerance": 0.05,
+      "formulas": ["U_s = ½kx²"],
       "givens": [
         { "label": "k", "value": "200 N/m" },
         { "label": "x", "value": "0.4 m" }
       ],
       "hints": [
-        "U_s = ½kx². Square x first.",
-        "U_s = ½ × 200 × 0.4² = 100 × 0.16 = 16 J."
+        "Not quite — start by squaring x in U_s = ½kx².",
+        "Square the 0.4 m squeeze first, then multiply by k and take half."
       ]
     },
     {
@@ -88,9 +89,10 @@
       "correctValue": 16,
       "unit": "J",
       "tolerance": 0.05,
+      "formulas": ["U_s = ½kx²", "ΔKE = U_s"],
       "hints": [
-        "Spring PE converts fully to KE (no losses).",
-        "ΔKE = U_s = 16 J from the 0.4 m compression."
+        "With no friction, the spring's stored energy doesn't leak away.",
+        "All of the elastic PE turns into motion, so ΔKE ends up equal to the U_s you just found."
       ]
     },
     {

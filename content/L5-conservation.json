@@ -32,8 +32,8 @@
       ],
       "correctIndex": 0,
       "hints": [
-        "No friction → total mechanical energy is conserved.",
-        "All the U_g it lost shows up as KE. Same total, different form."
+        "No friction is the key here — what does that mean for the total mechanical energy?",
+        "The energy isn't created or destroyed: the U_g it gives up reappears as KE. Same total, just a new form."
       ]
     },
     {
@@ -50,13 +50,14 @@
       "correctValue": 39.2,
       "unit": "J",
       "tolerance": 0.05,
+      "formulas": ["U_g = mgh", "KE = U_g"],
       "givens": [
         { "label": "m", "value": "2 kg" },
         { "label": "h", "value": "2 m" }
       ],
       "hints": [
-        "No friction → U_g lost = KE gained.",
-        "U_g = mgh = 2 × 9.8 × 2 = 39.2 J → KE = 39.2 J."
+        "No friction means the U_g it loses becomes KE it gains.",
+        "Find the U_g at the top with m × g × h — that whole amount shows up as KE at the bottom."
       ]
     },
     {
@@ -74,13 +75,14 @@
       "correctValue": 19.6,
       "unit": "J",
       "tolerance": 0.06,
+      "formulas": ["U_g = KE + E_th"],
       "givens": [
         { "label": "U_g", "value": "39.2 J" },
         { "label": "E_th", "value": "19.6 J" }
       ],
       "hints": [
-        "Energy accounting: U_g = KE + E_th (started from rest).",
-        "KE = 39.2 − 19.6 = 19.6 J."
+        "Friction turns some energy into heat, so the books balance as U_g = KE + E_th.",
+        "Rearrange to KE = U_g − E_th, then subtract the thermal energy from the starting U_g."
       ]
     },
     {

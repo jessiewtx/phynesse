@@ -32,8 +32,8 @@
       ],
       "correctIndex": 1,
       "hints": [
-        "KE depends on v², not v.",
-        "Double v → v² grows by 2² = 4. So KE quadruples."
+        "Good try — but notice KE depends on v², not just v.",
+        "You're close. When the speed doubles, the squared term grows by 2 × 2 — think about what that does to KE."
       ]
     },
     {
@@ -50,10 +50,10 @@
       "slotLabels": { "m": "mass", "v": "speed" },
       "tokens": [2, 3, 9],
       "result": { "value": 6, "unit": "J", "tolerance": 0.05 },
-      "fillHint": "Mass goes in the m spot, speed in the v spot. Here m = 3 and v = 2.",
+      "fillHint": "Almost — mass goes in the m spot and speed in the v spot. Here m = 3 and v = 2.",
       "computeHints": [
-        "Square the speed first: 2² = 4.",
-        "KE = ½ × 3 × 4 = 6 J."
+        "So close — square the speed first (v × v), then bring in the mass and the ½.",
+        "Step by step: square v, multiply by m, then take half of the result."
       ]
     },
     {
@@ -71,12 +71,13 @@
       "correctValue": 24,
       "unit": "J",
       "tolerance": 0.05,
+      "formulas": ["W_net = ΔKE"],
       "givens": [
         { "label": "W_net", "value": "24 J" }
       ],
       "hints": [
-        "Work-energy theorem: W_net = ΔKE.",
-        "All 24 J of net work goes into kinetic energy → ΔKE = 24 J."
+        "Not quite — remember the work-energy theorem: W_net = ΔKE.",
+        "All of the net work goes straight into motion, so ΔKE matches the W_net you're given."
       ]
     },
     {

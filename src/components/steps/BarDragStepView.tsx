@@ -123,6 +123,16 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
         <PhysicsText text={step.prompt} />
       </p>
 
+      {step.formulas && step.formulas.length > 0 && (
+        <div className="bar-drag__formulas">
+          {step.formulas.map((f) => (
+            <span key={f} className="bar-drag__formula">
+              <PhysicsText text={f} />
+            </span>
+          ))}
+        </div>
+      )}
+
       {step.givens && step.givens.length > 0 && (
         <div className="bar-drag__givens">
           {step.givens.map(({ label, value }) => (

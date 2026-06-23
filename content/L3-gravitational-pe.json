@@ -32,8 +32,8 @@
       ],
       "correctIndex": 0,
       "hints": [
-        "U_g = mgh — height appears once (not squared).",
-        "Double h → double U_g."
+        "Close — look at U_g = mgh. Height shows up just once (it isn't squared).",
+        "Since height isn't squared, U_g scales directly with it — picture what doubling the height does."
       ]
     },
     {
@@ -49,10 +49,10 @@
       "slotLabels": { "m": "mass", "h": "height" },
       "tokens": [1.5, 2, 9.8],
       "result": { "value": 29.4, "unit": "J", "tolerance": 0.05 },
-      "fillHint": "Mass goes in the m spot, height in the h spot. Here m = 2 and h = 1.5.",
+      "fillHint": "Almost — mass goes in the m spot and height in the h spot. Here m = 2 and h = 1.5.",
       "computeHints": [
-        "Multiply across: 2 × 9.8 × 1.5.",
-        "U_g = 2 × 9.8 × 1.5 = 29.4 J."
+        "So close — just multiply the three values together: mass, then 9.8, then height.",
+        "Work left to right: 2 × 9.8 first, then multiply that by 1.5."
       ]
     },
     {
@@ -69,9 +69,10 @@
       "correctValue": 0,
       "unit": "J",
       "tolerance": 0.05,
+      "formulas": ["U_g = mgh"],
       "hints": [
-        "U_g depends on your zero line.",
-        "At the reference level, h = 0 → U_g = 0 J."
+        "Think about your zero line — U_g is always measured from it.",
+        "If the book sits right at the reference level, its height above it is zero. So what does that make U_g?"
       ]
     },
     {

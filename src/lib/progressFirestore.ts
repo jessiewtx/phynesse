@@ -104,3 +104,9 @@ export async function logStepAttempt(
     createdAt: new Date().toISOString(),
   })
 }
+
+export async function fetchAttempts(uid: string): Promise<StepAttemptRecord[]> {
+  if (!db) return []
+  const snap = await getDocs(query(collection(db, 'users', uid, 'attempts')))
+  return snap.docs.map((d) => d.data() as StepAttemptRecord)
+}

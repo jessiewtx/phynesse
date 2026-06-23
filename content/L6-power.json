@@ -32,8 +32,8 @@
       ],
       "correctIndex": 2,
       "hints": [
-        "P = W / Δt. Same work on top, smaller time on the bottom.",
-        "Half the time → double the power."
+        "Take a look at P = W / Δt — the work on top stays the same, but the time on the bottom shrinks.",
+        "When the bottom of a fraction gets smaller, the result gets bigger — so what happens if the time is cut in half?"
       ]
     },
     {
@@ -49,10 +49,10 @@
       "slotLabels": { "W": "work", "t": "time" },
       "tokens": [4, 120, 30],
       "result": { "value": 30, "unit": "W", "tolerance": 0.05 },
-      "fillHint": "Work goes on top (W spot), time on the bottom (t spot). Here W = 120 and Δt = 4.",
+      "fillHint": "Almost — work goes on top (W spot) and time on the bottom (t spot). Here W = 120 and Δt = 4.",
       "computeHints": [
-        "P = W / Δt = 120 / 4.",
-        "P = 120 / 4 = 30 W."
+        "So close — power is work divided by time, so divide your two values.",
+        "Just work out 120 ÷ 4 for the power in watts."
       ]
     },
     {
@@ -69,14 +69,15 @@
       "correctValue": 19.6,
       "unit": "W",
       "tolerance": 0.06,
+      "formulas": ["W = mgh", "P = W / Δt"],
       "givens": [
         { "label": "m", "value": "4 kg" },
         { "label": "h", "value": "2.5 m" },
         { "label": "Δt", "value": "5 s" }
       ],
       "hints": [
-        "Constant speed → W = mgh (no ΔKE).",
-        "W = 4 × 9.8 × 2.5 = 98 J → P = 98 / 5 = 19.6 W."
+        "At constant speed there's no change in KE, so the work is just W = mgh.",
+        "Find W with m × g × h first, then divide that by the time to get the power."
       ]
     },
     {

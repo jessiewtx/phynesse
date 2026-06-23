@@ -365,12 +365,134 @@
 
 .lesson-nav__btn:hover { color: var(--text-2); }
 
+.lesson-body {
+  flex: 1;
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.lesson-sidebar {
+  position: sticky;
+  top: 64px;
+  flex-shrink: 0;
+  width: 240px;
+  align-self: stretch;
+  max-height: calc(100dvh - 64px);
+  overflow-y: auto;
+  padding: 1.5rem 1rem;
+  border-right: 1.5px solid var(--border);
+  background: var(--surface);
+}
+
+.lesson-sidebar__overview {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--text-3);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.4rem;
+  transition: color 0.12s;
+}
+
+.lesson-sidebar__overview:hover { color: var(--turquoise); }
+
+.lesson-sidebar__tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.6rem;
+  margin-bottom: 1.4rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-2);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.lesson-sidebar__tab:hover {
+  color: var(--turquoise);
+  border-color: var(--accent);
+}
+
+.lesson-sidebar__tab-icon { font-size: 0.95rem; }
+
+.lesson-sidebar__label {
+  margin: 0 0 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+}
+
+.lesson-sidebar__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.lesson-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-2);
+  transition: background 0.12s, color 0.12s;
+}
+
+.lesson-sidebar__item:hover {
+  background: var(--bg);
+  color: var(--text-1);
+}
+
+.lesson-sidebar__item--current {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
+.lesson-sidebar__item--current .lesson-sidebar__title { font-weight: 700; }
+
+.lesson-sidebar__item--locked {
+  color: var(--text-3);
+  cursor: default;
+}
+
+.lesson-sidebar__n {
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.lesson-sidebar__title {
+  flex: 1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.lesson-sidebar__mark {
+  font-size: 0.78rem;
+  color: var(--done);
+}
+
 .lesson-main {
   flex: 1;
   max-width: 760px;
   margin: 0 auto;
   width: 100%;
   padding: 2rem 1.5rem 5rem;
+}
+
+@media (max-width: 800px) {
+  .lesson-sidebar { display: none; }
 }
 
 .lesson-page__saved { display: none; }
@@ -484,6 +606,151 @@
   border-radius: 999px;
   padding: 0.3rem 0.7rem;
 }
+
+/* ─── Progress & mastery page ────────────────────────────── */
+
+.progress-summary {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-bottom: 1.5px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.progress-ring-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progress-ring {
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: conic-gradient(var(--accent) calc(var(--pct) * 1%), var(--border) 0);
+}
+
+.progress-ring__num {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-1);
+}
+
+.progress-ring__label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+
+.progress-stats {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  min-width: 240px;
+}
+
+.progress-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+}
+
+.progress-stat__value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-1);
+  line-height: 1;
+}
+
+.progress-stat__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-3);
+}
+
+.progress-next {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  margin-top: 1.25rem;
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent);
+  border-radius: 16px;
+}
+
+.progress-next__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.progress-next__eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent-hover);
+}
+
+.progress-next__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.progress-row__acc {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text-2);
+  border: 1.5px solid var(--border);
+}
+
+.progress-pill--completed {
+  background: var(--done-soft);
+  color: var(--done);
+  border-color: var(--done);
+}
+
+.progress-pill--in_progress {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  border-color: var(--accent);
+}
+
+.progress-pill--locked { opacity: 0.7; }
 
 /* ─── Habit loop: full-screen lesson-complete celebration ─ */
 
@@ -1132,19 +1399,38 @@
 
 .push-demo__insight {
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
   font-size: 0.875rem;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--text-1);
   font-weight: 500;
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
 }
 
-.push-demo__insight .phys-equation {
+.push-demo__insight-step {
+  margin: 0;
+}
+
+.push-demo__insight-tag {
   display: inline-block;
-  margin: 0 0.15rem;
-  padding: 0.18rem 0.65rem;
-  font-size: 1rem;
+  margin-right: 0.45rem;
+  padding: 0.08rem 0.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
   vertical-align: middle;
-  border-radius: 8px;
+}
+
+.push-demo__insight .phys {
+  font-weight: 700;
+  color: var(--accent-hover);
 }
 
 
@@ -1326,6 +1612,24 @@
   font-variant-numeric: tabular-nums;
   line-height: 1;
   font-weight: 700;
+}
+
+.bar-drag__formulas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.bar-drag__formula {
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  border: 1.5px solid var(--accent);
+  white-space: nowrap;
 }
 
 .bar-drag__givens {

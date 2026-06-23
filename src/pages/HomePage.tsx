@@ -54,6 +54,7 @@ export function HomePage() {
       <nav className="home-nav">
         <span className="home-nav__brand">Phynesse</span>
         <div className="home-nav__right">
+          <Link to="/progress" className="btn btn--ghost btn--sm">Progress</Link>
           {isSignedIn && user ? (
             <>
               <span>{displayFirstName(user)}</span>
