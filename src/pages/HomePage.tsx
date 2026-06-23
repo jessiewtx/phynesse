@@ -10,7 +10,7 @@ import {
 } from '../lib/progressFirestore'
 import { displayFirstName } from '../lib/displayName'
 
-const LESSON_COLORS = ['#3a86ff', '#00b894', '#fd9f28', '#8338ec', '#e74c3c', '#f9c74f']
+const LESSON_COLORS = ['#0ab5c5', '#e63946', '#e9a800', '#14a89b', '#7c3aed', '#f57c20']
 
 export function HomePage() {
   const { user, isSignedIn, loading, signOut, authReady } = useAuth()
@@ -47,112 +47,101 @@ export function HomePage() {
 
   return (
     <div className="home">
-      <section className="home-hero">
-        <div className="home-hero__content">
-          <div className="home-hero__brand">
-            <span className="home-hero__logo">⚡</span>
-            <h1>Phynesse</h1>
-          </div>
-          <p className="home-hero__sub">AP Physics 1 · Unit 4</p>
-          <p className="home-hero__tagline">Master energy mechanics by doing, not watching.</p>
-
-          {loading && authReady && (
-            <p style={{ margin: 0, opacity: 0.7, fontSize: '0.875rem' }}>Checking sign-in…</p>
-          )}
-
-          {isSignedIn && user && (
-            <div className="home-hero__welcome">
-              <span>Welcome back, {displayFirstName(user)}</span>
-              <button type="button" className="btn btn--ghost-white btn--sm" onClick={() => signOut()}>
+      {/* ── Minimal nav ── */}
+      <nav className="home-nav">
+        <span className="home-nav__brand">Phynesse</span>
+        <div className="home-nav__right">
+          {isSignedIn && user ? (
+            <>
+              <span>{displayFirstName(user)}</span>
+              <button type="button" className="btn btn--ghost btn--sm" onClick={() => signOut()}>
                 Sign out
               </button>
-            </div>
+            </>
+          ) : (
+            loading && authReady && <span style={{ color: 'var(--text-3)', fontSize: '0.8rem' }}>…</span>
           )}
+        </div>
+      </nav>
 
-          {!isSignedIn && !loading && authReady && (
-            <p className="home-hero__guest">
-              Start for free — sign in to save progress across devices.
-            </p>
-          )}
+      {/* ── Big editorial display ── */}
+      <section className="home-display">
+        <p className="home-display__eyebrow">AP Physics 1 · Unit 4</p>
+        <h1 className="home-display__title">
+          Work,<br />Power &<br />Energy.
+        </h1>
+        <p className="home-display__tagline">
+          Drag bars. Watch energy move.<br />
+          Actually understand it.
+        </p>
+      </section>
+
+      {/* ── Sign-in (only when guest) ── */}
+      {!isSignedIn && !loading && authReady && (
+        <div className="home-signin">
+          <SignInPanel compact />
+        </div>
+      )}
+
+      {/* ── Lesson list ── */}
+      <section className="home-lessons">
+        <h2 className="home-lessons__label">Lessons</h2>
+
+        {lessons.map((lesson) => {
+          const locked = !isLessonUnlocked(lesson, progressMap)
+          const prog = progressMap[lesson.id]
+          const complete = prog?.status === 'completed'
+          const inProgress = prog?.status === 'in_progress'
+          const color = LESSON_COLORS[(lesson.order - 1) % LESSON_COLORS.length]
+          const style = { '--c': color } as CSSProperties
+          const num = lesson.order.toString().padStart(2, '0')
+
+          if (locked) {
+            return (
+              <div key={lesson.id} className="lesson-row lesson-row--locked" style={style}>
+                <span className="lesson-row__n">{num}</span>
+                <div className="lesson-row__body">
+                  <span className="lesson-row__title">{lesson.title}</span>
+                </div>
+                <span className="lesson-row__arrow">🔒</span>
+              </div>
+            )
+          }
+
+          return (
+            <Link
+              key={lesson.id}
+              to={`/lesson/${lesson.id}`}
+              className="lesson-row"
+              style={style}
+            >
+              <span className="lesson-row__n">{num}</span>
+              <div className="lesson-row__body">
+                <span className="lesson-row__title">{lesson.title}</span>
+                {complete && <span className="lesson-row__pill lesson-row__pill--done">Done</span>}
+                {inProgress && <span className="lesson-row__pill lesson-row__pill--in">In progress</span>}
+              </div>
+              <span className="lesson-row__arrow">→</span>
+            </Link>
+          )
+        })}
+
+        <div className="lesson-row lesson-row--locked">
+          <span className="lesson-row__n">07</span>
+          <div className="lesson-row__body">
+            <span className="lesson-row__title">Mixed problems & unit capstone</span>
+            <span className="lesson-row__pill" style={{ background: '#f5f5f5', color: 'var(--text-3)' }}>
+              Coming soon
+            </span>
+          </div>
         </div>
       </section>
 
-      <main className="home-main">
-        {!isSignedIn && !loading && authReady && (
-          <div className="home-signin">
-            <SignInPanel compact />
-          </div>
-        )}
-
-        <section className="course-section">
-          <h2>Course path</h2>
-          <div className="lesson-grid">
-            {lessons.map((lesson) => {
-              const locked = !isLessonUnlocked(lesson, progressMap)
-              const prog = progressMap[lesson.id]
-              const complete = prog?.status === 'completed'
-              const inProgress = prog?.status === 'in_progress'
-              const statusClass = complete ? 'completed' : inProgress ? 'in_progress' : 'not_started'
-              const accent = LESSON_COLORS[(lesson.order - 1) % LESSON_COLORS.length]
-              const cardStyle = { '--accent': accent } as CSSProperties
-
-              if (locked) {
-                return (
-                  <div key={lesson.id} className="lesson-card lesson-card--locked" style={cardStyle}>
-                    <div className="lesson-card__num-badge">{lesson.order}</div>
-                    <div className="lesson-card__body">
-                      <div className="lesson-card__eyebrow">Lesson {lesson.order}</div>
-                      <div className="lesson-card__title">{lesson.title}</div>
-                    </div>
-                    <div className="lesson-card__arrow">🔒</div>
-                  </div>
-                )
-              }
-
-              return (
-                <Link
-                  key={lesson.id}
-                  to={`/lesson/${lesson.id}`}
-                  className={`lesson-card lesson-card--${statusClass}`}
-                  style={cardStyle}
-                >
-                  <div className="lesson-card__num-badge">
-                    {complete ? '✓' : lesson.order}
-                  </div>
-                  <div className="lesson-card__body">
-                    <div className="lesson-card__eyebrow">Lesson {lesson.order}</div>
-                    <div className="lesson-card__title">{lesson.title}</div>
-                    {complete && (
-                      <span className="lesson-card__tag lesson-card__tag--done">Complete</span>
-                    )}
-                    {inProgress && (
-                      <span className="lesson-card__tag lesson-card__tag--progress">In progress</span>
-                    )}
-                  </div>
-                  <div className="lesson-card__arrow">→</div>
-                </Link>
-              )
-            })}
-
-            <div className="lesson-card lesson-card--locked">
-              <div className="lesson-card__num-badge">7</div>
-              <div className="lesson-card__body">
-                <div className="lesson-card__eyebrow">Lessons 7 – 8</div>
-                <div className="lesson-card__title">Mixed problems & unit capstone</div>
-              </div>
-              <div className="lesson-card__arrow" style={{ fontSize: '0.72rem', opacity: 0.7 }}>
-                Coming soon
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {!authReady && (
-          <p className="status-line status-line--warn">
-            Firebase not configured — add keys to .env.local, then redeploy.
-          </p>
-        )}
-      </main>
+      {!authReady && (
+        <p className="status-line status-line--warn">
+          Firebase not configured — add keys to .env.local, then redeploy.
+        </p>
+      )}
     </div>
   )
 }

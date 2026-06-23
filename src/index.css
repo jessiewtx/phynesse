@@ -1,70 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg: #f4f3ff;
-  --surface: #ffffff;
-  --surface-2: #f0effb;
+  --bg: #ffffff;
+  --surface: #f8f8f8;
 
+  --border: #ebebeb;
+  --border-mid: #d4d4d4;
+
+  /* macaron palette — refined */
+  --red:        #e63946;
+  --turquoise:  #0ab5c5;
+  --gold:       #e9a800;
+  --teal:       #14a89b;
+  --purple:     #7c3aed;
+  --orange:     #f57c20;
+
+  --text-1: #111111;
+  --text-2: #555555;
+  --text-3: #aaaaaa;
+
+  /* for sim cards (keep dark for SVG contrast) */
   --dark-sim: #111827;
   --dark-sim-2: #1e2d4a;
 
-  --border: #e4e2f5;
-  --border-strong: #c4bff0;
-
-  /* vibrant primary palette */
-  --blue: #3a86ff;
-  --blue-hover: #2571e8;
-  --blue-50: #eef4ff;
-  --blue-100: #d9e8ff;
-  --blue-200: #a8ccff;
-
-  --green: #00b894;
-  --green-hover: #00a381;
-  --green-50: #e6fdf8;
-  --green-100: #b8f5e8;
-  --green-200: #6eecd4;
-
-  --orange: #fd9f28;
-  --orange-50: #fff7eb;
-  --orange-100: #feeac7;
-  --orange-200: #fcd08a;
-
-  --purple: #8338ec;
-  --purple-50: #f3eeff;
-  --purple-100: #e4d4fd;
-
-  --red: #e74c3c;
-  --red-50: #fef2f0;
-  --red-200: #fdb8b1;
-
-  --yellow: #f9c74f;
-  --yellow-50: #fffbe8;
-  --yellow-100: #fff3bb;
-  --yellow-200: #ffe680;
-
-  --text-1: #1a1b2e;
-  --text-2: #4c4f6b;
-  --text-3: #9395b0;
-
-  --shadow-sm: 0 1px 3px rgba(80,70,180,0.08), 0 1px 2px rgba(80,70,180,0.04);
-  --shadow: 0 2px 12px rgba(80,70,180,0.1), 0 1px 4px rgba(80,70,180,0.06);
-  --shadow-md: 0 4px 24px rgba(80,70,180,0.12), 0 2px 8px rgba(80,70,180,0.06);
-  --shadow-sim: 0 4px 28px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.05);
-
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Syne', system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: var(--text-1);
-  background-color: var(--bg);
+  background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -73,14 +43,7 @@ body {
   background: var(--bg);
 }
 
-#root {
-  min-height: 100dvh;
-}
+#root { min-height: 100dvh; }
 
-a {
-  color: inherit;
-}
-
-strong {
-  font-weight: 700;
-}
+a { color: inherit; }
+strong { font-weight: 700; }
