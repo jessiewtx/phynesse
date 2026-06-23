@@ -87,9 +87,25 @@ A student can finish the unit in **≤2 hours**, pass the capstone at **≥70%**
 
 ---
 
-## 6. Tech & data
+## 6. Tech stack
 
-**Stack:** React + TypeScript + Vite · Firebase Auth · Firestore · Firebase Hosting
+| Layer | Choice | Role |
+|---|---|---|
+| **Frontend** | React + TypeScript + Vite | SPA; fast dev; typed sim logic |
+| **Simulations** | HTML Canvas + `requestAnimationFrame` | 2D motion + live energy bar charts at ≥30 fps |
+| **Physics engine** | Deterministic analytic formulas | Closed-form solutions only (no numerical integration) — predictable grading |
+| **Auth** | Firebase Auth (Google + email) | Low-friction sign-in for students |
+| **Database** | Firestore | User progress, attempts, lesson content; real-time sync across devices |
+| **Hosting** | Firebase Hosting | Static SPA + CDN; deploy on merge |
+| **Content seeding** | JSON in repo → Firestore seed script | Lessons/checkpoints version-controlled; push updates without redeploying app code |
+
+**Architecture:** client reads/writes Firestore directly via security rules. No custom API server for MVP — keeps scope small and avoids ops overhead.
+
+**Explicitly not building (MVP):** PostgreSQL, Redis, custom backend, AI/LLM layer, native mobile apps. Revisit only if we outgrow Firestore (~5k MAU target).
+
+---
+
+## 7. Data
 
 **Store:**
 - User profile + role
@@ -101,7 +117,7 @@ A student can finish the unit in **≤2 hours**, pass the capstone at **≥70%**
 
 ---
 
-## 7. Success metrics
+## 8. Success metrics
 
 | Metric | Target |
 |---|---|
@@ -111,7 +127,7 @@ A student can finish the unit in **≤2 hours**, pass the capstone at **≥70%**
 
 ---
 
-## 8. Open questions
+## 9. Open questions
 
 1. Allow L1 without sign-in, or require account at start?
 2. In-app badge only, or exportable completion certificate?
