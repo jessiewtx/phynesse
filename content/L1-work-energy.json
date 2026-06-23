@@ -1,0 +1,64 @@
+{
+  "id": "L1",
+  "title": "Work & the Work-Energy Theorem",
+  "order": 1,
+  "steps": [
+    {
+      "type": "concept",
+      "title": "Push. Move. Transfer energy.",
+      "body": "You're about to push a block and watch energy move in real time.\n\n**Work** is energy transferred by a force over a distance. No friction? Every joule goes straight into motion. That's the deal:",
+      "equation": "W_net = ΔKE",
+      "visual": "work_energy_intro",
+      "demo": "push_work"
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "You push a block with **10 N** over **2 m**. No friction. Drag the **W_net** bar to show how much work you did.",
+      "barLabel": "W_net",
+      "barColor": "#4f8cff",
+      "maxValue": 30,
+      "correctValue": 20,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "Work = force × distance when they point the same way.",
+        "W_net = 10 N × 2 m = 20 J. Match the bar to that."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "Same push — no friction. By the work-energy theorem, how much did the block's kinetic energy change? Drag **ΔKE**.",
+      "barLabel": "ΔKE",
+      "barColor": "#34d399",
+      "maxValue": 30,
+      "correctValue": 20,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "W_net = ΔKE. You already found W_net.",
+        "If 20 J of work went into the block, ΔKE = 20 J."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "Now friction is on: **μ_k = 0.3**, **m = 2 kg**, pushed **2 m**. Some energy becomes heat. Drag **E_th** (thermal energy). Use g = 10 m/s².",
+      "barLabel": "E_th",
+      "barColor": "#f59e0b",
+      "maxValue": 20,
+      "correctValue": 12,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "Friction force: f_k = μ_k × m × g. Thermal energy = f_k × d.",
+        "f_k = 0.3 × 2 × 10 = 6 N → E_th = 6 × 2 = 12 J."
+      ]
+    },
+    {
+      "type": "complete",
+      "title": "Lesson complete!",
+      "body": "You sized work, kinetic energy change, and thermal energy — all with energy bars.",
+      "nextLessonId": "L2",
+      "nextLessonTitle": "Kinetic Energy"
+    }
+  ]
+}
