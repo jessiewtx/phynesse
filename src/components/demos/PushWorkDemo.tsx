@@ -140,7 +140,7 @@ export function PushWorkDemo({ onTried, onPushed }: Props) {
       >
 
         {/* ground */}
-        <line x1={16} y1={GROUND_Y} x2={W - 16} y2={GROUND_Y} stroke="rgba(255,255,255,0.18)" strokeWidth="2" />
+        <line x1={16} y1={GROUND_Y} x2={W - 16} y2={GROUND_Y} stroke="rgba(0,0,0,0.14)" strokeWidth="2" />
 
         {/* distance span */}
         <line
@@ -220,7 +220,7 @@ export function PushWorkDemo({ onTried, onPushed }: Props) {
                 y1={BLOCK_MID_Y - SHAFT_H / 2 + 2}
                 x2={tailX + 3 + dx}
                 y2={BLOCK_MID_Y + SHAFT_H / 2 - 2}
-                stroke="rgba(255,255,255,0.55)"
+                stroke="rgba(255,255,255,0.7)"
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 style={{ pointerEvents: 'none' }}

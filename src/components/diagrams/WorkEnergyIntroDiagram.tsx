@@ -34,8 +34,8 @@ export function WorkEnergyIntroDiagram({ values }: Props) {
         </defs>
 
         {/* ground */}
-        <line x1="24" y1="148" x2="336" y2="148" stroke="rgba(255,255,255,0.25)" strokeWidth="2" />
-        <line x1="24" y1="152" x2="336" y2="152" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+        <line x1="24" y1="148" x2="336" y2="148" stroke="rgba(0,0,0,0.15)" strokeWidth="2" />
+        <line x1="24" y1="152" x2="336" y2="152" stroke="rgba(0,0,0,0.06)" strokeWidth="1" />
 
         {/* block */}
         <rect x="118" y="108" width="56" height="40" rx="4" fill="url(#blockGrad)" stroke="#8b95a8" strokeWidth="1.5" />
@@ -69,15 +69,15 @@ export function WorkEnergyIntroDiagram({ values }: Props) {
         </text>
 
         {/* KE bar — height reflects actual work done */}
-        <rect x="268" y="76" width="28" height={keBarH} rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" />
-        <rect x="268" y={76 + keBarH - keFillH} width="28" height={keFillH} rx="4" fill="#34d399" opacity="0.85" />
-        <text x="282" y="70" textAnchor="middle" fill="#34d399" fontSize="11" fontWeight="600" fontFamily="system-ui">
+        <rect x="268" y="76" width="28" height={keBarH} rx="4" fill="rgba(0,0,0,0.05)" stroke="rgba(0,0,0,0.1)" />
+        <rect x="268" y={76 + keBarH - keFillH} width="28" height={keFillH} rx="4" fill="#14a89b" opacity="0.9" />
+        <text x="282" y="70" textAnchor="middle" fill="#14a89b" fontSize="11" fontWeight="600" fontFamily="system-ui">
           {work ? `${work} J` : 'KE ↑'}
         </text>
 
         {/* work label box */}
-        <rect x="24" y="24" width="120" height="36" rx="8" fill="rgba(79,140,255,0.12)" stroke="rgba(79,140,255,0.35)" />
-        <text x="84" y="47" textAnchor="middle" fill="#93c5fd" fontSize="12" fontWeight="600" fontFamily="system-ui">
+        <rect x="24" y="24" width="120" height="36" rx="8" fill="rgba(10,181,197,0.1)" stroke="rgba(10,181,197,0.35)" />
+        <text x="84" y="47" textAnchor="middle" fill="#0890a0" fontSize="12" fontWeight="600" fontFamily="system-ui">
           {work ? `W = ${work} J` : 'W = F · d'}
         </text>
       </svg>
