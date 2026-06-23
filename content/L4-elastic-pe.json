@@ -1,0 +1,60 @@
+{
+  "id": "L4",
+  "title": "Elastic Potential Energy",
+  "order": 4,
+  "steps": [
+    {
+      "type": "concept",
+      "body": "A compressed or stretched spring stores **elastic potential energy**: **U_s = ½kx²**, where **k** is the spring constant and **x** is compression or stretch from natural length."
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "Spring **k = 200 N/m**, compressed **x = 0.4 m**. Drag **U_s**.",
+      "barLabel": "U_s",
+      "barColor": "#ec4899",
+      "maxValue": 25,
+      "correctValue": 16,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "U_s = ½kx².",
+        "U_s = ½ × 200 × 0.4² = 100 × 0.16 = 16 J."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "Same spring, now compressed **x = 0.6 m**. Drag **U_s**.",
+      "barLabel": "U_s",
+      "barColor": "#ec4899",
+      "maxValue": 40,
+      "correctValue": 36,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "U_s grows with x² — doubling x quadruples energy.",
+        "U_s = ½ × 200 × 0.6² = 100 × 0.36 = 36 J."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "The spring (**k = 200 N/m**) was compressed **0.4 m** and launches a block (no friction, spring only). Drag the **ΔKE** gained by the block.",
+      "barLabel": "ΔKE",
+      "barColor": "#34d399",
+      "maxValue": 25,
+      "correctValue": 16,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "Spring PE converts to KE (if no losses).",
+        "ΔKE = U_s,initial = 16 J from the 0.4 m compression."
+      ]
+    },
+    {
+      "type": "complete",
+      "title": "Lesson complete!",
+      "body": "You sized spring energy and watched it transfer to kinetic energy.",
+      "nextLessonId": "L5",
+      "nextLessonTitle": "Conservation of Energy"
+    }
+  ]
+}

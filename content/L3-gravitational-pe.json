@@ -1,0 +1,60 @@
+{
+  "id": "L3",
+  "title": "Gravitational Potential Energy",
+  "order": 3,
+  "steps": [
+    {
+      "type": "concept",
+      "body": "**Gravitational potential energy** depends on height: **U_g = mgh**. Pick a reference level (h = 0) — changing it shifts U_g, but **changes** in U_g stay the same."
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "A **2 kg** book sits **1.5 m** above the floor (take floor as h = 0). Drag **U_g**.",
+      "barLabel": "U_g",
+      "barColor": "#8b5cf6",
+      "maxValue": 40,
+      "correctValue": 29.4,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "U_g = mgh.",
+        "U_g = 2 × 9.8 × 1.5 = 29.4 J."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "Same book, same spot — but you redefine the floor as **1.5 m higher** (book is now at h = 0). Drag **U_g**.",
+      "barLabel": "U_g",
+      "barColor": "#8b5cf6",
+      "maxValue": 40,
+      "correctValue": 0,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "U_g depends on your zero line.",
+        "At the reference level, h = 0 → U_g = 0 J."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "The **2 kg** book drops from **1.5 m** to the floor (no air resistance). How much did **U_g** change? Drag **|ΔU_g|** as a positive number.",
+      "barLabel": "|ΔU_g|",
+      "barColor": "#8b5cf6",
+      "maxValue": 40,
+      "correctValue": 29.4,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "ΔU_g = mgh_final − mgh_initial = 0 − 29.4 J (magnitude 29.4 J).",
+        "Energy lost from gravity's store: 29.4 J."
+      ]
+    },
+    {
+      "type": "complete",
+      "title": "Lesson complete!",
+      "body": "You sized gravitational PE and saw why the reference level matters.",
+      "nextLessonId": "L4",
+      "nextLessonTitle": "Elastic PE"
+    }
+  ]
+}

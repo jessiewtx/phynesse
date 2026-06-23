@@ -1,0 +1,60 @@
+{
+  "id": "L5",
+  "title": "Conservation of Energy",
+  "order": 5,
+  "steps": [
+    {
+      "type": "concept",
+      "body": "When only **conservative** forces do work, mechanical energy is conserved: **KE + U = constant**. With **friction**, mechanical energy decreases — the rest becomes **thermal energy (E_th)**."
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "A **2 kg** block starts at rest at **h = 2 m** and slides down a **frictionless** ramp. Drag the **KE** at the bottom.",
+      "barLabel": "KE",
+      "barColor": "#34d399",
+      "maxValue": 45,
+      "correctValue": 39.2,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "No friction → U_g lost = KE gained.",
+        "U_g = mgh = 2 × 9.8 × 2 = 39.2 J → KE = 39.2 J."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "Same ramp (**h = 2 m**, **m = 2 kg**) but **μ_k = 0.25** over **4 m** of track. Drag **E_th** produced.",
+      "barLabel": "E_th",
+      "barColor": "#f59e0b",
+      "maxValue": 25,
+      "correctValue": 19.6,
+      "unit": "J",
+      "tolerance": 0.06,
+      "hints": [
+        "Friction does work → thermal energy.",
+        "f_k = μ_k mg = 0.25 × 2 × 9.8 = 4.9 N → E_th ≈ f_k × d = 4.9 × 4 = 19.6 J."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "With friction, total mechanical energy drops. Starting **U_g = 39.2 J**, **E_th = 19.6 J** — drag the **KE** left at the bottom.",
+      "barLabel": "KE",
+      "barColor": "#34d399",
+      "maxValue": 45,
+      "correctValue": 19.6,
+      "unit": "J",
+      "tolerance": 0.06,
+      "hints": [
+        "Energy accounting: U_g,initial = KE + E_th (started from rest).",
+        "KE = 39.2 − 19.6 = 19.6 J."
+      ]
+    },
+    {
+      "type": "complete",
+      "title": "Lesson complete!",
+      "body": "You balanced energy with and without friction — conservation when it applies, thermal energy when it doesn't.",
+      "nextLessonId": "L6",
+      "nextLessonTitle": "Power"
+    }
+  ]
+}

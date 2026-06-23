@@ -1,0 +1,60 @@
+{
+  "id": "L6",
+  "title": "Power",
+  "order": 6,
+  "steps": [
+    {
+      "type": "concept",
+      "body": "**Power** is how fast energy is transferred: **P = W / Δt** (or **P = F·v** when force and velocity align). Same work, less time → more power."
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "You do **120 J** of work in **4 s**. Drag **P** (average power).",
+      "barLabel": "P",
+      "barColor": "#06b6d4",
+      "maxValue": 50,
+      "correctValue": 30,
+      "unit": "W",
+      "tolerance": 0.05,
+      "hints": [
+        "P = W / Δt.",
+        "P = 120 J / 4 s = 30 W."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "A motor lifts a **4 kg** crate **2.5 m** at **constant speed** in **5 s**. Drag the **P** of the motor.",
+      "barLabel": "P",
+      "barColor": "#06b6d4",
+      "maxValue": 30,
+      "correctValue": 19.6,
+      "unit": "W",
+      "tolerance": 0.06,
+      "hints": [
+        "At constant speed, W = mgh (no ΔKE).",
+        "W = 4 × 9.8 × 2.5 = 98 J → P = 98 / 5 = 19.6 W."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "Same **98 J** of work, but done in **2 s** instead. Drag **P**.",
+      "barLabel": "P",
+      "barColor": "#06b6d4",
+      "maxValue": 60,
+      "correctValue": 49,
+      "unit": "W",
+      "tolerance": 0.05,
+      "hints": [
+        "Same work, shorter time → higher power.",
+        "P = 98 / 2 = 49 W."
+      ]
+    },
+    {
+      "type": "complete",
+      "title": "Lesson complete!",
+      "body": "You connected work, time, and power — the rate energy flows.",
+      "nextLessonId": "L7",
+      "nextLessonTitle": "Mixed Problems"
+    }
+  ]
+}

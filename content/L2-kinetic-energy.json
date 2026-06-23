@@ -1,0 +1,60 @@
+{
+  "id": "L2",
+  "title": "Kinetic Energy",
+  "order": 2,
+  "steps": [
+    {
+      "type": "concept",
+      "body": "**Kinetic energy** is energy of motion: **KE = ½mv²**. Faster objects and heavier objects carry more KE. Work done on an object changes its KE."
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "A **2 kg** block moves at **3 m/s**. Drag the **KE** bar to its kinetic energy (use g = 9.8 m/s² only if needed — you won't here).",
+      "barLabel": "KE",
+      "barColor": "#34d399",
+      "maxValue": 15,
+      "correctValue": 9,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "KE = ½mv².",
+        "KE = ½ × 2 × 3² = ½ × 2 × 9 = 9 J."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "**Net work = 24 J** is done on the same **2 kg** block (starting from rest). Drag **ΔKE**.",
+      "barLabel": "ΔKE",
+      "barColor": "#34d399",
+      "maxValue": 30,
+      "correctValue": 24,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "Work-energy theorem: W_net = ΔKE.",
+        "All 24 J of net work goes into kinetic energy → ΔKE = 24 J."
+      ]
+    },
+    {
+      "type": "bar_drag",
+      "prompt": "Starting from rest, **24 J** of work is done on **m = 2 kg**. Drag the final **KE** bar (same as ΔKE here).",
+      "barLabel": "KE",
+      "barColor": "#34d399",
+      "maxValue": 30,
+      "correctValue": 24,
+      "unit": "J",
+      "tolerance": 0.05,
+      "hints": [
+        "Started at rest → initial KE = 0.",
+        "Final KE = 0 + ΔKE = 24 J."
+      ]
+    },
+    {
+      "type": "complete",
+      "title": "Lesson complete!",
+      "body": "You connected work to kinetic energy and read KE from ½mv².",
+      "nextLessonId": "L3",
+      "nextLessonTitle": "Gravitational PE"
+    }
+  ]
+}
