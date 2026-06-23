@@ -9,7 +9,6 @@ const BARS = [
 
 export function HomeTeaser() {
   const [vals, setVals] = useState(() => BARS.map((b) => b.init))
-  const [touched, setTouched] = useState(false)
   const dragging = useRef<number | null>(null)
   const refs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -23,7 +22,6 @@ export function HomeTeaser() {
 
   const onDown = (i: number, e: PointerEvent<HTMLDivElement>) => {
     dragging.current = i
-    setTouched(true)
     e.currentTarget.setPointerCapture(e.pointerId)
     setFromY(i, e.clientY)
   }
@@ -36,7 +34,6 @@ export function HomeTeaser() {
   }
 
   const nudge = (i: number, delta: number) => {
-    setTouched(true)
     setVals((v) => v.map((x, idx) => (idx === i ? Math.max(0.05, Math.min(1, x + delta)) : x)))
   }
 
@@ -83,9 +80,6 @@ export function HomeTeaser() {
           </div>
         ))}
       </div>
-      <span className={`home-teaser__hint ${touched ? 'home-teaser__hint--gone' : ''}`}>
-        drag the bars ↕
-      </span>
     </div>
   )
 }
