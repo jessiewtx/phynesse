@@ -17,7 +17,7 @@ export function CompleteStepView({ step, onFinish }: Props) {
       <p className="step__next">
         Up next:{' '}
         {nextLesson ? (
-          <Link to={`/lesson/${step.nextLessonId}`}>
+          <Link to={`/lesson/${step.nextLessonId}`} replace>
             <strong>{step.nextLessonTitle}</strong>
           </Link>
         ) : (
@@ -28,7 +28,7 @@ export function CompleteStepView({ step, onFinish }: Props) {
       </p>
       <div className="step__actions">
         {nextLesson ? (
-          <Link to={`/lesson/${step.nextLessonId}`} className="btn btn--primary">
+          <Link to={`/lesson/${step.nextLessonId}`} className="btn btn--primary" replace>
             Start {step.nextLessonTitle}
           </Link>
         ) : (
