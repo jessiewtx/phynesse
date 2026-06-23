@@ -14,8 +14,8 @@ import {
 } from '../lib/progressFirestore'
 import type { PushBlockParams, SimStep, StepDraft } from '../types/lesson'
 import { displayFirstName } from '../lib/displayName'
-import { completeLesson, touchStreak, type Milestone, type StreakStats } from '../lib/streak'
-import { StreakCelebration } from '../components/StreakCelebration'
+import { completeLesson, type CompletionResult } from '../lib/streak'
+import { StreakCelebrationOverlay } from '../components/StreakCelebrationOverlay'
 
 const DEFAULT_PARAMS: PushBlockParams = {
   force: 10,
@@ -34,10 +34,8 @@ export function LessonPage() {
   const [stepDraft, setStepDraft] = useState<StepDraft | null>(null)
   const [, setStatus] = useState<LessonStatus>('not_started')
   const [ready, setReady] = useState(false)
-  const [celebration, setCelebration] = useState<{
-    stats: StreakStats
-    milestones: Milestone[]
-  } | null>(null)
+  const [celebration, setCelebration] = useState<CompletionResult | null>(null)
+  const [showCelebration, setShowCelebration] = useState(false)
 
   useEffect(() => {
     if (!lesson || !lessonId) return
@@ -81,11 +79,6 @@ export function LessonPage() {
     }
   }, [lesson, lessonId, user])
 
-  useEffect(() => {
-    if (!ready) return
-    void touchStreak(user?.uid ?? null)
-  }, [ready, user])
-
   const celebratedRef = useRef(false)
 
   useEffect(() => {
@@ -93,7 +86,10 @@ export function LessonPage() {
     if (lesson.steps[stepIndex]?.type !== 'complete') return
     if (celebratedRef.current) return
     celebratedRef.current = true
-    void completeLesson(user?.uid ?? null, lessonId).then(setCelebration)
+    void completeLesson(user?.uid ?? null, lessonId).then((result) => {
+      setCelebration(result)
+      setShowCelebration(true)
+    })
   }, [ready, lesson, lessonId, stepIndex, user])
 
   const persist = useCallback(
@@ -254,7 +250,6 @@ export function LessonPage() {
             <p className="lesson-complete-splash__body">
               {lesson.title} — all done. Review any step or head back to choose your next lesson.
             </p>
-            {celebration && <StreakCelebration stats={celebration.stats} milestones={celebration.milestones} />}
             <div className="lesson-complete-splash__actions">
               <Link to="/" className="btn btn--primary">Back to course →</Link>
             </div>
@@ -266,6 +261,12 @@ export function LessonPage() {
 
   return (
     <div className="lesson-page">
+      {showCelebration && celebration && (
+        <StreakCelebrationOverlay
+          result={celebration}
+          onDismiss={() => setShowCelebration(false)}
+        />
+      )}
       <header className="lesson-header">
         <Link to="/" className="lesson-header__back">← Lessons</Link>
         <div className="lesson-header__center">
@@ -307,7 +308,6 @@ export function LessonPage() {
           onAdvance={advance}
           onComplete={handleComplete}
           onAttempt={handleAttempt}
-          celebration={celebration}
         />
       </main>
     </div>

@@ -6,7 +6,6 @@ import { PredictMCStepView } from './steps/PredictMCStepView'
 import { PredictNumericStepView } from './steps/PredictNumericStepView'
 import { SimStepView } from './steps/SimStepView'
 import { CompleteStepView } from './steps/CompleteStepView'
-import type { Milestone, StreakStats } from '../lib/streak'
 
 type AttemptHandler = (
   stepType: string,
@@ -24,7 +23,6 @@ type Props = {
   onAdvance: () => void
   onComplete: () => void
   onAttempt: AttemptHandler
-  celebration?: { stats: StreakStats; milestones: Milestone[] } | null
 }
 
 export function StepRenderer({
@@ -36,7 +34,6 @@ export function StepRenderer({
   onAdvance,
   onComplete,
   onAttempt,
-  celebration,
 }: Props) {
   const log = (answer: string | number, correct: boolean, hint?: string) => {
     onAttempt(step.type, answer, correct, hint)
@@ -95,7 +92,7 @@ export function StepRenderer({
         />
       )
     case 'complete':
-      return <CompleteStepView step={step} onFinish={onComplete} celebration={celebration} />
+      return <CompleteStepView step={step} onFinish={onComplete} />
     default:
       return null
   }

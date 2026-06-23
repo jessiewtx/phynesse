@@ -170,16 +170,36 @@ export async function touchStreak(uid: string | null): Promise<StreakStats> {
   return next
 }
 
-/** Record a completed lesson (also counts as activity). Returns new stats + any milestones just earned. */
+export type CompletionResult = {
+  stats: StreakStats
+  milestones: Milestone[]
+  /** True when this completion begins a streak (first ever, or after a break). */
+  streakStarted: boolean
+  /** True when this completion extends an existing streak to a new, higher day count. */
+  streakIncreased: boolean
+}
+
+/**
+ * Record a completed lesson. This is the ONLY thing that advances the streak —
+ * simply opening a lesson does not count. Returns new stats, any milestones just
+ * earned, and how the streak changed (for the celebration screen).
+ */
 export async function completeLesson(
   uid: string | null,
   lessonId: string,
-): Promise<{ stats: StreakStats; milestones: Milestone[] }> {
+): Promise<CompletionResult> {
   const before = await getStreak(uid)
-  const next = registerCompletion(registerActivity(before), lessonId)
+  const today = dayKey()
+  const wasActiveToday = before.lastActiveDay === today
+  const next = registerCompletion(registerActivity(before, today), lessonId)
   if (uid) await saveStreak(uid, next)
   else saveGuestStreak(next)
-  return { stats: next, milestones: newlyEarned(before, next) }
+  return {
+    stats: next,
+    milestones: newlyEarned(before, next),
+    streakStarted: !wasActiveToday && next.currentStreak === 1,
+    streakIncreased: !wasActiveToday && next.currentStreak > 1,
+  }
 }
 
 /** On sign-in, fold guest streak into the account, keeping the better numbers. */

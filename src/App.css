@@ -485,46 +485,78 @@
   padding: 0.3rem 0.7rem;
 }
 
-/* ─── Habit loop: lesson-complete celebration ───────────── */
+/* ─── Habit loop: full-screen lesson-complete celebration ─ */
 
-.streak-celebrate {
+.streak-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(8, 18, 24, 0.6);
+  backdrop-filter: blur(4px);
+  animation: streak-fade 0.25s ease;
+}
+
+.streak-overlay__card {
+  width: 100%;
+  max-width: 24rem;
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 2.5rem 1.75rem 1.75rem;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin: 0 auto 2rem;
-  max-width: 24rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+  animation: streak-pop 0.35s cubic-bezier(0.18, 0.9, 0.32, 1.3);
 }
 
-.streak-celebrate__streak {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  background: var(--accent-soft);
-  border-radius: 16px;
-  padding: 0.85rem 1.4rem;
-}
-
-.streak-celebrate__flame {
-  font-size: 1.6rem;
-}
-
-.streak-celebrate__count {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--accent-hover);
+.streak-overlay__flame {
+  font-size: 5rem;
   line-height: 1;
+  animation: streak-flame 1.1s ease-in-out infinite alternate;
 }
 
-.streak-celebrate__label {
+.streak-overlay__number {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--orange);
+  line-height: 1;
+  margin-top: 0.25rem;
+}
+
+.streak-overlay__unit {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  margin-bottom: 1rem;
 }
 
-.streak-celebrate__milestones {
+.streak-overlay__title {
+  font-family: inherit;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-1);
+  margin: 0 0 0.5rem;
+  line-height: 1.1;
+}
+
+.streak-overlay__sub {
+  font-size: 0.92rem;
+  color: var(--text-2);
+  line-height: 1.55;
+  margin: 0 0 1.25rem;
+  max-width: 20rem;
+}
+
+.streak-overlay__milestones {
   list-style: none;
-  margin: 0;
+  margin: 0 0 1.25rem;
   padding: 0;
   width: 100%;
   display: flex;
@@ -532,23 +564,23 @@
   gap: 0.6rem;
 }
 
-.streak-celebrate__milestone {
+.streak-overlay__milestone {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   text-align: left;
-  background: var(--surface);
+  background: var(--accent-soft);
   border: 1.5px solid var(--gold);
   border-radius: 14px;
   padding: 0.7rem 0.9rem;
 }
 
-.streak-celebrate__milestone-icon {
-  font-size: 1.5rem;
+.streak-overlay__milestone-icon {
+  font-size: 1.6rem;
   line-height: 1;
 }
 
-.streak-celebrate__milestone-text {
+.streak-overlay__milestone-text {
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
@@ -556,9 +588,28 @@
   color: var(--text-2);
 }
 
-.streak-celebrate__milestone-text strong {
+.streak-overlay__milestone-text strong {
   color: var(--text-1);
   font-weight: 800;
+}
+
+.streak-overlay__btn {
+  width: 100%;
+}
+
+@keyframes streak-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes streak-pop {
+  from { opacity: 0; transform: scale(0.85) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes streak-flame {
+  from { transform: scale(1) rotate(-3deg); }
+  to { transform: scale(1.12) rotate(3deg); }
 }
 
 
