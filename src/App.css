@@ -353,6 +353,34 @@
   width: 100%;
 }
 
+.lesson-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+
+.lesson-nav__btn {
+  background: none;
+  border: none;
+  padding: 0.3rem 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color 0.12s;
+  letter-spacing: 0.01em;
+}
+
+.lesson-nav__btn:hover {
+  color: var(--text-2);
+}
+
+.lesson-nav__btn--restart {
+  color: var(--text-3);
+}
+
 .lesson-main {
   flex: 1;
   max-width: 38rem;

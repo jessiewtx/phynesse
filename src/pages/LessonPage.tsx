@@ -171,6 +171,19 @@ export function LessonPage() {
     void persist(done, simParams, null, 'completed')
   }, [lessonId, lesson, simParams, persist])
 
+  const handleBack = useCallback(() => {
+    if (stepIndex <= 0) return
+    setStepIndex(stepIndex - 1)
+    setStepDraft(null)
+  }, [stepIndex])
+
+  const handleRestart = useCallback(() => {
+    if (!window.confirm('Start this lesson over from the beginning?')) return
+    setStepIndex(0)
+    setStepDraft(null)
+    setSimParams(DEFAULT_PARAMS)
+  }, [])
+
   const handleAttempt = useCallback(
     (stepType: string, answer: string | number, correct: boolean, hint?: string) => {
       if (!user || !lessonId) return
@@ -245,6 +258,19 @@ export function LessonPage() {
       )}
 
       <main className="lesson-main">
+        <div className="lesson-nav">
+          {stepIndex > 0 ? (
+            <button type="button" className="lesson-nav__btn" onClick={handleBack}>
+              ← Previous
+            </button>
+          ) : (
+            <span />
+          )}
+          <button type="button" className="lesson-nav__btn lesson-nav__btn--restart" onClick={handleRestart}>
+            ↺ Start over
+          </button>
+        </div>
+
         <StepRenderer
           key={stepIndex}
           step={step}
