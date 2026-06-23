@@ -4,7 +4,7 @@ import { StepRenderer } from '../components/StepRenderer'
 import { ProgressBar } from '../components/ProgressBar'
 import { SignInPanel } from '../components/SignInPanel'
 import { useAuth } from '../contexts/AuthContext'
-import { getLesson } from '../lib/lessons'
+import { getLesson, statusForStepIndex } from '../lib/lessons'
 import { loadProgress as loadLocalProgress, saveProgress as saveLocalProgress } from '../lib/progress'
 import {
   fetchLessonProgress,
@@ -49,8 +49,7 @@ export function LessonPage() {
             stepIndex: source.stepIndex,
             simParams: source.simParams,
             stepDraft: source.stepDraft ?? null,
-            status:
-              source.stepIndex >= lesson!.steps.length ? 'completed' : 'in_progress',
+            status: statusForStepIndex(lesson!, source.stepIndex),
             totalSteps: lesson!.steps.length,
           })
         }
@@ -64,8 +63,7 @@ export function LessonPage() {
         setStepIndex(idx)
         setSimParams(source.simParams)
         setStepDraft(source.stepDraft ?? null)
-        if (source.stepIndex >= lesson!.steps.length) setStatus('completed')
-        else if (source.stepIndex > 0) setStatus('in_progress')
+        setStatus(statusForStepIndex(lesson!, source.stepIndex))
       }
 
       if (!cancelled) setReady(true)
@@ -106,12 +104,7 @@ export function LessonPage() {
   useEffect(() => {
     if (!ready || !lessonId || !lesson) return
 
-    const nextStatus: LessonStatus =
-      stepIndex >= lesson.steps.length
-        ? 'completed'
-        : stepIndex > 0
-          ? 'in_progress'
-          : 'not_started'
+    const nextStatus: LessonStatus = statusForStepIndex(lesson, stepIndex)
     setStatus(nextStatus)
 
     if (persistTimer.current) clearTimeout(persistTimer.current)
@@ -141,12 +134,7 @@ export function LessonPage() {
     (draft: StepDraft | null) => {
       setStepDraft(draft)
       if (draft?.showWrongFeedback && lessonId && lesson) {
-        const nextStatus: LessonStatus =
-          stepIndex >= lesson.steps.length
-            ? 'completed'
-            : stepIndex > 0
-              ? 'in_progress'
-              : 'not_started'
+        const nextStatus: LessonStatus = statusForStepIndex(lesson, stepIndex)
         saveLocalProgress(lessonId, stepIndex, simParams, draft)
         if (user) {
           void saveLessonProgress(user.uid, lessonId, {

@@ -1,7 +1,8 @@
-import { useCallback, useRef, useState, type PointerEvent } from 'react'
+import { useCallback, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import type { BarDragStep, StepDraft } from '../../types/lesson'
 import { gradeNumeric, hintForNumeric } from '../../lib/grading'
 import { PhysicsText } from '../../lib/physicsText'
+import { EnergyReadout } from '../EnergyReadout'
 import { Feedback } from '../Feedback'
 
 type Props = {
@@ -34,6 +35,24 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
 
   const heightPct = (value / step.maxValue) * 100
 
+  const applyValue = useCallback(
+    (next: number) => {
+      const clamped = Math.max(0, Math.min(step.maxValue, next))
+      if (clamped !== lastSnappedValue.current) {
+        lastSnappedValue.current = clamped
+        navigator.vibrate?.(8)
+      }
+      setValue(clamped)
+      onDraftChange({
+        answer: clamped,
+        showWrongFeedback: feedback?.variant === 'error',
+        feedbackText: feedback?.variant === 'error' ? feedback.text : undefined,
+        attemptCount: attempt,
+      })
+    },
+    [step.maxValue, onDraftChange, feedback, attempt],
+  )
+
   const setFromClientY = useCallback(
     (clientY: number) => {
       const track = trackRef.current
@@ -41,20 +60,9 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
       const rect = track.getBoundingClientRect()
       const fromBottom = rect.bottom - clientY
       const ratio = Math.max(0, Math.min(1, fromBottom / TRACK_PX))
-      const next = Math.round(ratio * step.maxValue)
-      if (next !== lastSnappedValue.current) {
-        lastSnappedValue.current = next
-        navigator.vibrate?.(8)
-      }
-      setValue(next)
-      onDraftChange({
-        answer: next,
-        showWrongFeedback: feedback?.variant === 'error',
-        feedbackText: feedback?.variant === 'error' ? feedback.text : undefined,
-        attemptCount: attempt,
-      })
+      applyValue(Math.round(ratio * step.maxValue))
     },
-    [step.maxValue, onDraftChange, feedback, attempt],
+    [step.maxValue, applyValue],
   )
 
   const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
@@ -72,6 +80,16 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
     dragging.current = false
   }
 
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+      e.preventDefault()
+      applyValue(value + 1)
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
+      e.preventDefault()
+      applyValue(value - 1)
+    }
+  }
+
   const submit = () => {
     const result = gradeNumeric(value, step.correctValue, step.tolerance)
     if (result.correct) {
@@ -79,7 +97,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
       onDraftChange(null)
       setFeedback({
         variant: 'success',
-        text: `Nice! ${step.barLabel} = ${step.correctValue} ${step.unit}`,
+        text: `Nice! ${step.correctValue} ${step.unit}`,
       })
       setTimeout(onCorrect, 700)
     } else {
@@ -115,19 +133,34 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
       )}
 
       <div className="bar-drag">
-        <div className="bar-drag__readout">
-          <span className="bar-drag__label">
-            <PhysicsText text={step.barLabel} />
-          </span>
-          <span className="bar-drag__value">
-            {value} {step.unit}
-            {step.unit === 'J' && (
-              <span className="bar-drag__unit-note">Joule = N·m</span>
-            )}
-          </span>
-        </div>
+        <EnergyReadout
+          label={step.barLabel}
+          value={value}
+          unit={step.unit}
+          color={step.barColor}
+          note={step.unit === 'J' ? 'Joule = N·m' : undefined}
+        />
 
         <div className="bar-drag__track-row">
+          <div className="bar-drag__steppers">
+            <button
+              type="button"
+              className="bar-drag__step-btn"
+              onClick={() => applyValue(value + 1)}
+              aria-label="Increase"
+            >
+              +
+            </button>
+            <button
+              type="button"
+              className="bar-drag__step-btn"
+              onClick={() => applyValue(value - 1)}
+              aria-label="Decrease"
+            >
+              −
+            </button>
+          </div>
+
           <div
             ref={trackRef}
             className="bar-drag__track"
@@ -136,11 +169,13 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
+            onKeyDown={onKeyDown}
+            tabIndex={0}
             role="slider"
             aria-valuemin={0}
             aria-valuemax={step.maxValue}
             aria-valuenow={value}
-            aria-label={`Drag to set ${step.barLabel}`}
+            aria-label={`Set ${step.barLabel}`}
           >
             {value > 0 && (
               <div
@@ -169,7 +204,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
           </div>
         </div>
 
-        <p className="bar-drag__hint">Drag the bar up or down</p>
+        <p className="bar-drag__hint">Drag, use + / −, or arrow keys</p>
       </div>
 
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}

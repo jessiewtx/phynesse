@@ -5,54 +5,84 @@
   "steps": [
     {
       "type": "concept",
-      "body": "**Kinetic energy** is energy of motion: **KE = ½mv²**. Faster objects and heavier objects carry more KE. Work done on an object changes its KE."
+      "title": "What is kinetic energy?",
+      "body": "Anything that moves carries energy — the **energy of motion**. We call it **kinetic energy** (KE).\n\nA tossed tennis ball barely nudges a box. A bowling ball at the same speed flattens it. Speed that ball up and it hits even harder. So two things set KE: how **heavy** something is, and how **fast** it moves."
     },
     {
-      "type": "bar_drag",
-      "prompt": "A **2 kg** block moves at **3 m/s**. Drag the **KE** bar to its kinetic energy (use g = 9.8 m/s² only if needed — you won't here).",
-      "barLabel": "KE",
-      "barColor": "#34d399",
-      "maxValue": 15,
-      "correctValue": 9,
-      "unit": "J",
-      "tolerance": 0.05,
+      "type": "concept",
+      "title": "The formula",
+      "body": "Here's how we measure it. **m** is mass (in kg), **v** is speed (in m/s).\n\nNotice **v is squared** — speed counts far more than mass. Double the speed and KE jumps by four.",
+      "equation": "KE = ½mv²",
+      "visual": "kinetic_energy"
+    },
+    {
+      "type": "concept",
+      "title": "Get a feel for it",
+      "body": "Don't just take the formula's word for it — play. Drag mass and speed and watch KE react. Then try to hit the goal.",
+      "demo": "ke_explorer"
+    },
+    {
+      "type": "predict_mc",
+      "prompt": "A car speeds up from 20 mph to 40 mph — it doubles its speed. What happens to its kinetic energy?",
+      "choices": [
+        "It doubles",
+        "It quadruples (×4)",
+        "It stays the same",
+        "It halves"
+      ],
+      "correctIndex": 1,
       "hints": [
-        "KE = ½mv².",
-        "KE = ½ × 2 × 3² = ½ × 2 × 9 = 9 J."
+        "KE depends on v², not v.",
+        "Double v → v² grows by 2² = 4. So KE quadruples."
       ]
     },
     {
+      "type": "equation_fill",
+      "prompt": "Let's plug in real numbers. A block has **m = 3 kg** and **v = 2 m/s**. Drag each value into the right spot in the equation.",
+      "template": [
+        { "text": "KE = ½ × " },
+        { "slot": "m" },
+        { "text": " × " },
+        { "slot": "v" },
+        { "text": "²" }
+      ],
+      "slots": { "m": 3, "v": 2 },
+      "slotLabels": { "m": "mass", "v": "speed" },
+      "tokens": [2, 3, 9],
+      "result": { "value": 6, "unit": "J", "tolerance": 0.05 },
+      "fillHint": "Mass goes in the m spot, speed in the v spot. Here m = 3 and v = 2.",
+      "computeHints": [
+        "Square the speed first: 2² = 4.",
+        "KE = ½ × 3 × 4 = 6 J."
+      ]
+    },
+    {
+      "type": "concept",
+      "title": "Work changes KE",
+      "body": "Remember the work-energy theorem from Lesson 1? The **net work** done on an object equals its **change in kinetic energy**.",
+      "equation": "W_net = ΔKE"
+    },
+    {
       "type": "bar_drag",
-      "prompt": "**Net work = 24 J** is done on the same **2 kg** block (starting from rest). Drag **ΔKE**.",
+      "prompt": "**Net work = 24 J** is done on a **2 kg** block starting from rest. Drag **ΔKE**.",
       "barLabel": "ΔKE",
       "barColor": "#34d399",
       "maxValue": 30,
       "correctValue": 24,
       "unit": "J",
       "tolerance": 0.05,
+      "givens": [
+        { "label": "W_net", "value": "24 J" }
+      ],
       "hints": [
         "Work-energy theorem: W_net = ΔKE.",
         "All 24 J of net work goes into kinetic energy → ΔKE = 24 J."
       ]
     },
     {
-      "type": "bar_drag",
-      "prompt": "Starting from rest, **24 J** of work is done on **m = 2 kg**. Drag the final **KE** bar (same as ΔKE here).",
-      "barLabel": "KE",
-      "barColor": "#34d399",
-      "maxValue": 30,
-      "correctValue": 24,
-      "unit": "J",
-      "tolerance": 0.05,
-      "hints": [
-        "Started at rest → initial KE = 0.",
-        "Final KE = 0 + ΔKE = 24 J."
-      ]
-    },
-    {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You connected work to kinetic energy and read KE from ½mv².",
+      "body": "You learned what kinetic energy is, why speed matters most (v²), and how work changes it.",
       "nextLessonId": "L3",
       "nextLessonTitle": "Gravitational PE"
     }

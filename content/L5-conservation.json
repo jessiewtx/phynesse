@@ -5,7 +5,41 @@
   "steps": [
     {
       "type": "concept",
-      "body": "When only **conservative** forces do work, mechanical energy is conserved: **KE + U = constant**. With **friction**, mechanical energy decreases — the rest becomes **thermal energy (E_th)**."
+      "title": "Energy is never lost",
+      "body": "Energy doesn't appear or disappear — it just changes form. A roller coaster at the top of the hill is all **potential energy**; at the bottom it's all **kinetic**. The total never changed.\n\nThis is the big idea of the whole unit."
+    },
+    {
+      "type": "concept",
+      "title": "The rule",
+      "body": "When only **conservative** forces (like gravity or springs) act, mechanical energy stays constant — KE and U just trade back and forth.",
+      "equation": "KE + U = constant",
+      "visual": "conservation"
+    },
+    {
+      "type": "concept",
+      "title": "Get a feel for it",
+      "body": "Slide the ball down the frictionless ramp. Watch potential energy pour into kinetic energy — while the total bar never moves.",
+      "demo": "conservation_explorer"
+    },
+    {
+      "type": "predict_mc",
+      "prompt": "A ball is released from rest at the top of a frictionless ramp. At the bottom, compared to the top, it has…",
+      "choices": [
+        "The same total energy, now all kinetic",
+        "More energy than it started with",
+        "Less energy — some was destroyed",
+        "Zero energy"
+      ],
+      "correctIndex": 0,
+      "hints": [
+        "No friction → total mechanical energy is conserved.",
+        "All the U_g it lost shows up as KE. Same total, different form."
+      ]
+    },
+    {
+      "type": "concept",
+      "title": "Work through one",
+      "body": "A **2 kg** block starts at rest at **h = 2 m** on a frictionless ramp.\n\nAt the top: U_g = mgh = 2 × 9.8 × 2 = 39.2 J, KE = 0.\nAt the bottom: all of it is kinetic → KE = **39.2 J**.\n\nYour turn."
     },
     {
       "type": "bar_drag",
@@ -16,43 +50,43 @@
       "correctValue": 39.2,
       "unit": "J",
       "tolerance": 0.05,
+      "givens": [
+        { "label": "m", "value": "2 kg" },
+        { "label": "h", "value": "2 m" }
+      ],
       "hints": [
         "No friction → U_g lost = KE gained.",
         "U_g = mgh = 2 × 9.8 × 2 = 39.2 J → KE = 39.2 J."
       ]
     },
     {
-      "type": "bar_drag",
-      "prompt": "Same ramp (**h = 2 m**, **m = 2 kg**) but **μ_k = 0.25** over **4 m** of track. Drag **E_th** produced.",
-      "barLabel": "E_th",
-      "barColor": "#f59e0b",
-      "maxValue": 25,
-      "correctValue": 19.6,
-      "unit": "J",
-      "tolerance": 0.06,
-      "hints": [
-        "Friction does work → thermal energy.",
-        "f_k = μ_k mg = 0.25 × 2 × 9.8 = 4.9 N → E_th ≈ f_k × d = 4.9 × 4 = 19.6 J."
-      ]
+      "type": "concept",
+      "title": "When friction joins in",
+      "body": "Friction doesn't destroy energy either — it turns mechanical energy into **thermal energy (E_th)**, which heats things up. So now the books balance like this:",
+      "equation": "U_g = KE + E_th"
     },
     {
       "type": "bar_drag",
-      "prompt": "With friction, total mechanical energy drops. Starting **U_g = 39.2 J**, **E_th = 19.6 J** — drag the **KE** left at the bottom.",
+      "prompt": "Same drop, but friction made **E_th = 19.6 J**. Starting from **U_g = 39.2 J**, drag the **KE** left at the bottom.",
       "barLabel": "KE",
       "barColor": "#34d399",
       "maxValue": 45,
       "correctValue": 19.6,
       "unit": "J",
       "tolerance": 0.06,
+      "givens": [
+        { "label": "U_g", "value": "39.2 J" },
+        { "label": "E_th", "value": "19.6 J" }
+      ],
       "hints": [
-        "Energy accounting: U_g,initial = KE + E_th (started from rest).",
+        "Energy accounting: U_g = KE + E_th (started from rest).",
         "KE = 39.2 − 19.6 = 19.6 J."
       ]
     },
     {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You balanced energy with and without friction — conservation when it applies, thermal energy when it doesn't.",
+      "body": "You balanced energy with and without friction — conserved when it applies, turned to heat when friction acts.",
       "nextLessonId": "L6",
       "nextLessonTitle": "Power"
     }

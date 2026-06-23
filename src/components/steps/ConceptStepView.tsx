@@ -1,6 +1,16 @@
 import { useState } from 'react'
 import { PushWorkDemo } from '../demos/PushWorkDemo'
+import { KineticEnergyExplorer } from '../demos/KineticEnergyExplorer'
+import { GravityPEExplorer } from '../demos/GravityPEExplorer'
+import { ElasticPEExplorer } from '../demos/ElasticPEExplorer'
+import { ConservationExplorer } from '../demos/ConservationExplorer'
+import { PowerExplorer } from '../demos/PowerExplorer'
 import { WorkEnergyIntroDiagram } from '../diagrams/WorkEnergyIntroDiagram'
+import { KineticEnergyDiagram } from '../diagrams/KineticEnergyDiagram'
+import { GravitationalPEDiagram } from '../diagrams/GravitationalPEDiagram'
+import { ElasticPEDiagram } from '../diagrams/ElasticPEDiagram'
+import { ConservationDiagram } from '../diagrams/ConservationDiagram'
+import { PowerDiagram } from '../diagrams/PowerDiagram'
 import { PhysicsEquation, PhysicsText } from '../../lib/physicsText'
 import type { ConceptStep } from '../../types/lesson'
 
@@ -29,7 +39,27 @@ export function ConceptStepView({ step, onContinue }: Props) {
         />
       )}
 
+      {step.demo === 'ke_explorer' && <KineticEnergyExplorer />}
+
+      {step.demo === 'gravity_explorer' && <GravityPEExplorer />}
+
+      {step.demo === 'elastic_explorer' && <ElasticPEExplorer />}
+
+      {step.demo === 'conservation_explorer' && <ConservationExplorer />}
+
+      {step.demo === 'power_explorer' && <PowerExplorer />}
+
       {step.visual === 'work_energy_intro' && <WorkEnergyIntroDiagram values={pushedValues} />}
+
+      {step.visual === 'kinetic_energy' && <KineticEnergyDiagram />}
+
+      {step.visual === 'gravitational_pe' && <GravitationalPEDiagram />}
+
+      {step.visual === 'elastic_pe' && <ElasticPEDiagram />}
+
+      {step.visual === 'conservation' && <ConservationDiagram />}
+
+      {step.visual === 'power' && <PowerDiagram />}
 
       <button
         type="button"

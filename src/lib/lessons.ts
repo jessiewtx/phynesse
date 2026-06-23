@@ -1,5 +1,5 @@
 import type { Lesson } from '../types/lesson'
-import type { StoredLessonProgress } from './progressFirestore'
+import type { LessonStatus, StoredLessonProgress } from './progressFirestore'
 import l1 from '../../content/L1-work-energy.json'
 import l2 from '../../content/L2-kinetic-energy.json'
 import l3 from '../../content/L3-gravitational-pe.json'
@@ -28,6 +28,16 @@ export function getNextLesson(afterId: string): Lesson | undefined {
   const current = lessons[afterId]
   if (!current) return undefined
   return getAllLessons().find((l) => l.order === current.order + 1)
+}
+
+export function lessonCompletionIndex(lesson: Lesson): number {
+  const i = lesson.steps.findIndex((s) => s.type === 'complete')
+  return i === -1 ? lesson.steps.length : i
+}
+
+export function statusForStepIndex(lesson: Lesson, stepIndex: number): LessonStatus {
+  if (stepIndex >= lessonCompletionIndex(lesson)) return 'completed'
+  return stepIndex > 0 ? 'in_progress' : 'not_started'
 }
 
 export function isLessonUnlocked(

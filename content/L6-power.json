@@ -5,48 +5,78 @@
   "steps": [
     {
       "type": "concept",
-      "body": "**Power** is how fast energy is transferred: **P = W / Δt** (or **P = F·v** when force and velocity align). Same work, less time → more power."
+      "title": "How fast you move energy",
+      "body": "Two movers carry the same stack of boxes up the same stairs. One takes 1 minute, the other takes 10. They did the **same work** — but the fast one was far more **powerful**.\n\n**Power** is the rate at which energy is transferred."
     },
     {
-      "type": "bar_drag",
-      "prompt": "You do **120 J** of work in **4 s**. Drag **P** (average power).",
-      "barLabel": "P",
-      "barColor": "#06b6d4",
-      "maxValue": 50,
-      "correctValue": 30,
-      "unit": "W",
-      "tolerance": 0.05,
+      "type": "concept",
+      "title": "The formula",
+      "body": "**W** is the work done (J), **Δt** is the time it took (s). Power is measured in **watts (W)**, where 1 watt = 1 joule per second.",
+      "equation": "P = W / Δt",
+      "visual": "power"
+    },
+    {
+      "type": "concept",
+      "title": "Get a feel for it",
+      "body": "Set the work and the time. Watch power shoot up as you shrink the time — same job, done faster, means more power.",
+      "demo": "power_explorer"
+    },
+    {
+      "type": "predict_mc",
+      "prompt": "You do the same amount of work, but in half the time. What happens to your power output?",
+      "choices": [
+        "It halves",
+        "It stays the same",
+        "It doubles",
+        "It quadruples"
+      ],
+      "correctIndex": 2,
       "hints": [
-        "P = W / Δt.",
-        "P = 120 J / 4 s = 30 W."
+        "P = W / Δt. Same work on top, smaller time on the bottom.",
+        "Half the time → double the power."
       ]
     },
     {
+      "type": "equation_fill",
+      "prompt": "Plug in the numbers. You do **W = 120 J** of work in **Δt = 4 s**. Drag each value into its spot, then find the power.",
+      "template": [
+        { "text": "P = " },
+        { "slot": "W" },
+        { "text": " / " },
+        { "slot": "t" }
+      ],
+      "slots": { "W": 120, "t": 4 },
+      "slotLabels": { "W": "work", "t": "time" },
+      "tokens": [4, 120, 30],
+      "result": { "value": 30, "unit": "W", "tolerance": 0.05 },
+      "fillHint": "Work goes on top (W spot), time on the bottom (t spot). Here W = 120 and Δt = 4.",
+      "computeHints": [
+        "P = W / Δt = 120 / 4.",
+        "P = 120 / 4 = 30 W."
+      ]
+    },
+    {
+      "type": "concept",
+      "title": "Lifting at steady speed",
+      "body": "When a motor lifts a load at **constant speed**, there's no change in KE — all the work goes into gravitational PE. So the work done is just **W = mgh**, and power is that divided by time."
+    },
+    {
       "type": "bar_drag",
-      "prompt": "A motor lifts a **4 kg** crate **2.5 m** at **constant speed** in **5 s**. Drag the **P** of the motor.",
+      "prompt": "A motor lifts a **4 kg** crate **2.5 m** at **constant speed** in **5 s**. Drag the motor's **P**.",
       "barLabel": "P",
       "barColor": "#06b6d4",
       "maxValue": 30,
       "correctValue": 19.6,
       "unit": "W",
       "tolerance": 0.06,
+      "givens": [
+        { "label": "m", "value": "4 kg" },
+        { "label": "h", "value": "2.5 m" },
+        { "label": "Δt", "value": "5 s" }
+      ],
       "hints": [
-        "At constant speed, W = mgh (no ΔKE).",
+        "Constant speed → W = mgh (no ΔKE).",
         "W = 4 × 9.8 × 2.5 = 98 J → P = 98 / 5 = 19.6 W."
-      ]
-    },
-    {
-      "type": "bar_drag",
-      "prompt": "Same **98 J** of work, but done in **2 s** instead. Drag **P**.",
-      "barLabel": "P",
-      "barColor": "#06b6d4",
-      "maxValue": 60,
-      "correctValue": 49,
-      "unit": "W",
-      "tolerance": 0.05,
-      "hints": [
-        "Same work, shorter time → higher power.",
-        "P = 98 / 2 = 49 W."
       ]
     },
     {

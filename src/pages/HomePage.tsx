@@ -1,8 +1,9 @@
 import { type CSSProperties, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SignInPanel } from '../components/SignInPanel'
+import { HomeTeaser } from '../components/HomeTeaser'
 import { useAuth } from '../contexts/AuthContext'
-import { getAllLessons, isLessonUnlocked } from '../lib/lessons'
+import { getAllLessons, isLessonUnlocked, statusForStepIndex } from '../lib/lessons'
 import { loadProgress } from '../lib/progress'
 import {
   fetchAllLessonProgress,
@@ -32,12 +33,7 @@ export function HomePage() {
           stepIndex: local.stepIndex,
           simParams: local.simParams,
           stepDraft: local.stepDraft ?? null,
-          status:
-            local.stepIndex >= lesson.steps.length
-              ? 'completed'
-              : local.stepIndex > 0
-                ? 'in_progress'
-                : 'not_started',
+          status: statusForStepIndex(lesson, local.stepIndex),
           updatedAt: local.updatedAt,
         }
       }
@@ -64,16 +60,14 @@ export function HomePage() {
         </div>
       </nav>
 
-      {/* ── Big editorial display ── */}
+      {/* ── Centered editorial display ── */}
       <section className="home-display">
         <p className="home-display__eyebrow">AP Physics 1 · Unit 4</p>
-        <h1 className="home-display__title">
-          Work,<br />Power &<br />Energy.
-        </h1>
+        <h1 className="home-display__title">Work, Power &amp; Energy</h1>
         <p className="home-display__tagline">
-          Drag bars. Watch energy move.<br />
-          Actually understand it.
+          Drag bars. Watch energy move. Actually understand it.
         </p>
+        <HomeTeaser />
       </section>
 
       {/* ── Sign-in (only when guest) ── */}

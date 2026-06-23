@@ -5,7 +5,56 @@
   "steps": [
     {
       "type": "concept",
-      "body": "A compressed or stretched spring stores **elastic potential energy**: **U_s = ½kx²**, where **k** is the spring constant and **x** is compression or stretch from natural length."
+      "title": "Energy stored in a squish",
+      "body": "Pull back a bow, press down a trampoline, pull a pinball plunger — you're loading a spring with energy that springs right back.\n\nA compressed or stretched spring stores **elastic potential energy**. Squeeze it more and it stores a lot more."
+    },
+    {
+      "type": "concept",
+      "title": "The formula",
+      "body": "**k** is the spring constant — how stiff it is (N/m). **x** is how far it's pushed or pulled from its natural length (m).\n\nLike kinetic energy, **x is squared** — stretch counts double.",
+      "equation": "U_s = ½kx²",
+      "visual": "elastic_pe"
+    },
+    {
+      "type": "concept",
+      "title": "Get a feel for it",
+      "body": "Squeeze the spring and change its stiffness. Notice how squeeze (x) swings the energy far more than stiffness — that's the x² at work.",
+      "demo": "elastic_explorer"
+    },
+    {
+      "type": "predict_mc",
+      "prompt": "You compress a spring twice as far. What happens to the energy it stores?",
+      "choices": [
+        "It doubles",
+        "It quadruples (×4)",
+        "It stays the same",
+        "It halves"
+      ],
+      "correctIndex": 1,
+      "hints": [
+        "U_s = ½kx² — the stretch is squared.",
+        "Double x → x² grows by 4. So the energy quadruples."
+      ]
+    },
+    {
+      "type": "equation_fill",
+      "prompt": "Plug in the numbers. A spring has **k = 200 N/m** and is squeezed **x = 0.3 m**. Drag each value into its spot, then find U_s.",
+      "template": [
+        { "text": "U_s = ½ × " },
+        { "slot": "k" },
+        { "text": " × " },
+        { "slot": "x" },
+        { "text": "²" }
+      ],
+      "slots": { "k": 200, "x": 0.3 },
+      "slotLabels": { "k": "stiffness", "x": "squeeze" },
+      "tokens": [0.3, 200, 0.09],
+      "result": { "value": 9, "unit": "J", "tolerance": 0.05 },
+      "fillHint": "Stiffness goes in the k spot, squeeze in the x spot. Here k = 200 and x = 0.3.",
+      "computeHints": [
+        "Square x first: 0.3² = 0.09.",
+        "U_s = ½ × 200 × 0.09 = 9 J."
+      ]
     },
     {
       "type": "bar_drag",
@@ -16,28 +65,23 @@
       "correctValue": 16,
       "unit": "J",
       "tolerance": 0.05,
+      "givens": [
+        { "label": "k", "value": "200 N/m" },
+        { "label": "x", "value": "0.4 m" }
+      ],
       "hints": [
-        "U_s = ½kx².",
+        "U_s = ½kx². Square x first.",
         "U_s = ½ × 200 × 0.4² = 100 × 0.16 = 16 J."
       ]
     },
     {
-      "type": "bar_drag",
-      "prompt": "Same spring, now compressed **x = 0.6 m**. Drag **U_s**.",
-      "barLabel": "U_s",
-      "barColor": "#ec4899",
-      "maxValue": 40,
-      "correctValue": 36,
-      "unit": "J",
-      "tolerance": 0.05,
-      "hints": [
-        "U_s grows with x² — doubling x quadruples energy.",
-        "U_s = ½ × 200 × 0.6² = 100 × 0.36 = 36 J."
-      ]
+      "type": "concept",
+      "title": "Let it go",
+      "body": "Release the spring and that stored energy doesn't vanish — it pushes the block into motion. With no friction, **all the elastic PE becomes kinetic energy**."
     },
     {
       "type": "bar_drag",
-      "prompt": "The spring (**k = 200 N/m**) was compressed **0.4 m** and launches a block (no friction, spring only). Drag the **ΔKE** gained by the block.",
+      "prompt": "The spring (**k = 200 N/m**, compressed **0.4 m**) launches a block — no friction. Drag the **ΔKE** the block gains.",
       "barLabel": "ΔKE",
       "barColor": "#34d399",
       "maxValue": 25,
@@ -45,8 +89,8 @@
       "unit": "J",
       "tolerance": 0.05,
       "hints": [
-        "Spring PE converts to KE (if no losses).",
-        "ΔKE = U_s,initial = 16 J from the 0.4 m compression."
+        "Spring PE converts fully to KE (no losses).",
+        "ΔKE = U_s = 16 J from the 0.4 m compression."
       ]
     },
     {

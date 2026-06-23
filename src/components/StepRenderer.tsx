@@ -1,6 +1,7 @@
 import type { Step, PushBlockParams, StepDraft } from '../types/lesson'
 import { ConceptStepView } from './steps/ConceptStepView'
 import { BarDragStepView } from './steps/BarDragStepView'
+import { EquationFillStepView } from './steps/EquationFillStepView'
 import { PredictMCStepView } from './steps/PredictMCStepView'
 import { PredictNumericStepView } from './steps/PredictNumericStepView'
 import { SimStepView } from './steps/SimStepView'
@@ -44,6 +45,16 @@ export function StepRenderer({
     case 'bar_drag':
       return (
         <BarDragStepView
+          step={step}
+          draft={stepDraft}
+          onDraftChange={onDraftChange}
+          onCorrect={onAdvance}
+          onAttempt={(answer, correct, hint) => log(answer, correct, hint)}
+        />
+      )
+    case 'equation_fill':
+      return (
+        <EquationFillStepView
           step={step}
           draft={stepDraft}
           onDraftChange={onDraftChange}

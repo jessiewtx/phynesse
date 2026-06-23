@@ -16,8 +16,34 @@ export type ConceptStep = {
   title?: string
   body: string
   equation?: string
-  visual?: 'work_energy_intro'
-  demo?: 'push_work'
+  visual?:
+    | 'work_energy_intro'
+    | 'kinetic_energy'
+    | 'gravitational_pe'
+    | 'elastic_pe'
+    | 'conservation'
+    | 'power'
+  demo?:
+    | 'push_work'
+    | 'ke_explorer'
+    | 'gravity_explorer'
+    | 'elastic_explorer'
+    | 'conservation_explorer'
+    | 'power_explorer'
+}
+
+export type EquationFillSegment = { text: string } | { slot: string }
+
+export type EquationFillStep = {
+  type: 'equation_fill'
+  prompt: string
+  template: EquationFillSegment[]
+  slots: Record<string, number>
+  slotLabels?: Record<string, string>
+  tokens: number[]
+  result: { value: number; unit: string; tolerance: number }
+  fillHint?: string
+  computeHints: string[]
 }
 
 export type PredictMCStep = {
@@ -61,6 +87,7 @@ export type CompleteStep = {
 export type Step =
   | ConceptStep
   | BarDragStep
+  | EquationFillStep
   | PredictMCStep
   | PredictNumericStep
   | SimStep

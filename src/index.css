@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:wght@700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:wght@700;800;900&display=swap');
 
 :root {
   --bg: #f9f9fd;
@@ -7,13 +7,20 @@
   --border: #ebebeb;
   --border-mid: #d4d4d4;
 
-  /* macaron palette — refined */
-  --red:        #e63946;
-  --turquoise:  #0ab5c5;
-  --gold:       #e9a800;
-  --teal:       #14a89b;
-  --purple:     #7c3aed;
-  --orange:     #f57c20;
+  /* accent (turquoise) */
+  --turquoise:    #0ab5c5;
+  --accent:       #0ab5c5;
+  --accent-soft:  #e3f6f8;
+  --accent-hover: #089aa9;
+
+  --done:      #14a89b;
+  --done-soft: #e8f6f0;
+
+  --red:    #e63946;
+  --gold:   #e9a800;
+  --teal:   #14a89b;
+  --purple: #7c3aed;
+  --orange: #f57c20;
 
   --text-1: #111111;
   --text-2: #555555;
@@ -23,7 +30,8 @@
   --dark-sim: #111827;
   --dark-sim-2: #1e2d4a;
 
-  font-family: 'Lora', Georgia, serif;
+  /* body / UI font (the new font, used for everything except the serif title) */
+  font-family: 'Figtree', system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: var(--text-1);
@@ -46,4 +54,4 @@ body {
 #root { min-height: 100dvh; }
 
 a { color: inherit; }
-strong { font-weight: 700; }
+strong { font-weight: 600; }
