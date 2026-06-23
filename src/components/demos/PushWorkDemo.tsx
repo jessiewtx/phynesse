@@ -134,8 +134,9 @@ export function PushWorkDemo({ onTried }: Props) {
         className="push-demo__svg"
       >
         <defs>
-          <marker id="arrowF" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
-            <path d="M0,0 L7,3 L0,6 Z" fill="#4f8cff" />
+          {/* markerUnits="userSpaceOnUse" keeps arrowhead a fixed pixel size regardless of stroke width */}
+          <marker id="arrowF" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L7,3.5 L0,7 Z" fill="#4f8cff" />
           </marker>
         </defs>
 
@@ -214,8 +215,8 @@ export function PushWorkDemo({ onTried }: Props) {
               cx={handleX}
               cy={BLOCK_MID_Y}
               r={13}
-              fill="#4f8cff"
-              opacity={0.9}
+              fill="#fbbf24"
+              opacity={0.95}
               style={{ cursor: 'ew-resize' }}
               onPointerDown={onForcePtrDown}
               onPointerMove={onForcePtrMove}
@@ -228,7 +229,7 @@ export function PushWorkDemo({ onTried }: Props) {
               y={BLOCK_MID_Y + 1}
               textAnchor="middle"
               dominantBaseline="middle"
-              fill="white"
+              fill="#1c1917"
               fontSize="11"
               style={{ pointerEvents: 'none', userSelect: 'none' }}
             >◀▶</text>
