@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:wght@700;800;900&display=swap');
 
 :root {
   --bg: #f9f9fd;
@@ -23,7 +23,7 @@
   --dark-sim: #111827;
   --dark-sim-2: #1e2d4a;
 
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: 'Lora', Georgia, serif;
   line-height: 1.5;
   font-weight: 400;
   color: var(--text-1);
