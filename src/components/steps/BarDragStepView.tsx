@@ -169,7 +169,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
           </div>
         </div>
 
-        <p className="bar-drag__hint">Drag the bar — snaps to whole numbers</p>
+        <p className="bar-drag__hint">Drag the bar up or down</p>
       </div>
 
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
