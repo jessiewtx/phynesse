@@ -23,6 +23,7 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { getRedirectResultOnce } from '../lib/authRedirect'
 import { auth, db, expectedAuthDomain, firebaseConfig, isFirebaseConfigured } from '../lib/firebase'
 import { migrateGuestProgress } from '../lib/migrateGuestProgress'
+import { migrateGuestStreak } from '../lib/streak'
 import { isEmbeddedPreview } from '../lib/preview'
 
 type AuthContextValue = {
@@ -82,6 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(result.user)
           await ensureUserDoc(result.user)
           await migrateGuestProgress(result.user.uid)
+          await migrateGuestStreak(result.user.uid)
         }
       })
       .catch(() => {
@@ -105,6 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(result.user)
       await ensureUserDoc(result.user)
       await migrateGuestProgress(result.user.uid)
+      await migrateGuestStreak(result.user.uid)
     } catch (e: unknown) {
       const code = (e as { code?: string })?.code
       if (
@@ -126,6 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(cred.user)
     await ensureUserDoc(cred.user)
     await migrateGuestProgress(cred.user.uid)
+    await migrateGuestStreak(cred.user.uid)
   }, [])
 
   const signUpWithEmail = useCallback(
@@ -136,6 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(cred.user)
       await ensureUserDoc(cred.user)
       await migrateGuestProgress(cred.user.uid)
+      await migrateGuestStreak(cred.user.uid)
     },
     [],
   )

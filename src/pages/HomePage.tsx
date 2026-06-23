@@ -10,6 +10,8 @@ import {
   type StoredLessonProgress,
 } from '../lib/progressFirestore'
 import { displayFirstName } from '../lib/displayName'
+import { getStreak, emptyStats, type StreakStats } from '../lib/streak'
+import { StreakBanner } from '../components/StreakBanner'
 
 const LESSON_COLORS = ['#0ab5c5', '#e63946', '#e9a800', '#14a89b', '#7c3aed', '#f57c20']
 
@@ -17,6 +19,11 @@ export function HomePage() {
   const { user, isSignedIn, loading, signOut, authReady } = useAuth()
   const lessons = getAllLessons()
   const [progressMap, setProgressMap] = useState<Record<string, StoredLessonProgress>>({})
+  const [streak, setStreak] = useState<StreakStats>(() => emptyStats())
+
+  useEffect(() => {
+    getStreak(isSignedIn && user ? user.uid : null).then(setStreak)
+  }, [isSignedIn, user])
 
   useEffect(() => {
     const all = getAllLessons()
@@ -76,6 +83,11 @@ export function HomePage() {
           <SignInPanel compact />
         </div>
       )}
+
+      {/* ── Habit loop ── */}
+      <section className="home-streak">
+        <StreakBanner stats={streak} totalLessons={lessons.length} />
+      </section>
 
       {/* ── Lesson list ── */}
       <section className="home-lessons">

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { PredictMCStep, StepDraft } from '../../types/lesson'
 import { gradeMC } from '../../lib/grading'
 import { Feedback } from '../Feedback'
+import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
 
 type Props = {
   step: PredictMCStep
@@ -79,6 +80,13 @@ export function PredictMCStepView({
         ))}
       </div>
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
+      {attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
+        <StuckHelp
+          answer={step.choices[step.correctIndex]}
+          explanation={step.hints[step.hints.length - 1]}
+          nudge="Pick this option, then tap Check to continue."
+        />
+      )}
       <button
         type="button"
         className="btn btn--primary"

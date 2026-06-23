@@ -4,6 +4,7 @@ import { gradeNumeric, hintForNumeric } from '../../lib/grading'
 import { PhysicsText } from '../../lib/physicsText'
 import { EnergyReadout } from '../EnergyReadout'
 import { Feedback } from '../Feedback'
+import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
 
 type Props = {
   step: BarDragStep
@@ -208,6 +209,14 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
       </div>
 
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
+
+      {attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
+        <StuckHelp
+          answer={`${step.correctValue} ${step.unit}`}
+          explanation={step.hints[step.hints.length - 1]}
+          nudge="Set the bar to this value, then tap Check to continue."
+        />
+      )}
 
       <button type="button" className="btn btn--primary" onClick={submit}>
         {feedback?.variant === 'error' ? 'Try again' : 'Check'}

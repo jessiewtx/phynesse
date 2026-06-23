@@ -1,19 +1,25 @@
 import { Link } from 'react-router-dom'
 import { getLesson } from '../../lib/lessons'
 import type { CompleteStep } from '../../types/lesson'
+import { StreakCelebration } from '../StreakCelebration'
+import type { Milestone, StreakStats } from '../../lib/streak'
 
 type Props = {
   step: CompleteStep
   onFinish: () => void
+  celebration?: { stats: StreakStats; milestones: Milestone[] } | null
 }
 
-export function CompleteStepView({ step, onFinish }: Props) {
+export function CompleteStepView({ step, onFinish, celebration }: Props) {
   const nextLesson = getLesson(step.nextLessonId)
 
   return (
     <div className="step step--complete">
       <h2 className="step__title">{step.title}</h2>
       <p className="step__body">{step.body}</p>
+      {celebration && (
+        <StreakCelebration stats={celebration.stats} milestones={celebration.milestones} />
+      )}
       <p className="step__next">
         Up next:{' '}
         {nextLesson ? (

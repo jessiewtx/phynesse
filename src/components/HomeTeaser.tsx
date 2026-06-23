@@ -7,17 +7,26 @@ const BARS = [
   { label: 'P', color: '#06b6d4', init: 0.7 },
 ]
 
+// In-memory so the teaser keeps its position across navigation within a session,
+// but resets to defaults on a full page reload / new tab.
+let liveVals: number[] = BARS.map((b) => b.init)
+
 export function HomeTeaser() {
-  const [vals, setVals] = useState(() => BARS.map((b) => b.init))
+  const [vals, setVals] = useState(() => liveVals)
   const dragging = useRef<number | null>(null)
   const refs = useRef<(HTMLDivElement | null)[]>([])
+
+  const update = (next: number[]) => {
+    liveVals = next
+    setVals(next)
+  }
 
   const setFromY = (i: number, clientY: number) => {
     const el = refs.current[i]
     if (!el) return
     const rect = el.getBoundingClientRect()
     const ratio = Math.max(0.05, Math.min(1, (rect.bottom - clientY) / rect.height))
-    setVals((v) => v.map((x, idx) => (idx === i ? ratio : x)))
+    update(vals.map((x, idx) => (idx === i ? ratio : x)))
   }
 
   const onDown = (i: number, e: PointerEvent<HTMLDivElement>) => {
@@ -34,7 +43,7 @@ export function HomeTeaser() {
   }
 
   const nudge = (i: number, delta: number) => {
-    setVals((v) => v.map((x, idx) => (idx === i ? Math.max(0.05, Math.min(1, x + delta)) : x)))
+    update(vals.map((x, idx) => (idx === i ? Math.max(0.05, Math.min(1, x + delta)) : x)))
   }
 
   return (

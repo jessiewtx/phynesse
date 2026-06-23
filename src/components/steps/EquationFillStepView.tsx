@@ -3,6 +3,7 @@ import type { EquationFillStep, StepDraft } from '../../types/lesson'
 import { gradeNumeric, hintForNumeric } from '../../lib/grading'
 import { PhysicsText } from '../../lib/physicsText'
 import { Feedback } from '../Feedback'
+import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
 
 type Props = {
   step: EquationFillStep
@@ -179,6 +180,14 @@ export function EquationFillStepView({ step, draft, onDraftChange, onCorrect, on
       )}
 
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
+
+      {phase === 'compute' && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
+        <StuckHelp
+          answer={`${step.result.value} ${step.result.unit}`}
+          explanation={step.computeHints[step.computeHints.length - 1]}
+          nudge="Enter this value, then tap Check to continue."
+        />
+      )}
 
       {phase === 'fill' ? (
         <button type="button" className="btn btn--primary" onClick={checkFill} disabled={!allFilled}>

@@ -419,6 +419,193 @@
 }
 
 
+/* ─── Habit loop: homepage streak banner ────────────────── */
+
+.home-streak {
+  padding: 1.5rem 0;
+  border-bottom: 1.5px solid var(--border);
+}
+
+.streak-banner--empty {
+  text-align: center;
+}
+
+.streak-banner__hint {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.streak-banner__stats {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.streak-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.9rem 0.5rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+}
+
+.streak-stat__value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-1);
+  line-height: 1;
+}
+
+.streak-stat__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+
+.streak-banner__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  justify-content: center;
+}
+
+.streak-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-hover);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+}
+
+/* ─── Habit loop: lesson-complete celebration ───────────── */
+
+.streak-celebrate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 auto 2rem;
+  max-width: 24rem;
+}
+
+.streak-celebrate__streak {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  background: var(--accent-soft);
+  border-radius: 16px;
+  padding: 0.85rem 1.4rem;
+}
+
+.streak-celebrate__flame {
+  font-size: 1.6rem;
+}
+
+.streak-celebrate__count {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--accent-hover);
+  line-height: 1;
+}
+
+.streak-celebrate__label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.streak-celebrate__milestones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.streak-celebrate__milestone {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+  background: var(--surface);
+  border: 1.5px solid var(--gold);
+  border-radius: 14px;
+  padding: 0.7rem 0.9rem;
+}
+
+.streak-celebrate__milestone-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.streak-celebrate__milestone-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+
+.streak-celebrate__milestone-text strong {
+  color: var(--text-1);
+  font-weight: 800;
+}
+
+
+/* ─── Stuck help (review after repeated wrong answers) ───── */
+
+.stuck-help {
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent);
+  border-radius: 14px;
+  padding: 0.95rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.stuck-help__title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--accent-hover);
+}
+
+.stuck-help__body {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+
+.stuck-help__answer {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-1);
+}
+
+.stuck-help__answer strong {
+  font-weight: 800;
+}
+
+.stuck-help__nudge {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+
 /* ─── Step content ──────────────────────────────────────── */
 
 .step {
