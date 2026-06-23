@@ -29,10 +29,13 @@ function markerXToDistance(x: number) {
   return Math.round(clamp(MIN_DIST + ratio * (MAX_DIST - MIN_DIST), MIN_DIST, MAX_DIST))
 }
 
-const ARROW_TIP_X = BLOCK_START_X - 5  // fixed arrowhead, always at block
+const ARROW_TIP_X = BLOCK_START_X - 4  // fixed arrowhead tip, always at block
 const BLOCK_MID_Y = GROUND_Y - BLOCK_H / 2
-const MIN_ARROW_LEN = 10  // px at MIN_FORCE
-const MAX_ARROW_LEN = 72  // px at MAX_FORCE
+const MIN_ARROW_LEN = 32  // px at MIN_FORCE — enough to always look like an arrow
+const MAX_ARROW_LEN = 78  // px at MAX_FORCE
+const SHAFT_H = 8          // arrow shaft thickness (fixed)
+const HEAD_W = 14          // arrowhead depth (fixed)
+const HEAD_H = 22          // arrowhead full height (fixed)
 
 function forceToArrowLen(f: number) {
   return MIN_ARROW_LEN + ((f - MIN_FORCE) / (MAX_FORCE - MIN_FORCE)) * (MAX_ARROW_LEN - MIN_ARROW_LEN)
@@ -57,23 +60,24 @@ export function PushWorkDemo({ onTried }: Props) {
   const workPct = Math.min(100, (work / maxWork) * 100)
 
   const arrowLen = forceToArrowLen(force)
-  const handleX = ARROW_TIP_X - arrowLen
-  const arrowStrokeW = 2 + ((force - MIN_FORCE) / (MAX_FORCE - MIN_FORCE)) * 4
+  const tailX = ARROW_TIP_X - arrowLen  // left edge of arrow (tail)
+  const headBaseX = ARROW_TIP_X - HEAD_W // where shaft ends and head begins
   const markerX = distanceToMarkerX(distance)
 
   // Force drag — horizontal: drag tail left = more force
-  const onForcePtrDown = (e: PointerEvent<SVGCircleElement>) => {
+  const onForcePtrDown = (e: PointerEvent<SVGElement>) => {
     if (phase !== 'idle') return
     forceDragging.current = true
     e.currentTarget.setPointerCapture(e.pointerId)
   }
-  const onForcePtrMove = (e: PointerEvent<SVGCircleElement>) => {
+  const onForcePtrMove = (e: PointerEvent<SVGElement>) => {
     if (!forceDragging.current) return
     const svg = svgRef.current
     if (!svg) return
     const rect = svg.getBoundingClientRect()
     const svgX = ((e.clientX - rect.left) / rect.width) * W
     const len = clamp(ARROW_TIP_X - svgX, MIN_ARROW_LEN, MAX_ARROW_LEN)
+
     setForce(arrowLenToForce(len))
   }
   const onForcePtrUp = () => { forceDragging.current = false }
@@ -133,12 +137,6 @@ export function PushWorkDemo({ onTried }: Props) {
         viewBox={`0 0 ${W} ${H}`}
         className="push-demo__svg"
       >
-        <defs>
-          {/* markerUnits="userSpaceOnUse" keeps arrowhead a fixed pixel size regardless of stroke width */}
-          <marker id="arrowF" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
-            <path d="M0,0 L7,3.5 L0,7 Z" fill="#4f8cff" />
-          </marker>
-        </defs>
 
         {/* ground */}
         <line x1={16} y1={GROUND_Y} x2={W - 16} y2={GROUND_Y} stroke="rgba(255,255,255,0.18)" strokeWidth="2" />
@@ -195,49 +193,57 @@ export function PushWorkDemo({ onTried }: Props) {
           </text>
         </g>
 
-        {/* force arrow + drag handle (only while idle) */}
+        {/* force arrow (only while idle) */}
         {phase === 'idle' && (
           <>
-            {/* arrow shaft */}
-            <line
-              x1={handleX + 12}
-              y1={BLOCK_MID_Y}
-              x2={ARROW_TIP_X}
-              y2={BLOCK_MID_Y}
-              stroke="#4f8cff"
-              strokeWidth={arrowStrokeW}
-              strokeLinecap="round"
-              markerEnd="url(#arrowF)"
+            {/* filled arrow polygon: shaft + head as one shape */}
+            <polygon
+              points={[
+                `${tailX},${BLOCK_MID_Y - SHAFT_H / 2}`,
+                `${headBaseX},${BLOCK_MID_Y - SHAFT_H / 2}`,
+                `${headBaseX},${BLOCK_MID_Y - HEAD_H / 2}`,
+                `${ARROW_TIP_X},${BLOCK_MID_Y}`,
+                `${headBaseX},${BLOCK_MID_Y + HEAD_H / 2}`,
+                `${headBaseX},${BLOCK_MID_Y + SHAFT_H / 2}`,
+                `${tailX},${BLOCK_MID_Y + SHAFT_H / 2}`,
+              ].join(' ')}
+              fill="#4f8cff"
+              opacity={0.9}
             />
 
-            {/* drag handle — sits at the tail, drag left/right */}
-            <circle
-              cx={handleX}
-              cy={BLOCK_MID_Y}
-              r={13}
-              fill="#fbbf24"
-              opacity={0.95}
+            {/* grip lines at the tail — visual cue to drag */}
+            {[0, 4, 8].map(dx => (
+              <line
+                key={dx}
+                x1={tailX + 3 + dx}
+                y1={BLOCK_MID_Y - SHAFT_H / 2 + 2}
+                x2={tailX + 3 + dx}
+                y2={BLOCK_MID_Y + SHAFT_H / 2 - 2}
+                stroke="rgba(255,255,255,0.55)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                style={{ pointerEvents: 'none' }}
+              />
+            ))}
+
+            {/* invisible drag hit area at tail — wider than shaft for easy grab */}
+            <rect
+              x={tailX - 4}
+              y={BLOCK_MID_Y - 16}
+              width={arrowLen * 0.55}
+              height={32}
+              fill="transparent"
               style={{ cursor: 'ew-resize' }}
               onPointerDown={onForcePtrDown}
               onPointerMove={onForcePtrMove}
               onPointerUp={onForcePtrUp}
               onPointerCancel={onForcePtrUp}
             />
-            {/* left/right hint glyphs */}
-            <text
-              x={handleX}
-              y={BLOCK_MID_Y + 1}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fill="#1c1917"
-              fontSize="11"
-              style={{ pointerEvents: 'none', userSelect: 'none' }}
-            >◀▶</text>
 
             {/* force label */}
             <text
-              x={(handleX + ARROW_TIP_X) / 2}
-              y={BLOCK_MID_Y - 12}
+              x={(tailX + ARROW_TIP_X) / 2}
+              y={BLOCK_MID_Y - 14}
               textAnchor="middle"
               fill="#4f8cff"
               fontSize="11"

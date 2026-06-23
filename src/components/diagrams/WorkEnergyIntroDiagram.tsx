@@ -63,10 +63,10 @@ export function WorkEnergyIntroDiagram() {
           energy in
         </text>
 
-        {/* KE bar sketch */}
-        <rect x="268" y="96" width="28" height="72" rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" />
-        <rect x="268" y="132" width="28" height="36" rx="4" fill="#34d399" opacity="0.85" />
-        <text x="282" y="90" textAnchor="middle" fill="#34d399" fontSize="11" fontWeight="600" fontFamily="system-ui">
+        {/* KE bar sketch — bottom sits on ground line (y=148) */}
+        <rect x="268" y="76" width="28" height="72" rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" />
+        <rect x="268" y="112" width="28" height="36" rx="4" fill="#34d399" opacity="0.85" />
+        <text x="282" y="70" textAnchor="middle" fill="#34d399" fontSize="11" fontWeight="600" fontFamily="system-ui">
           KE ↑
         </text>
 
