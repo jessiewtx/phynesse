@@ -28,6 +28,15 @@ export function saveProgress(
   localStorage.setItem(`${PREFIX}${lessonId}`, JSON.stringify(data))
 }
 
+/** Remove a single lesson's guest progress (used after migrating to Firestore). */
+export function clearProgress(lessonId: string): void {
+  try {
+    localStorage.removeItem(`${PREFIX}${lessonId}`)
+  } catch {
+    // ignore
+  }
+}
+
 /**
  * Guest attempt log. Mirrors the Firestore `attempts` collection so guests get
  * the same per-problem mastery scoring as signed-in learners.

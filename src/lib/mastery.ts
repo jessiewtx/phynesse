@@ -129,6 +129,25 @@ export const STRANDS: Strand[] = [
 
 const DAY_MS = 86_400_000
 
+/** Step types that are actually graded (and therefore feed mastery scoring). */
+const GRADED_STEP_TYPES = new Set(['bar_drag', 'predict_numeric', 'compare_slider'])
+
+/**
+ * Keep only attempts that still line up with a graded step in the CURRENT lesson.
+ *
+ * Lesson content evolves — steps get added, removed, reordered, and old step
+ * types (e.g. `predict_mc`, `equation_fill`) were retired entirely. Attempts
+ * logged against those now point at the wrong step, or no step at all, so we
+ * drop any whose recorded type no longer matches the graded step now sitting at
+ * that index. This stops stale "wrong" history from tanking a lesson's score.
+ */
+function gradedAttemptsFor(lesson: Lesson, attempts: StepAttemptRecord[]): StepAttemptRecord[] {
+  return attempts.filter((a) => {
+    const step = lesson.steps[a.stepIndex]
+    return step != null && GRADED_STEP_TYPES.has(step.type) && a.stepType === step.type
+  })
+}
+
 function emptyCounts(): Record<MasteryLevel, number> {
   return { locked: 0, not_started: 0, learning: 0, proficient: 0, skilled: 0, mastered: 0 }
 }
@@ -174,13 +193,17 @@ function computeLessonMastery(
   const status = progress?.status ?? 'not_started'
   const completed = status === 'completed'
 
-  const total = attempts.length
-  const correct = attempts.filter((a) => a.correct).length
+  // Ignore stale attempts (removed step types / old layouts) so they can't drag
+  // the score down — only attempts that still match a graded step count.
+  const graded = gradedAttemptsFor(lesson, attempts)
+
+  const total = graded.length
+  const correct = graded.filter((a) => a.correct).length
   const accuracy = total > 0 ? correct / total : null
 
   // Group attempts per problem step so we can score each one on its own.
   const byStep = new Map<number, StepAttemptRecord[]>()
-  for (const a of attempts) {
+  for (const a of graded) {
     const arr = byStep.get(a.stepIndex) ?? []
     arr.push(a)
     byStep.set(a.stepIndex, arr)
@@ -217,7 +240,7 @@ function computeLessonMastery(
   // When the learner last touched this lesson (for "practiced 3d ago" labels).
   // Mastery itself does NOT decay — once you've earned a level it stays put, so
   // there's no busywork of redoing a lesson just to hold your score.
-  const attemptTimes = attempts.map((a) => Date.parse(a.createdAt)).filter((t) => !Number.isNaN(t))
+  const attemptTimes = graded.map((a) => Date.parse(a.createdAt)).filter((t) => !Number.isNaN(t))
   const lastPracticed = Math.max(
     attemptTimes.length ? Math.max(...attemptTimes) : 0,
     parseTime(progress?.updatedAt) ?? 0,
@@ -276,8 +299,10 @@ export function buildMastery(
     counts[m.level] += 1
   }
 
-  const totalAttempts = attempts.length
-  const totalCorrect = attempts.filter((a) => a.correct).length
+  // Roll up from the per-lesson figures so stale attempts (already filtered out
+  // inside each lesson) don't inflate the global stats either.
+  const totalAttempts = list.reduce((s, m) => s + m.attempts, 0)
+  const totalCorrect = list.reduce((s, m) => s + m.correct, 0)
   const accuracy = totalAttempts > 0 ? totalCorrect / totalAttempts : null
 
   let ftCorrect = 0
