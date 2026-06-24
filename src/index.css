@@ -30,9 +30,14 @@
   --dark-sim: #111827;
   --dark-sim-2: #1e2d4a;
 
+  /* graph-paper grid lines */
+  --grid-line: rgba(34, 28, 24, 0.045);
+  --grid-size: 28px;
+
   /* body / UI font (the new font, used for everything except the serif title) */
   font-family: 'Figtree', system-ui, sans-serif;
-  line-height: 1.5;
+  font-size: 17px;
+  line-height: 1.55;
   font-weight: 400;
   color: var(--text-1);
   background: var(--bg);
@@ -48,7 +53,12 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100dvh;
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  background-position: -1px -1px;
 }
 
 #root { min-height: 100dvh; }

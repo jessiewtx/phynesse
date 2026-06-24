@@ -1,182 +1,228 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useMemo, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import { getAllLessons, isLessonUnlocked, statusForStepIndex } from '../lib/lessons'
-import { loadProgress } from '../lib/progress'
+import { getAllLessons } from '../lib/lessons'
+import { useLearnerData } from '../lib/useLearnerData'
 import {
-  fetchAllLessonProgress,
-  fetchAttempts,
-  type StepAttemptRecord,
-  type StoredLessonProgress,
-} from '../lib/progressFirestore'
-import { getStreak, emptyStats, type StreakStats } from '../lib/streak'
+  buildMastery,
+  levelMeta,
+  relativeTime,
+  strandScore,
+  STRANDS,
+  type LessonMastery,
+  type MasteryLevel,
+} from '../lib/mastery'
+import { MasteryRing } from '../components/MasteryRing'
 
-type Accuracy = { correct: number; total: number }
+function LevelChip({ level }: { level: MasteryLevel }) {
+  const meta = levelMeta(level)
+  return (
+    <span className="level-chip" style={{ '--lc': meta.color } as CSSProperties}>
+      {meta.label}
+    </span>
+  )
+}
+
+function MasteryBar({ value, color }: { value: number; color?: string }) {
+  return (
+    <div className="mx-bar" role="progressbar" aria-valuenow={Math.round(value)} aria-valuemin={0} aria-valuemax={100}>
+      <div className="mx-bar__fill" style={{ width: `${Math.max(2, value)}%`, background: color }} />
+    </div>
+  )
+}
+
+const pct = (v: number | null) => (v == null ? '—' : `${Math.round(v * 100)}%`)
 
 export function ProgressPage() {
-  const { user, isSignedIn } = useAuth()
   const lessons = getAllLessons()
-  const [progressMap, setProgressMap] = useState<Record<string, StoredLessonProgress>>({})
-  const [streak, setStreak] = useState<StreakStats>(() => emptyStats())
-  const [attempts, setAttempts] = useState<StepAttemptRecord[]>([])
+  const { progressMap, attempts, streak, isSignedIn, ready } = useLearnerData()
 
-  useEffect(() => {
-    const uid = isSignedIn && user ? user.uid : null
-    getStreak(uid).then(setStreak)
+  const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
 
-    if (uid) {
-      fetchAllLessonProgress(uid).then(setProgressMap)
-      fetchAttempts(uid).then(setAttempts)
-      return
-    }
-
-    const guest: Record<string, StoredLessonProgress> = {}
-    for (const lesson of lessons) {
-      const local = loadProgress(lesson.id)
-      if (local) {
-        guest[lesson.id] = {
-          lessonId: lesson.id,
-          stepIndex: local.stepIndex,
-          simParams: local.simParams,
-          stepDraft: local.stepDraft ?? null,
-          status: statusForStepIndex(lesson, local.stepIndex),
-          updatedAt: local.updatedAt,
-        }
-      }
-    }
-    setProgressMap(guest)
-    setAttempts([])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSignedIn, user])
-
-  const accuracyByLesson = useMemo(() => {
-    const map: Record<string, Accuracy> = {}
-    for (const a of attempts) {
-      const acc = (map[a.lessonId] ??= { correct: 0, total: 0 })
-      acc.total += 1
-      if (a.correct) acc.correct += 1
-    }
-    return map
-  }, [attempts])
-
-  const overall = useMemo(() => {
-    const total = attempts.length
-    const correct = attempts.filter((a) => a.correct).length
-    return { correct, total }
-  }, [attempts])
-
-  const masteredCount = lessons.filter((l) => progressMap[l.id]?.status === 'completed').length
-  const masteredPct = Math.round((masteredCount / lessons.length) * 100)
-
-  const nextLesson = lessons.find(
-    (l) => isLessonUnlocked(l, progressMap) && progressMap[l.id]?.status !== 'completed',
-  )
-
-  const pctText = (a?: Accuracy) =>
-    a && a.total > 0 ? `${Math.round((a.correct / a.total) * 100)}%` : '—'
+  const overallMeta = levelMeta(m.level)
 
   return (
-    <div className="home">
-      <section className="home-display" style={{ paddingBottom: '1.5rem' }}>
+    <div className="home mx">
+      <section className="home-display" style={{ paddingBottom: '0.75rem' }}>
         <p className="home-display__eyebrow">Your progress</p>
         <h1 className="home-display__title">Mastery</h1>
       </section>
 
-      {/* Mastery summary */}
-      <section className="progress-summary">
-        <div className="progress-ring-card">
-          <div className="progress-ring" style={{ '--pct': masteredPct } as CSSProperties}>
-            <span className="progress-ring__num">{masteredCount}/{lessons.length}</span>
-          </div>
-          <span className="progress-ring__label">lessons mastered</span>
+      {/* ── Overall mastery hero ── */}
+      <section className="mx-hero">
+        <div className="mx-hero__ring">
+          <MasteryRing value={m.overall} size={150} stroke={14} gradientId="mxOverall">
+            <span className="mx-hero__ringnum">{m.overall}</span>
+            <span className="mx-hero__ringunit">mastery</span>
+          </MasteryRing>
         </div>
-
-        <div className="progress-stats">
-          <div className="progress-stat">
-            <span className="progress-stat__value">🔥 {streak.currentStreak}</span>
-            <span className="progress-stat__label">day streak</span>
+        <div className="mx-hero__body">
+          <div className="mx-hero__levelline">
+            <LevelChip level={m.level} />
+            <span className="mx-hero__levelblurb">{overallMeta.blurb}</span>
           </div>
-          <div className="progress-stat">
-            <span className="progress-stat__value">🏅 {streak.longestStreak}</span>
-            <span className="progress-stat__label">best streak</span>
-          </div>
-          <div className="progress-stat">
-            <span className="progress-stat__value">{streak.activeDays}</span>
-            <span className="progress-stat__label">days active</span>
-          </div>
-          <div className="progress-stat">
-            <span className="progress-stat__value">
-              {overall.total > 0 ? `${Math.round((overall.correct / overall.total) * 100)}%` : '—'}
-            </span>
-            <span className="progress-stat__label">answer accuracy</span>
+          <div className="mx-hero__levels">
+            {(['learning', 'proficient', 'skilled', 'mastered'] as MasteryLevel[]).map((lvl) => {
+              const meta = levelMeta(lvl)
+              return (
+                <div key={lvl} className="mx-hero__levelpip">
+                  <span className="mx-hero__pip-dot" style={{ background: meta.color }} />
+                  <span className="mx-hero__pip-num">{m.counts[lvl]}</span>
+                  <span className="mx-hero__pip-label">{meta.label}</span>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* What to do next */}
-      <section className="progress-next">
-        {nextLesson ? (
-          <>
-            <div className="progress-next__text">
-              <span className="progress-next__eyebrow">Recommended next</span>
-              <span className="progress-next__title">{nextLesson.title}</span>
-            </div>
-            <Link to={`/lesson/${nextLesson.id}`} className="btn btn--primary">
-              {progressMap[nextLesson.id]?.status === 'in_progress' ? 'Resume' : 'Start'} →
-            </Link>
-          </>
-        ) : (
-          <div className="progress-next__text">
-            <span className="progress-next__eyebrow">🎓 Unit complete</span>
-            <span className="progress-next__title">You've mastered every lesson. Review any one to keep it sharp.</span>
-          </div>
-        )}
+      {/* ── Stat grid ── */}
+      <section className="mx-statgrid">
+        <Stat value={`${m.completedCount}/${m.totalLessons}`} label="lessons complete" />
+        <Stat value={`🔥 ${streak.currentStreak}`} label="day streak" />
+        <Stat value={`${m.totalAttempts}`} label="problems solved" />
+        <Stat value={pct(m.accuracy)} label="accuracy" />
+        <Stat value={pct(m.firstTryRate)} label="first-try rate" />
+        <Stat value={`${streak.longestStreak}`} label="best streak" />
       </section>
 
       {!isSignedIn && (
-        <p className="status-line" style={{ marginTop: '0.5rem' }}>
-          Sign in on the course page to track answer accuracy and sync across devices.
+        <p className="mx-guestnote">
+          You're learning as a guest. <strong>Sign in</strong> (left sidebar) to track accuracy, sync across devices,
+          and get spaced-review reminders.
         </p>
       )}
 
-      {/* Per-lesson breakdown */}
-      <section className="home-lessons">
-        <h2 className="home-lessons__label">By lesson</h2>
-        {lessons.map((lesson) => {
-          const prog = progressMap[lesson.id]
-          const status = prog?.status ?? 'not_started'
-          const locked = !isLessonUnlocked(lesson, progressMap)
-          const acc = accuracyByLesson[lesson.id]
-          const num = lesson.order.toString().padStart(2, '0')
+      {/* ── Review queue ── */}
+      {m.reviewQueue.length > 0 && (
+        <section className="mx-section">
+          <div className="mx-section__head">
+            <h2 className="mx-section__title">Time to review</h2>
+            <p className="mx-section__sub">These are fading from memory — a quick pass locks them back in.</p>
+          </div>
+          <div className="mx-review">
+            {m.reviewQueue.map((l) => (
+              <Link key={l.lessonId} to={`/lesson/${l.lessonId}`} className="mx-review__card">
+                <div className="mx-review__top">
+                  <span className="mx-review__title">{l.title}</span>
+                  <span className="mx-review__decay">{Math.round(l.retention * 100)}% retained</span>
+                </div>
+                <MasteryBar value={l.retention * 100} color="var(--gold)" />
+                <div className="mx-review__bottom">
+                  <span>last seen {relativeTime(l.lastPracticed)}</span>
+                  <span className="mx-review__cta">Review →</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
-          const statusLabel = locked
-            ? 'Locked'
-            : status === 'completed'
-              ? 'Mastered'
-              : status === 'in_progress'
-                ? 'In progress'
-                : 'Not started'
-
-          const body = (
-            <>
-              <span className="lesson-row__n">{num}</span>
-              <div className="lesson-row__body">
-                <span className="lesson-row__title">{lesson.title}</span>
-                <span className={`progress-pill progress-pill--${status}${locked ? ' progress-pill--locked' : ''}`}>
-                  {statusLabel}
-                </span>
+      {/* ── Concept strands ── */}
+      <section className="mx-section">
+        <div className="mx-section__head">
+          <h2 className="mx-section__title">Concept strands</h2>
+          <p className="mx-section__sub">How the unit's big ideas are coming together.</p>
+        </div>
+        <div className="mx-strands">
+          {STRANDS.map((strand) => {
+            const s = strandScore(strand, m.byId)
+            const meta = levelMeta(s >= 85 ? 'mastered' : s >= 65 ? 'skilled' : s >= 40 ? 'proficient' : s > 0 ? 'learning' : 'not_started')
+            return (
+              <div key={strand.id} className="mx-strand">
+                <div className="mx-strand__head">
+                  <span className="mx-strand__name">{strand.name}</span>
+                  <span className="mx-strand__score" style={{ color: meta.color }}>{s}%</span>
+                </div>
+                <p className="mx-strand__blurb">{strand.blurb}</p>
+                <MasteryBar value={s} color={meta.color} />
+                <div className="mx-strand__lessons">
+                  {strand.lessonIds.map((id) => {
+                    const lm = m.byId[id]
+                    if (!lm) return null
+                    return (
+                      <span
+                        key={id}
+                        className="mx-strand__dot"
+                        title={`${lm.title}: ${lm.score}%`}
+                        style={{ background: levelMeta(lm.level).color }}
+                      />
+                    )
+                  })}
+                </div>
               </div>
-              <span className="progress-row__acc">{locked ? '🔒' : pctText(acc)}</span>
-            </>
-          )
-
-          return locked ? (
-            <div key={lesson.id} className="lesson-row lesson-row--locked">{body}</div>
-          ) : (
-            <Link key={lesson.id} to={`/lesson/${lesson.id}`} className="lesson-row">{body}</Link>
-          )
-        })}
+            )
+          })}
+        </div>
       </section>
+
+      {/* ── Per-lesson detail ── */}
+      <section className="mx-section">
+        <div className="mx-section__head">
+          <h2 className="mx-section__title">Lesson by lesson</h2>
+        </div>
+        <div className="mx-lessons">
+          {m.lessons.map((l) => (
+            <LessonCard key={l.lessonId} l={l} progressStatus={progressMap[l.lessonId]?.status} />
+          ))}
+        </div>
+      </section>
+
+      {!ready && <p className="status-line" style={{ marginTop: '1rem' }}>Loading your progress…</p>}
     </div>
+  )
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="mx-stat">
+      <span className="mx-stat__value">{value}</span>
+      <span className="mx-stat__label">{label}</span>
+    </div>
+  )
+}
+
+function LessonCard({ l, progressStatus }: { l: LessonMastery; progressStatus?: string }) {
+  const meta = levelMeta(l.level)
+  const body = (
+    <>
+      <div className="mx-lesson__left">
+        <span className="mx-lesson__num" style={{ background: l.locked ? 'var(--border)' : meta.color }}>
+          {l.status === 'completed' ? '✓' : l.locked ? '🔒' : l.order}
+        </span>
+      </div>
+      <div className="mx-lesson__main">
+        <div className="mx-lesson__titlerow">
+          <span className="mx-lesson__title">{l.title}</span>
+          <LevelChip level={l.level} />
+        </div>
+        <MasteryBar value={l.locked ? 0 : l.score} color={meta.color} />
+        <div className="mx-lesson__meta">
+          {l.locked ? (
+            <span>Finish the previous lesson to unlock</span>
+          ) : (
+            <>
+              <span>{l.score}% mastery</span>
+              {l.accuracy != null && <span>· {Math.round(l.accuracy * 100)}% accuracy</span>}
+              {l.status === 'completed' && <span>· seen {relativeTime(l.lastPracticed)}</span>}
+              {l.dueForReview && <span className="mx-lesson__due">· due for review</span>}
+            </>
+          )}
+        </div>
+      </div>
+      {!l.locked && (
+        <span className="mx-lesson__cta">
+          {l.status === 'completed' ? 'Review' : l.status === 'in_progress' ? 'Resume' : 'Start'} →
+        </span>
+      )}
+    </>
+  )
+
+  if (l.locked) {
+    return <div className="mx-lesson mx-lesson--locked">{body}</div>
+  }
+  return (
+    <Link to={`/lesson/${l.lessonId}`} className={`mx-lesson${progressStatus === 'in_progress' ? ' mx-lesson--active' : ''}`}>
+      {body}
+    </Link>
   )
 }

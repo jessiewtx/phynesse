@@ -306,6 +306,7 @@ export function LessonPage() {
         <StepRenderer
           key={stepIndex}
           step={step}
+          lessonId={lessonId}
           stepDraft={stepDraft}
           onDraftChange={handleDraftChange}
           simParams={simParams}

@@ -7,24 +7,41 @@ type Props = {
   answer: string
   /** Full worked solution. */
   solution?: string
+  /** Key formulas to re-ground the learner before the walkthrough. */
+  formulas?: string[]
 }
 
 /**
- * Shown after repeated wrong attempts. Reveals the correct answer plus the full
- * walkthrough so the learner can recover and move on.
+ * Shown after repeated wrong attempts. Instead of just giving the answer, it
+ * surfaces a short concept review and then an easier, step-by-step walkthrough
+ * so the learner can recover and move on with understanding.
  */
-export function StuckHelp({ answer, solution }: Props) {
+export function StuckHelp({ answer, solution, formulas }: Props) {
   return (
     <div className="stuck-help">
-      <p className="stuck-help__title">Stuck? Here's the full walkthrough.</p>
-      <p className="stuck-help__answer">
-        Answer: <strong>{answer}</strong>
-      </p>
+      <p className="stuck-help__title">Let's slow down and walk through it together.</p>
+
+      {formulas && formulas.length > 0 && (
+        <div className="stuck-help__recap">
+          <span className="stuck-help__recap-label">Remember</span>
+          <div className="stuck-help__recap-formulas">
+            {formulas.map((f) => (
+              <PhysicsText key={f} text={f} className="stuck-help__formula" />
+            ))}
+          </div>
+        </div>
+      )}
+
       {solution && (
         <div className="stuck-help__body">
+          <span className="stuck-help__step-label">Step by step</span>
           <PhysicsText text={solution} block />
         </div>
       )}
+
+      <p className="stuck-help__answer">
+        Answer: <strong>{answer}</strong>
+      </p>
     </div>
   )
 }

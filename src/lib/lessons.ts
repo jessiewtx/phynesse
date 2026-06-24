@@ -41,11 +41,9 @@ export function statusForStepIndex(lesson: Lesson, stepIndex: number): LessonSta
 }
 
 export function isLessonUnlocked(
-  lesson: Lesson,
-  progressMap: Record<string, StoredLessonProgress>,
+  _lesson?: Lesson,
+  _progressMap?: Record<string, StoredLessonProgress>,
 ): boolean {
-  if (lesson.order === 1) return true
-  const prev = getAllLessons().find((l) => l.order === lesson.order - 1)
-  if (!prev) return true
-  return progressMap[prev.id]?.status === 'completed'
+  // Every lesson is open — learners can explore the unit in any order.
+  return true
 }

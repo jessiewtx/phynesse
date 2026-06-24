@@ -225,7 +225,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
 
       {!solved && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
-        <StuckHelp answer={`${step.correctValue} ${step.unit}`} solution={solution} />
+        <StuckHelp answer={`${step.correctValue} ${step.unit}`} solution={solution} formulas={step.formulas} />
       )}
 
       <WhyPanel solved={solved} solution={solution} />

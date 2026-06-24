@@ -16,6 +16,7 @@ type AttemptHandler = (
 
 type Props = {
   step: Step
+  lessonId?: string
   stepDraft: StepDraft | null
   onDraftChange: (draft: StepDraft | null) => void
   simParams: PushBlockParams
@@ -27,6 +28,7 @@ type Props = {
 
 export function StepRenderer({
   step,
+  lessonId,
   stepDraft,
   onDraftChange,
   simParams,
@@ -92,7 +94,7 @@ export function StepRenderer({
         />
       )
     case 'complete':
-      return <CompleteStepView step={step} onFinish={onComplete} />
+      return <CompleteStepView step={step} lessonId={lessonId} onFinish={onComplete} />
     default:
       return null
   }

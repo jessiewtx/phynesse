@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { getAllLessons, isLessonUnlocked, statusForStepIndex } from '../lib/lessons'
-import { loadProgress } from '../lib/progress'
-import { fetchAllLessonProgress, type StoredLessonProgress } from '../lib/progressFirestore'
-import { getStreak, emptyStats, type StreakStats } from '../lib/streak'
+import { getAllLessons } from '../lib/lessons'
+import { useLearnerData } from '../lib/useLearnerData'
+import { buildMastery, levelMeta } from '../lib/mastery'
 import { displayFirstName } from '../lib/displayName'
 import { SignInPanel } from './SignInPanel'
 
@@ -13,37 +12,45 @@ type Props = {
   onNavigate?: () => void
 }
 
+/** Tiny progress ring used per-lesson in the sidebar (shows partial progress). */
+function LessonRing({ frac, color, label, done }: { frac: number; color: string; label: string; done: boolean }) {
+  const size = 28
+  const stroke = 3
+  const r = (size - stroke) / 2
+  const c = 2 * Math.PI * r
+  const off = c * (1 - Math.max(0, Math.min(1, frac)))
+  return (
+    <span className="sb-ring" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--border)" strokeWidth={stroke} />
+        {frac > 0 && (
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            fill="none"
+            stroke={color}
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={c}
+            strokeDashoffset={off}
+            transform={`rotate(-90 ${size / 2} ${size / 2})`}
+            className="sb-ring__bar"
+          />
+        )}
+      </svg>
+      <span className="sb-ring__label" style={done ? { color } : undefined}>{label}</span>
+    </span>
+  )
+}
+
 export function AppSidebar({ onNavigate }: Props) {
   const { user, isSignedIn, signOut } = useAuth()
   const location = useLocation()
   const lessons = getAllLessons()
-  const [progressMap, setProgressMap] = useState<Record<string, StoredLessonProgress>>({})
-  const [streak, setStreak] = useState<StreakStats>(() => emptyStats())
+  const { progressMap, attempts, streak } = useLearnerData()
 
-  useEffect(() => {
-    const uid = isSignedIn && user ? user.uid : null
-    getStreak(uid).then(setStreak)
-
-    if (uid) {
-      fetchAllLessonProgress(uid).then(setProgressMap)
-      return
-    }
-    const guest: Record<string, StoredLessonProgress> = {}
-    for (const lesson of getAllLessons()) {
-      const local = loadProgress(lesson.id)
-      if (local) {
-        guest[lesson.id] = {
-          lessonId: lesson.id,
-          stepIndex: local.stepIndex,
-          simParams: local.simParams,
-          stepDraft: local.stepDraft ?? null,
-          status: statusForStepIndex(lesson, local.stepIndex),
-          updatedAt: local.updatedAt,
-        }
-      }
-    }
-    setProgressMap(guest)
-  }, [isSignedIn, user, location.pathname])
+  const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
 
   const currentLessonId = location.pathname.startsWith('/lesson/')
     ? location.pathname.split('/lesson/')[1]
@@ -77,30 +84,23 @@ export function AppSidebar({ onNavigate }: Props) {
         </Link>
       </nav>
 
+      <div className="app-sidebar__mastery">
+        <div className="app-sidebar__mastery-bar">
+          <div className="app-sidebar__mastery-fill" style={{ width: `${m.overall}%` }} />
+        </div>
+        <span className="app-sidebar__mastery-num">{m.overall}% mastery</span>
+      </div>
+
       <p className="app-sidebar__label">Lessons</p>
       <nav className="app-sidebar__list">
         {lessons.map((lesson) => {
           const prog = progressMap[lesson.id]
           const complete = prog?.status === 'completed'
-          const locked = !isLessonUnlocked(lesson, progressMap)
           const current = lesson.id === currentLessonId
-          const num = lesson.order.toString().padStart(2, '0')
+          const lm = m.byId[lesson.id]
+          const frac = complete ? 1 : (lm?.progressFraction ?? 0)
+          const color = lm ? levelMeta(lm.level).color : 'var(--border-mid)'
 
-          const inner = (
-            <>
-              <span className="app-sidebar__n">{num}</span>
-              <span className="app-sidebar__lesson-title">{lesson.title}</span>
-              <span className="app-sidebar__mark">{complete ? '✓' : locked ? '🔒' : ''}</span>
-            </>
-          )
-
-          if (locked) {
-            return (
-              <div key={lesson.id} className="app-sidebar__item app-sidebar__item--locked">
-                {inner}
-              </div>
-            )
-          }
           return (
             <Link
               key={lesson.id}
@@ -109,7 +109,14 @@ export function AppSidebar({ onNavigate }: Props) {
               aria-current={current ? 'page' : undefined}
               onClick={onNavigate}
             >
-              {inner}
+              <LessonRing
+                frac={frac}
+                color={color}
+                label={complete ? '✓' : String(lesson.order)}
+                done={complete}
+              />
+              <span className="app-sidebar__lesson-title">{lesson.title}</span>
+              {lm?.dueForReview && <span className="app-sidebar__review" title="Due for review">↻</span>}
             </Link>
           )
         })}
