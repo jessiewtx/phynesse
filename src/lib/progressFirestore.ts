@@ -97,11 +97,17 @@ export async function logStepAttempt(
 ): Promise<void> {
   if (!db) return
   const id = crypto.randomUUID()
-  const { createdAt, ...rest } = record
-  await setDoc(doc(db, 'users', uid, 'attempts', id), {
+  const { createdAt, hintShown, ...rest } = record
+  // Firestore rejects documents containing `undefined` field values, which
+  // would silently drop the write. Correct answers carry no hint, so we must
+  // omit `hintShown` entirely rather than set it to undefined — otherwise every
+  // correct attempt fails to save and mastery never registers.
+  const data: Record<string, unknown> = {
     ...rest,
     createdAt: createdAt ?? new Date().toISOString(),
-  })
+  }
+  if (hintShown !== undefined) data.hintShown = hintShown
+  await setDoc(doc(db, 'users', uid, 'attempts', id), data)
 }
 
 export async function fetchAttempts(uid: string): Promise<StepAttemptRecord[]> {
