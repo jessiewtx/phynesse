@@ -71,12 +71,11 @@ firebase deploy
 
 ```
 src/
-  components/   # UI + sims (Step 1+)
-  lib/          # firebase, physics, grading
-  pages/        # Home, Lesson, Auth
+  components/   # step renderers, interactive demos & diagrams, UI
+  lib/          # firebase, grading, mastery, progress, streak
+  pages/        # Home, Lesson, Progress
   types/        # Step, Lesson, Progress
 content/        # Lesson JSON (source of truth)
-scripts/        # Firestore seed scripts
 docs/           # PRD
 ```
 

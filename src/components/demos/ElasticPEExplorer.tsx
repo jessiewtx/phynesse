@@ -2,21 +2,22 @@ import { useEffect, useRef, useState } from 'react'
 
 // Scene geometry (SVG viewBox units).
 const VIEW_W = 320
-const VIEW_H = 108
+const VIEW_H = 116
 const WALL_W = 16
 const BW = 38
 const BH = 50
-const REST_LEFT = 152 // block's left edge at natural length (x = 0)
-const PX_PER_M = 92 // how many viewBox px one metre of squeeze is worth
-const XMAX = 1.0 // metres of squeeze the block can be dragged
-const SPRING_Y = VIEW_H / 2
+const REST_LEFT = 150 // block's left edge at natural length (x = 0)
+const PX_PER_M = 86 // how many viewBox px one metre of displacement is worth
+const X_COMPRESS = 1.0 // metres the block can be pushed toward the wall (x > 0)
+const X_STRETCH = 1.0 // metres the block can be pulled away (x < 0)
+const SPRING_Y = VIEW_H / 2 - 4
 
-const MAX_U = 0.5 * 400 * XMAX * XMAX // for scaling the energy bars
+const MAX_U = 0.5 * 400 * X_COMPRESS * X_COMPRESS // for scaling the energy bars
 const TARGET = 50
 const TARGET_TOL = 2
 
 /** Zig-zag spring path between two x positions. */
-function springPath(xStart: number, xEnd: number, y: number, coils = 9, amp = 15) {
+function springPath(xStart: number, xEnd: number, y: number, coils = 9, amp = 14) {
   const lead = 6
   const innerStart = xStart + lead
   const innerEnd = xEnd - lead
@@ -58,29 +59,30 @@ export function ElasticPEExplorer() {
   }
   useEffect(() => () => cancelAnim(), [])
 
-  const clientToSqueeze = (clientX: number) => {
+  // Pointer → displacement x. Positive = compressed (toward wall), negative = stretched.
+  const clientToX = (clientX: number) => {
     const svg = svgRef.current
     if (!svg) return 0
     const r = svg.getBoundingClientRect()
     const vx = ((clientX - r.left) / r.width) * VIEW_W
     const blockLeft = vx - BW / 2
-    const squeeze = (REST_LEFT - blockLeft) / PX_PER_M
-    return Math.max(0, Math.min(XMAX, squeeze))
+    const disp = (REST_LEFT - blockLeft) / PX_PER_M
+    return Math.max(-X_STRETCH, Math.min(X_COMPRESS, disp))
   }
 
   const onPointerDown = (e: React.PointerEvent) => {
     cancelAnim()
     setDragging(true)
     ;(e.target as Element).setPointerCapture?.(e.pointerId)
-    setX(clientToSqueeze(e.clientX))
+    setX(clientToX(e.clientX))
   }
   const onPointerMove = (e: React.PointerEvent) => {
     if (!dragging) return
-    setX(clientToSqueeze(e.clientX))
+    setX(clientToX(e.clientX))
   }
   const release = () => {
     const x0 = xRef.current
-    if (x0 < 0.03) {
+    if (Math.abs(x0) < 0.03) {
       setX(0)
       return
     }
@@ -93,14 +95,14 @@ export function ElasticPEExplorer() {
     const tick = (now: number) => {
       const t = (now - start) / 1000
       const amp = x0 * Math.exp(-damp * t)
-      if (amp < 0.012) {
+      if (Math.abs(amp) < 0.012) {
         setX(0)
         setAnimating(false)
         rafRef.current = null
         return
       }
       const xt = amp * Math.cos(omega * t)
-      setX(Math.max(-XMAX, Math.min(XMAX, xt)))
+      setX(Math.max(-X_STRETCH, Math.min(X_COMPRESS, xt)))
       rafRef.current = requestAnimationFrame(tick)
     }
     rafRef.current = requestAnimationFrame(tick)
@@ -115,7 +117,8 @@ export function ElasticPEExplorer() {
   const u = 0.5 * k * x * x
   const totalE = animating ? totalERef.current : u
   const ke = Math.max(0, totalE - u)
-  const compressed = Math.abs(x) > 0.03
+  const loaded = Math.abs(x) > 0.03
+  const mode = x > 0.03 ? 'compressed' : x < -0.03 ? 'stretched' : 'at rest'
   const hit = !animating && Math.abs(u - TARGET) <= TARGET_TOL
 
   return (
@@ -133,6 +136,19 @@ export function ElasticPEExplorer() {
           <line x1="0" y1={VIEW_H - 8} x2={VIEW_W} y2={VIEW_H - 8} className="spring-lab__floor" />
           {/* wall */}
           <rect x="0" y="6" width={WALL_W} height={VIEW_H - 14} rx="3" className="spring-lab__wall" />
+
+          {/* natural-length reference: x = 0 (dashed) */}
+          <line
+            x1={REST_LEFT}
+            y1="10"
+            x2={REST_LEFT}
+            y2={VIEW_H - 8}
+            className="spring-lab__zero"
+          />
+          <text x={REST_LEFT} y={VIEW_H - 1} className="spring-lab__zero-label">
+            x = 0
+          </text>
+
           {/* spring */}
           <path d={springPath(WALL_W, blockLeft, SPRING_Y)} className="spring-lab__spring" />
           {/* block (draggable) */}
@@ -141,7 +157,7 @@ export function ElasticPEExplorer() {
             onPointerDown={onPointerDown}
             style={{ cursor: dragging ? 'grabbing' : 'grab' }}
           >
-            <rect x={blockLeft} y={(VIEW_H - BH) / 2} width={BW} height={BH} rx="6" />
+            <rect x={blockLeft} y={(VIEW_H - BH) / 2 - 4} width={BW} height={BH} rx="6" />
             {/* grip lines */}
             <line x1={blockLeft + BW / 2 - 5} y1={SPRING_Y - 9} x2={blockLeft + BW / 2 - 5} y2={SPRING_Y + 9} />
             <line x1={blockLeft + BW / 2} y1={SPRING_Y - 9} x2={blockLeft + BW / 2} y2={SPRING_Y + 9} />
@@ -149,8 +165,13 @@ export function ElasticPEExplorer() {
           </g>
         </svg>
 
-        {!compressed && !animating && (
-          <p className="spring-lab__hint">← drag the block to compress the spring, then let go</p>
+        {!loaded && !animating && (
+          <p className="spring-lab__hint">← push the block in, or pull it out →, then let go</p>
+        )}
+        {loaded && !animating && (
+          <p className="spring-lab__hint">
+            {mode} {Math.abs(x).toFixed(2)} m from natural length
+          </p>
         )}
       </div>
 
@@ -179,7 +200,7 @@ export function ElasticPEExplorer() {
 
       <div className="ke-explorer__controls">
         <label className="ke-explorer__row">
-          <span>Stiffness</span>
+          <span>Stiffness (k)</span>
           <input
             type="range"
             min={50}
@@ -188,28 +209,13 @@ export function ElasticPEExplorer() {
             value={k}
             onChange={(e) => setK(Number(e.target.value))}
           />
-          <span className="ke-explorer__val">{k} N/m</span>
-        </label>
-        <label className="ke-explorer__row">
-          <span>Squeeze</span>
-          <input
-            type="range"
-            min={0}
-            max={XMAX}
-            step={0.05}
-            value={Math.max(0, x)}
-            onChange={(e) => {
-              cancelAnim()
-              setX(Number(e.target.value))
-            }}
-          />
-          <span className="ke-explorer__val">{Math.max(0, x).toFixed(2)} m</span>
+          <span className="ke-explorer__val">k = {k} N/m</span>
         </label>
         <button
           type="button"
           className="btn btn--primary btn--sm spring-lab__launch"
           onClick={release}
-          disabled={!compressed || animating}
+          disabled={!loaded || animating}
         >
           Release & launch →
         </button>
@@ -217,8 +223,8 @@ export function ElasticPEExplorer() {
 
       <p className={`ke-explorer__goal ${hit ? 'ke-explorer__goal--hit' : ''}`}>
         {hit
-          ? '✓ Nice — PE_s ≈ 50 J. Notice how a small extra squeeze adds a lot (x is squared).'
-          : 'Goal: compress until PE_s ≈ 50 J — then release and watch it become motion.'}
+          ? '✓ Nice — PE_s ≈ 50 J. Notice a small extra pull adds a lot of energy (x is squared).'
+          : 'Goal: load the spring until PE_s ≈ 50 J — then release and watch it become motion.'}
       </p>
     </div>
   )

@@ -8,14 +8,13 @@ import {
   setDoc,
 } from 'firebase/firestore'
 import { db } from './firebase'
-import type { LessonProgress, PushBlockParams, StepDraft } from '../types/lesson'
+import type { LessonProgress, StepDraft } from '../types/lesson'
 
 export type LessonStatus = 'not_started' | 'in_progress' | 'completed'
 
 export type StoredLessonProgress = {
   lessonId: string
   stepIndex: number
-  simParams: PushBlockParams
   stepDraft?: StepDraft | null
   status: LessonStatus
   updatedAt: string
@@ -61,7 +60,7 @@ export async function fetchAllLessonProgress(
 export async function saveLessonProgress(
   uid: string,
   lessonId: string,
-  data: Pick<LessonProgress, 'stepIndex' | 'simParams' | 'stepDraft'> & {
+  data: Pick<LessonProgress, 'stepIndex' | 'stepDraft'> & {
     status: LessonStatus
     totalSteps: number
   },
@@ -78,7 +77,6 @@ export async function saveLessonProgress(
     {
       lessonId,
       stepIndex: data.stepIndex,
-      simParams: data.simParams,
       stepDraft: data.stepDraft ?? null,
       status: data.stepIndex >= data.totalSteps ? 'completed' : status,
       updatedAt: new Date().toISOString(),
@@ -95,13 +93,14 @@ export async function saveLessonProgress(
 
 export async function logStepAttempt(
   uid: string,
-  record: Omit<StepAttemptRecord, 'createdAt'>,
+  record: Omit<StepAttemptRecord, 'createdAt'> & { createdAt?: string },
 ): Promise<void> {
   if (!db) return
   const id = crypto.randomUUID()
+  const { createdAt, ...rest } = record
   await setDoc(doc(db, 'users', uid, 'attempts', id), {
-    ...record,
-    createdAt: new Date().toISOString(),
+    ...rest,
+    createdAt: createdAt ?? new Date().toISOString(),
   })
 }
 

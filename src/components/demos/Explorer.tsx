@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 
-export type ExplorerVar = {
+type ExplorerVar = {
   key: string
   label: string
   min: number

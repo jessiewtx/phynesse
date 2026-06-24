@@ -2,7 +2,7 @@
   "id": "L6",
   "title": "Power",
   "order": 6,
-  "summary": "How fast energy moves. Connect work and time through P = W/Δt, measured in watts.",
+  "summary": "How fast energy moves. Use P = W/Δt and P = F·v on cars and stair sprints.",
   "steps": [
     {
       "type": "concept",
@@ -12,82 +12,92 @@
     {
       "type": "concept",
       "title": "The formula",
-      "body": "**W** is the work done (J), **Δt** is the time it took (s). Power is measured in **watts (W)**, where 1 watt = 1 joule per second.",
+      "body": "**W** is the work done (J), **Δt** is the time it took (s). Power is measured in **watts (W)**, where 1 watt = 1 joule per second.\n\nSet the work and the time below — watch power shoot up as you shrink the time. Same job, done faster, means more power.",
       "equation": "P = W / Δt",
-      "visual": "power"
-    },
-    {
-      "type": "concept",
-      "title": "Get a feel for it",
-      "body": "Set the work and the time. Watch power shoot up as you shrink the time — same job, done faster, means more power.",
       "demo": "power_explorer"
     },
     {
-      "type": "predict_mc",
-      "prompt": "You do the same amount of work, but in half the time. What happens to your power output?",
-      "choices": [
-        "It halves",
-        "It stays the same",
-        "It doubles",
-        "It quadruples"
-      ],
-      "correctIndex": 2,
-      "hints": [
-        "Take a look at P = W / Δt — the work on top stays the same, but the time on the bottom shrinks.",
-        "When the bottom of a fraction gets smaller, the result gets bigger — so what happens if the time is cut in half?"
-      ],
-      "solution": "Power is the rate of doing work: P = W / Δt. The work W on top is unchanged, while the time Δt on the bottom is cut in half. Halving the denominator doubles the result.\n\n**So the answer is \"It doubles\".**"
-    },
-    {
-      "type": "equation_fill",
-      "prompt": "Plug in the numbers. You do **W = 120 J** of work in **Δt = 4 s**. Drag each value into its spot, then find the power.",
-      "template": [
-        { "text": "P = " },
-        { "slot": "W" },
-        { "text": " / " },
-        { "slot": "t" }
-      ],
-      "slots": { "W": 120, "t": 4 },
-      "slotLabels": { "W": "work", "t": "time" },
-      "tokens": [4, 120, 30],
-      "result": { "value": 30, "unit": "W", "tolerance": 0.05 },
-      "fillHint": "Almost — work goes on top (W spot) and time on the bottom (t spot). Here W = 120 and Δt = 4.",
-      "computeHints": [
-        "So close — power is work divided by time, so divide your two values.",
-        "Just work out 120 ÷ 4 for the power in watts."
-      ],
-      "solution": "Power is work divided by time: P = W / Δt.\n\nWork goes on top and time on the bottom, so P = 120 ÷ 4 = **30 W**."
+      "type": "compare_slider",
+      "prompt": "You do a fixed **W = 120 J** of work. Drag the **time** you take and watch your power output.",
+      "formula": "P = W / Δt",
+      "varSymbol": "Δt",
+      "varName": "time",
+      "scene": "time",
+      "varUnit": "s",
+      "min": 1,
+      "max": 8,
+      "stepSize": 1,
+      "base": 4,
+      "constants": [{ "symbol": "W", "value": "120 J" }],
+      "result": { "symbol": "P", "unit": "W", "coeff": 120, "power": -1 },
+      "task": "Drag the time down to **half** — from 4 s to 2 s. Then read the two bars.",
+      "solution": "Power is work over time: P = W / Δt. The work stays 120 J, so cutting the time from 4 s to 2 s halves the denominator — which doubles the power, from 30 W to **60 W**."
     },
     {
       "type": "concept",
-      "title": "Lifting at steady speed",
-      "body": "When a motor lifts a load at **constant speed**, there's no change in KE — all the work goes into gravitational PE. So the work done is just **W = mgh**, and power is that divided by time."
+      "title": "Power and speed",
+      "body": "There's a second face of power. If a force F pushes something moving at speed v, the work piles up as F·d while the distance grows as d = v·Δt. Divide and the time cancels:\n\nP = W/Δt = F·d/Δt = F·v.\n\nSo for steady motion against a steady force, power is simply force times speed.",
+      "equation": "P = F·v",
+      "visual": "power_speed"
     },
     {
-      "type": "bar_drag",
-      "prompt": "A motor lifts a **4 kg** crate **2.5 m** at **constant speed** in **5 s**. Drag the motor's **P**.",
-      "barLabel": "P",
-      "barColor": "#06b6d4",
-      "maxValue": 30,
-      "correctValue": 19.6,
+      "type": "predict_numeric",
+      "prompt": "A car cruises at a **constant 30 m/s** down the highway. Air resistance and friction together push back with **900 N**. What power must the engine deliver to hold that speed?",
+      "correctValue": 27000,
+      "visual": "power_car",
       "unit": "W",
-      "tolerance": 0.06,
-      "formulas": ["W = mgh", "P = W / Δt"],
+      "tolerance": 0.02,
+      "formulas": ["P = F·v"],
       "givens": [
-        { "label": "m", "value": "4 kg" },
-        { "label": "h", "value": "2.5 m" },
-        { "label": "Δt", "value": "5 s" }
+        { "label": "F", "value": "900 N" },
+        { "label": "v", "value": "30 m/s" }
       ],
       "hints": [
-        "At constant speed there's no change in KE, so the work is just W = mgh.",
-        "Find W with m × g × h first, then divide that by the time to get the power."
+        "Constant speed means the engine force just balances the 900 N of drag. Use P = F·v.",
+        "P = F·v = 900 × 30."
       ],
-      "solution": "At constant speed there's no change in KE, so all the work goes into lifting: W = mgh. Power is then P = W / Δt.\n\nW = 4 × 9.8 × 2.5 = 98 J, and P = 98 ÷ 5 = **19.6 W**."
+      "solution": "At constant speed the engine's drive force equals the 900 N of resistance, so use P = F·v.\n\nP = 900 × 30 = **27,000 W** (27 kW, about 36 horsepower)."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Setup:** A **65 kg** athlete sprints up a staircase that rises **4.5 m** vertically, taking **5.0 s** at a steady pace. (g = 9.8)\n\n**Part A —** How much work does the athlete do against gravity?",
+      "correctValue": 2866.5,
+      "visual": "stairs",
+      "unit": "J",
+      "tolerance": 0.02,
+      "formulas": ["W = mgh"],
+      "givens": [
+        { "label": "m", "value": "65 kg" },
+        { "label": "h", "value": "4.5 m" }
+      ],
+      "hints": [
+        "At a steady pace there's no change in KE, so all the work raises gravitational PE: W = mgh.",
+        "W = 65 × 9.8 × 4.5."
+      ],
+      "solution": "Running at a steady pace, the work goes into lifting the body: W = mgh.\n\nW = 65 × 9.8 × 4.5 ≈ **2867 J**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part B —** What is the athlete's power output on the climb?",
+      "correctValue": 573.3,
+      "visual": "stairs",
+      "unit": "W",
+      "tolerance": 0.02,
+      "formulas": ["P = W / Δt"],
+      "givens": [
+        { "label": "W", "value": "2867 J" },
+        { "label": "Δt", "value": "5.0 s" }
+      ],
+      "hints": [
+        "Power is the work done divided by the time it took.",
+        "P = W / Δt = 2866.5 / 5.0."
+      ],
+      "solution": "Power is work over time: P = W / Δt.\n\nP = 2866.5 / 5.0 ≈ **573 W** — well above a steady human output, which is why a hard stair sprint is exhausting."
     },
     {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You connected work, time, and power — the rate energy flows.",
+      "body": "You connected work, time, and power, used P = F·v for steady motion, and measured a real athlete's power climbing stairs.",
       "nextLessonId": "L7",
       "nextLessonTitle": "Mixed Problems"
     }

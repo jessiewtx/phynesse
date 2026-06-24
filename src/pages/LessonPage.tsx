@@ -5,24 +5,19 @@ import { ProgressBar } from '../components/ProgressBar'
 import { SignInPanel } from '../components/SignInPanel'
 import { useAuth } from '../contexts/AuthContext'
 import { getLesson, statusForStepIndex } from '../lib/lessons'
-import { loadProgress as loadLocalProgress, saveProgress as saveLocalProgress } from '../lib/progress'
+import { loadProgress as loadLocalProgress, saveProgress as saveLocalProgress, logGuestAttempt } from '../lib/progress'
 import {
   fetchLessonProgress,
   logStepAttempt,
   saveLessonProgress,
   type LessonStatus,
 } from '../lib/progressFirestore'
-import type { PushBlockParams, SimStep, StepDraft } from '../types/lesson'
+import type { StepDraft } from '../types/lesson'
 import { displayFirstName } from '../lib/displayName'
 import { completeLesson, type CompletionResult } from '../lib/streak'
 import { StreakCelebrationOverlay } from '../components/StreakCelebrationOverlay'
-
-const DEFAULT_PARAMS: PushBlockParams = {
-  force: 10,
-  distance: 2,
-  mass: 2,
-  muK: 0,
-}
+import { ConfirmDialog } from '../components/ConfirmDialog'
+import { notifyLearnerDataChanged } from '../lib/useLearnerData'
 
 export function LessonPage() {
   const { user, isSignedIn, authReady } = useAuth()
@@ -30,12 +25,12 @@ export function LessonPage() {
   const lesson = lessonId ? getLesson(lessonId) : undefined
 
   const [stepIndex, setStepIndex] = useState(0)
-  const [simParams, setSimParams] = useState<PushBlockParams>(DEFAULT_PARAMS)
   const [stepDraft, setStepDraft] = useState<StepDraft | null>(null)
   const [, setStatus] = useState<LessonStatus>('not_started')
   const [ready, setReady] = useState(false)
   const [celebration, setCelebration] = useState<CompletionResult | null>(null)
   const [showCelebration, setShowCelebration] = useState(false)
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false)
 
   useEffect(() => {
     if (!lesson || !lessonId) return
@@ -51,7 +46,6 @@ export function LessonPage() {
         else if (source) {
           await saveLessonProgress(user.uid, lessonId!, {
             stepIndex: source.stepIndex,
-            simParams: source.simParams,
             stepDraft: source.stepDraft ?? null,
             status: statusForStepIndex(lesson!, source.stepIndex),
             totalSteps: lesson!.steps.length,
@@ -65,7 +59,6 @@ export function LessonPage() {
             ? lesson!.steps.length
             : source.stepIndex
         setStepIndex(idx)
-        setSimParams(source.simParams)
         setStepDraft(source.stepDraft ?? null)
         setStatus(statusForStepIndex(lesson!, source.stepIndex))
       }
@@ -88,6 +81,7 @@ export function LessonPage() {
     celebratedRef.current = true
     void completeLesson(user?.uid ?? null, lessonId).then((result) => {
       setCelebration(result)
+      notifyLearnerDataChanged()
       // Only celebrate on the FIRST completion of the day (when the streak
       // actually starts or advances) — or when a new milestone is earned.
       // Later lessons the same day finish quietly.
@@ -100,23 +94,22 @@ export function LessonPage() {
   const persist = useCallback(
     async (
       nextStep: number,
-      nextParams: PushBlockParams,
       nextDraft: StepDraft | null,
       nextStatus: LessonStatus,
     ) => {
       if (!lessonId || !lesson) return
 
-      saveLocalProgress(lessonId, nextStep, nextParams, nextDraft)
+      saveLocalProgress(lessonId, nextStep, nextDraft)
 
       if (user) {
         await saveLessonProgress(user.uid, lessonId, {
           stepIndex: nextStep,
-          simParams: nextParams,
           stepDraft: nextDraft,
           status: nextStatus,
           totalSteps: lesson.steps.length,
         })
       }
+      notifyLearnerDataChanged()
     },
     [lessonId, lesson, user],
   )
@@ -131,25 +124,18 @@ export function LessonPage() {
 
     if (persistTimer.current) clearTimeout(persistTimer.current)
     persistTimer.current = setTimeout(() => {
-      void persist(stepIndex, simParams, stepDraft, nextStatus)
+      void persist(stepIndex, stepDraft, nextStatus)
     }, 400)
 
     return () => {
       if (persistTimer.current) clearTimeout(persistTimer.current)
     }
-  }, [stepIndex, simParams, stepDraft, ready, lessonId, lesson, persist])
+  }, [stepIndex, stepDraft, ready, lessonId, lesson, persist])
 
   const advance = useCallback(() => {
     if (!lesson) return
     setStepDraft(null)
-    setStepIndex((i) => {
-      const next = i + 1
-      const nextStep = lesson.steps[next]
-      if (nextStep?.type === 'sim') {
-        setSimParams((nextStep as SimStep).defaultParams)
-      }
-      return next
-    })
+    setStepIndex((i) => i + 1)
   }, [lesson])
 
   const handleDraftChange = useCallback(
@@ -157,11 +143,10 @@ export function LessonPage() {
       setStepDraft(draft)
       if (draft?.showWrongFeedback && lessonId && lesson) {
         const nextStatus: LessonStatus = statusForStepIndex(lesson, stepIndex)
-        saveLocalProgress(lessonId, stepIndex, simParams, draft)
+        saveLocalProgress(lessonId, stepIndex, draft)
         if (user) {
           void saveLessonProgress(user.uid, lessonId, {
             stepIndex,
-            simParams,
             stepDraft: draft,
             status: nextStatus,
             totalSteps: lesson.steps.length,
@@ -169,7 +154,7 @@ export function LessonPage() {
         }
       }
     },
-    [lessonId, lesson, user, stepIndex, simParams],
+    [lessonId, lesson, user, stepIndex],
   )
 
   const handleComplete = useCallback(() => {
@@ -178,8 +163,8 @@ export function LessonPage() {
     setStepIndex(done)
     setStepDraft(null)
     setStatus('completed')
-    void persist(done, simParams, null, 'completed')
-  }, [lessonId, lesson, simParams, persist])
+    void persist(done, null, 'completed')
+  }, [lessonId, lesson, persist])
 
   const handleBack = useCallback(() => {
     if (stepIndex <= 0) return
@@ -188,23 +173,24 @@ export function LessonPage() {
   }, [stepIndex])
 
   const handleRestart = useCallback(() => {
-    if (!window.confirm('Start this lesson over from the beginning?')) return
+    setShowRestartConfirm(true)
+  }, [])
+
+  const confirmRestart = useCallback(() => {
+    setShowRestartConfirm(false)
     setStepIndex(0)
     setStepDraft(null)
-    setSimParams(DEFAULT_PARAMS)
   }, [])
 
   const handleAttempt = useCallback(
     (stepType: string, answer: string | number, correct: boolean, hint?: string) => {
-      if (!user || !lessonId) return
-      void logStepAttempt(user.uid, {
-        lessonId,
-        stepIndex,
-        stepType,
-        answer,
-        correct,
-        hintShown: hint,
-      })
+      if (!lessonId) return
+      const record = { lessonId, stepIndex, stepType, answer, correct, hintShown: hint }
+      if (user) {
+        void logStepAttempt(user.uid, record)
+      } else {
+        logGuestAttempt(record)
+      }
     },
     [user, lessonId, stepIndex],
   )
@@ -232,6 +218,16 @@ export function LessonPage() {
   if (!step) {
     return (
       <div className="lesson-page">
+        <ConfirmDialog
+          open={showRestartConfirm}
+          title="Start over?"
+          body="This takes you back to the first step of the lesson. Your saved progress for this lesson will reset."
+          confirmLabel="Start over"
+          cancelLabel="Keep going"
+          destructive
+          onConfirm={confirmRestart}
+          onCancel={() => setShowRestartConfirm(false)}
+        />
         <header className="lesson-header">
           <Link to="/" className="lesson-header__back">← Lessons</Link>
           <div className="lesson-header__center">
@@ -272,6 +268,16 @@ export function LessonPage() {
           onDismiss={() => setShowCelebration(false)}
         />
       )}
+      <ConfirmDialog
+        open={showRestartConfirm}
+        title="Start over?"
+        body="This takes you back to the first step of the lesson. Your saved progress for this lesson will reset."
+        confirmLabel="Start over"
+        cancelLabel="Keep going"
+        destructive
+        onConfirm={confirmRestart}
+        onCancel={() => setShowRestartConfirm(false)}
+      />
       <header className="lesson-header">
         <Link to="/" className="lesson-header__back">← Lessons</Link>
         <div className="lesson-header__center">
@@ -298,9 +304,15 @@ export function LessonPage() {
           ) : (
             <span />
           )}
-          <button type="button" className="lesson-nav__btn lesson-nav__btn--restart" onClick={handleRestart}>
-            ↺ Start over
-          </button>
+          {step.type === 'complete' ? (
+            <Link to="/progress" className="lesson-nav__btn lesson-nav__btn--mastery">
+              View mastery →
+            </Link>
+          ) : (
+            <button type="button" className="lesson-nav__btn lesson-nav__btn--restart" onClick={handleRestart}>
+              ↺ Start over
+            </button>
+          )}
         </div>
 
         <StepRenderer
@@ -309,10 +321,9 @@ export function LessonPage() {
           lessonId={lessonId}
           stepDraft={stepDraft}
           onDraftChange={handleDraftChange}
-          simParams={simParams}
-          onSimChange={setSimParams}
           onAdvance={advance}
           onComplete={handleComplete}
+          onRestart={handleRestart}
           onAttempt={handleAttempt}
         />
       </main>

@@ -1,11 +1,12 @@
-import { type CSSProperties } from 'react'
+import { type CSSProperties, useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Lesson } from '../types/lesson'
 import { isLessonUnlocked } from '../lib/lessons'
 import type { StoredLessonProgress } from '../lib/progressFirestore'
 import { IconLock, IconFlag, IconBolt } from './Illustrations'
 
-const LESSON_COLORS = ['#19c3d6', '#ff4d6d', '#ffc31e', '#1ec487', '#9b5cff', '#ff8a3d']
+// #4 is intentionally blue, not green — green clashes with the progress rail.
+const LESSON_COLORS = ['#19c3d6', '#ff4d6d', '#ffc31e', '#3a82f7', '#9b5cff', '#ff8a3d']
 
 type Props = {
   lessons: Lesson[]
@@ -122,8 +123,34 @@ export function LessonPath({ lessons, progressMap }: Props) {
   const lead: Point = { x: 6, y: GROUND - 10 }
   const tail: Point = { x: VIEW_W - 6, y: GROUND - 10 }
   const fullPath = smoothPath([lead, ...stationPts, tail])
-  const donePath =
-    completedCount > 0 ? smoothPath([lead, ...stationPts.slice(0, completedCount)]) : ''
+
+  // The "done" overlay reuses the EXACT same track path and is revealed only up to
+  // the last completed station (measured along the real curve), so it always fits.
+  const railRef = useRef<SVGPathElement>(null)
+  const [doneLen, setDoneLen] = useState(0)
+  useLayoutEffect(() => {
+    const path = railRef.current
+    if (!path) return
+    if (completedCount <= 0) {
+      setDoneLen(0)
+      return
+    }
+    const target = stationPts[completedCount - 1]
+    const total = path.getTotalLength()
+    let best = 0
+    let bestDist = Infinity
+    const SAMPLES = 700
+    for (let i = 0; i <= SAMPLES; i++) {
+      const len = (i / SAMPLES) * total
+      const pt = path.getPointAtLength(len)
+      const d = Math.hypot(pt.x - target.x, pt.y - target.y)
+      if (d < bestDist) {
+        bestDist = d
+        best = len
+      }
+    }
+    setDoneLen(best)
+  }, [fullPath, completedCount, stationPts])
 
   return (
     <div className="coaster-scroll">
@@ -157,8 +184,14 @@ export function LessonPath({ lessons, progressMap }: Props) {
 
           {/* track */}
           <path d={fullPath} className="coaster__rail coaster__rail--shadow" />
-          <path d={fullPath} className="coaster__rail" />
-          {donePath && <path d={donePath} className="coaster__rail coaster__rail--done" />}
+          <path ref={railRef} d={fullPath} className="coaster__rail" />
+          {doneLen > 0 && (
+            <path
+              d={fullPath}
+              className="coaster__rail coaster__rail--done"
+              strokeDasharray={`${doneLen} 100000`}
+            />
+          )}
         </svg>
 
         {/* stations (HTML overlay so labels + links stay crisp) */}

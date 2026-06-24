@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { getAllLessons, statusForStepIndex } from './lessons'
-import { loadProgress } from './progress'
+import { loadProgress, loadGuestAttempts } from './progress'
 import {
   fetchAllLessonProgress,
   fetchAttempts,
@@ -18,18 +19,38 @@ export type LearnerData = {
   ready: boolean
 }
 
+/** Event other parts of the app fire after they write progress, so live views refresh. */
+const LEARNER_DATA_EVENT = 'phynesse:learner-data'
+
+/** Fire this after any progress / streak write to refresh dashboards in place. */
+export function notifyLearnerDataChanged() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(LEARNER_DATA_EVENT))
+  }
+}
+
 /** One place to load progress, attempts and streak for the current learner. */
 export function useLearnerData(): LearnerData {
   const { user, isSignedIn } = useAuth()
+  const location = useLocation()
   const [progressMap, setProgressMap] = useState<Record<string, StoredLessonProgress>>({})
   const [attempts, setAttempts] = useState<StepAttemptRecord[]>([])
   const [streak, setStreak] = useState<StreakStats>(() => emptyStats())
   const [ready, setReady] = useState(false)
+  const [version, setVersion] = useState(0)
+
+  // Refresh whenever someone signals a write (no full page reload needed).
+  useEffect(() => {
+    const bump = () => setVersion((v) => v + 1)
+    window.addEventListener(LEARNER_DATA_EVENT, bump)
+    return () => window.removeEventListener(LEARNER_DATA_EVENT, bump)
+  }, [])
 
   useEffect(() => {
     let alive = true
     const uid = isSignedIn && user ? user.uid : null
-    setReady(false)
+    // Note: we intentionally do NOT flip `ready` back to false on refetches —
+    // that would flash loading states every time progress is saved mid-lesson.
 
     async function run() {
       const streakStats = await getStreak(uid)
@@ -49,7 +70,6 @@ export function useLearnerData(): LearnerData {
             guest[lesson.id] = {
               lessonId: lesson.id,
               stepIndex: local.stepIndex,
-              simParams: local.simParams,
               stepDraft: local.stepDraft ?? null,
               status: statusForStepIndex(lesson, local.stepIndex),
               updatedAt: local.updatedAt,
@@ -58,7 +78,7 @@ export function useLearnerData(): LearnerData {
         }
         if (!alive) return
         setProgressMap(guest)
-        setAttempts([])
+        setAttempts(loadGuestAttempts())
       }
       if (alive) setReady(true)
     }
@@ -67,7 +87,8 @@ export function useLearnerData(): LearnerData {
     return () => {
       alive = false
     }
-  }, [isSignedIn, user])
+    // location.pathname → refetch on navigation; version → refetch on in-place writes.
+  }, [isSignedIn, user, location.pathname, version])
 
   return { progressMap, attempts, streak, isSignedIn, ready }
 }

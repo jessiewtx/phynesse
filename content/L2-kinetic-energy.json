@@ -2,7 +2,7 @@
   "id": "L2",
   "title": "Kinetic Energy",
   "order": 2,
-  "summary": "The energy of motion. See why speed matters far more than mass with ½mv².",
+  "summary": "The energy of motion. Use ½mv² to find hidden forces and real stopping distances.",
   "steps": [
     {
       "type": "concept",
@@ -12,82 +12,94 @@
     {
       "type": "concept",
       "title": "The formula",
-      "body": "Here's how we measure it. **m** is mass (in kg), **v** is speed (in m/s).\n\nNotice **v is squared** — speed counts far more than mass. Double the speed and KE jumps by four.",
+      "body": "Here's how we measure it. **m** is mass (in kg), **v** is speed (in m/s).\n\nNotice **v is squared** — speed counts far more than mass. Double the speed and KE jumps by four.\n\nPlay with it below — drag mass and speed and watch KE react, then try to hit the goal.",
       "equation": "KE = ½mv²",
-      "visual": "kinetic_energy"
-    },
-    {
-      "type": "concept",
-      "title": "Get a feel for it",
-      "body": "Don't just take the formula's word for it — play. Drag mass and speed and watch KE react. Then try to hit the goal.",
       "demo": "ke_explorer"
     },
     {
-      "type": "predict_mc",
-      "prompt": "A car speeds up from 20 mph to 40 mph — it doubles its speed. What happens to its kinetic energy?",
-      "choices": [
-        "It doubles",
-        "It quadruples (×4)",
-        "It stays the same",
-        "It halves"
-      ],
-      "correctIndex": 1,
-      "hints": [
-        "Good try — but notice KE depends on v², not just v.",
-        "You're close. When the speed doubles, the squared term grows by 2 × 2 — think about what that does to KE."
-      ],
-      "solution": "Kinetic energy depends on the square of speed: KE = ½mv². When the speed doubles, the v² term grows by 2² = 4, while the mass stays the same.\n\n**So the answer is \"It quadruples (×4)\".**"
-    },
-    {
-      "type": "equation_fill",
-      "prompt": "Let's plug in real numbers. A block has **m = 3 kg** and **v = 2 m/s**. Drag each value into the right spot in the equation.",
-      "template": [
-        { "text": "KE = ½ × " },
-        { "slot": "m" },
-        { "text": " × " },
-        { "slot": "v" },
-        { "text": "²" }
-      ],
-      "slots": { "m": 3, "v": 2 },
-      "slotLabels": { "m": "mass", "v": "speed" },
-      "tokens": [2, 3, 9],
-      "result": { "value": 6, "unit": "J", "tolerance": 0.05 },
-      "fillHint": "Almost — mass goes in the m spot and speed in the v spot. Here m = 3 and v = 2.",
-      "computeHints": [
-        "So close — square the speed first (v × v), then bring in the mass and the ½.",
-        "Step by step: square v, multiply by m, then take half of the result."
-      ],
-      "solution": "Kinetic energy is KE = ½mv².\n\nSquare the speed first: v² = 2² = 4. Then bring in the mass and the half: KE = ½ × 3 × 4 = **6 J**."
+      "type": "compare_slider",
+      "prompt": "A **2 kg** block. Drag its **speed** and watch the kinetic energy respond — notice the v² at work.",
+      "formula": "KE = ½ · m · v²",
+      "varSymbol": "v",
+      "varName": "speed",
+      "varUnit": "m/s",
+      "scene": "speed",
+      "min": 1,
+      "max": 8,
+      "stepSize": 0.5,
+      "base": 3,
+      "constants": [{ "symbol": "m", "value": "2 kg" }],
+      "result": { "symbol": "KE", "unit": "J", "coeff": 1, "power": 2 },
+      "task": "Drag the speed to **double** it — from 3 m/s to 6 m/s. Then read the two bars.",
+      "solution": "Kinetic energy is KE = ½mv², and speed is squared. Doubling the speed from 3 m/s to 6 m/s makes the v² term grow by 2² = 4, while the mass stays fixed. So KE jumps from 9 J to **36 J — four times as much**."
     },
     {
       "type": "concept",
-      "title": "Work changes KE",
-      "body": "Remember the work-energy theorem from Lesson 1? The **net work** done on an object equals its **change in kinetic energy**.",
-      "equation": "W_net = ΔKE"
+      "title": "KE is a problem-solving tool",
+      "body": "Combine kinetic energy with the work-energy theorem and you can find **forces** and **distances** without ever touching kinematics equations.\n\nSince the net work equals the change in KE, a force acting over a distance d obeys F·d = ΔKE. Rearrange for whatever you need.",
+      "equation": "W_net = ΔKE = ½mv² − ½mv₀²",
+      "visual": "ke_tool"
     },
     {
-      "type": "bar_drag",
-      "prompt": "**Net work = 24 J** is done on a **2 kg** block starting from rest. Drag **ΔKE**.",
-      "barLabel": "ΔKE",
-      "barColor": "#34d399",
-      "maxValue": 30,
-      "correctValue": 24,
-      "unit": "J",
-      "tolerance": 0.05,
-      "formulas": ["W_net = ΔKE"],
+      "type": "predict_numeric",
+      "prompt": "You push a loaded sled (total mass **20 kg**) from rest across smooth, level snow. After you've pushed it **8 m**, it's moving at **6 m/s**. Ignoring friction, what average force did you apply?",
+      "correctValue": 45,
+      "visual": "force_distance",
+      "unit": "N",
+      "tolerance": 0.03,
+      "formulas": ["F·d = ΔKE", "KE = ½mv²"],
       "givens": [
-        { "label": "W_net", "value": "24 J" }
+        { "label": "m", "value": "20 kg" },
+        { "label": "v", "value": "6 m/s" },
+        { "label": "d", "value": "8 m" }
       ],
       "hints": [
-        "Not quite — remember the work-energy theorem: W_net = ΔKE.",
-        "All of the net work goes straight into motion, so ΔKE matches the W_net you're given."
+        "The sled starts at rest, so the work you do equals its kinetic energy at the end: F·d = ½mv².",
+        "KE = ½ × 20 × 6² = 360 J. Then F = work ÷ distance = 360 ÷ 8."
       ],
-      "solution": "By the work-energy theorem, the net work done on an object equals its change in kinetic energy: W_net = ΔKE.\n\nHere W_net = 24 J, so ΔKE = **24 J**."
+      "solution": "On smooth snow your push is the only horizontal force, so the work you do equals the sled's gain in kinetic energy: F·d = ΔKE = ½mv².\n\nKE = ½ × 20 × 6² = 360 J. The sled started at rest, so you did 360 J of work over 8 m.\n\nF = ΔKE / d = 360 / 8 = **45 N**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Setup:** A **1200 kg** car travels at **24 m/s**. The brakes apply a constant **7200 N** friction force.\n\n**Part A —** How far does the car travel before stopping?",
+      "correctValue": 48,
+      "visual": "braking",
+      "unit": "m",
+      "tolerance": 0.02,
+      "formulas": ["f·d = ½mv²"],
+      "givens": [
+        { "label": "m", "value": "1200 kg" },
+        { "label": "v", "value": "24 m/s" },
+        { "label": "f", "value": "7200 N" }
+      ],
+      "hints": [
+        "Braking removes all the KE: the friction work f·d equals the starting kinetic energy.",
+        "KE = ½ × 1200 × 24² = 345,600 J. Then d = KE ÷ f = 345,600 ÷ 7200."
+      ],
+      "solution": "Friction does negative work that removes all the car's kinetic energy: f·d = ½mv².\n\nKE = ½ × 1200 × 24² = 345,600 J. So d = KE / f = 345,600 / 7200 = **48 m**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part B —** Same car, same brakes, but now it's going **twice as fast — 48 m/s**. How far does it travel before stopping now?",
+      "correctValue": 192,
+      "visual": "braking",
+      "unit": "m",
+      "tolerance": 0.02,
+      "formulas": ["f·d = ½mv²"],
+      "givens": [
+        { "label": "v", "value": "48 m/s" },
+        { "label": "f", "value": "7200 N" }
+      ],
+      "hints": [
+        "Stopping distance comes from KE, and KE depends on v² — so doubling the speed does what?",
+        "Double the speed → 4× the KE → 4× the stopping distance. That's 4 × 48 m."
+      ],
+      "solution": "Stopping distance is set by the kinetic energy that friction must remove, and KE = ½mv² grows with the *square* of speed.\n\nDoubling the speed quadruples the KE (2² = 4), so the stopping distance also quadruples: 4 × 48 = **192 m**. This is exactly why speed is so dangerous."
     },
     {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You learned what kinetic energy is, why speed matters most (v²), and how work changes it.",
+      "body": "You used kinetic energy to back out a hidden force, found a real stopping distance, and saw why doubling speed quadruples it.",
       "nextLessonId": "L3",
       "nextLessonTitle": "Gravitational PE"
     }

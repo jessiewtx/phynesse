@@ -1,6 +1,8 @@
-import type { LessonProgress, PushBlockParams, StepDraft } from '../types/lesson'
+import type { LessonProgress, StepDraft } from '../types/lesson'
+import type { StepAttemptRecord } from './progressFirestore'
 
 const PREFIX = 'phynesse_progress_'
+const ATTEMPTS_KEY = 'phynesse_attempts'
 
 export function loadProgress(lessonId: string): LessonProgress | null {
   try {
@@ -15,19 +17,46 @@ export function loadProgress(lessonId: string): LessonProgress | null {
 export function saveProgress(
   lessonId: string,
   stepIndex: number,
-  simParams: PushBlockParams,
   stepDraft?: StepDraft | null,
 ): void {
   const data: LessonProgress = {
     lessonId,
     stepIndex,
-    simParams,
     stepDraft: stepDraft ?? null,
     updatedAt: new Date().toISOString(),
   }
   localStorage.setItem(`${PREFIX}${lessonId}`, JSON.stringify(data))
 }
 
-export function clearProgress(lessonId: string): void {
-  localStorage.removeItem(`${PREFIX}${lessonId}`)
+/**
+ * Guest attempt log. Mirrors the Firestore `attempts` collection so guests get
+ * the same per-problem mastery scoring as signed-in learners.
+ */
+export function loadGuestAttempts(): StepAttemptRecord[] {
+  try {
+    const raw = localStorage.getItem(ATTEMPTS_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) ? (parsed as StepAttemptRecord[]) : []
+  } catch {
+    return []
+  }
+}
+
+export function logGuestAttempt(record: Omit<StepAttemptRecord, 'createdAt'>): void {
+  try {
+    const all = loadGuestAttempts()
+    all.push({ ...record, createdAt: new Date().toISOString() })
+    localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(all))
+  } catch {
+    // Storage full / unavailable — scoring simply falls back to no history.
+  }
+}
+
+export function clearGuestAttempts(): void {
+  try {
+    localStorage.removeItem(ATTEMPTS_KEY)
+  } catch {
+    // ignore
+  }
 }

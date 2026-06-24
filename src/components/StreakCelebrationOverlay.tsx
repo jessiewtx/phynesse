@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import type { CompletionResult } from '../lib/streak'
+import { IconFlame, MilestoneIcon } from './Illustrations'
 
 type Props = {
   result: CompletionResult
@@ -42,7 +43,7 @@ export function StreakCelebrationOverlay({ result, onDismiss }: Props) {
   return (
     <div className="streak-overlay" role="dialog" aria-modal="true" aria-label={title}>
       <div className="streak-overlay__card">
-        <div className="streak-overlay__flame" aria-hidden="true">🔥</div>
+        <div className="streak-overlay__flame" aria-hidden="true"><IconFlame size={84} /></div>
 
         <div className="streak-overlay__number">{n}</div>
         <div className="streak-overlay__unit">{n === 1 ? 'day streak' : 'day streak'}</div>
@@ -54,7 +55,7 @@ export function StreakCelebrationOverlay({ result, onDismiss }: Props) {
           <ul className="streak-overlay__milestones">
             {result.milestones.map((m) => (
               <li key={m.id} className="streak-overlay__milestone">
-                <span className="streak-overlay__milestone-icon">{m.icon}</span>
+                <span className="streak-overlay__milestone-icon"><MilestoneIcon id={m.id} size={26} /></span>
                 <span className="streak-overlay__milestone-text">
                   <strong>{m.label}</strong>
                   <span>{m.blurb}</span>

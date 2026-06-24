@@ -23,10 +23,16 @@ function initialValue(draft: StepDraft | null): number {
   return 0
 }
 
+function formatValue(v: number): string {
+  return Number.isInteger(v) ? String(v) : String(Math.round(v * 100) / 100)
+}
+
 export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttempt }: Props) {
   const [value, setValue] = useState(() => initialValue(draft))
   const [attempt, setAttempt] = useState(() => draft?.attemptCount ?? 0)
   const [solved, setSolved] = useState(false)
+  // Free-text typing state so learners can key in a value (e.g. "19.6") directly.
+  const [typed, setTyped] = useState<string | null>(null)
   const solution = buildSolution(step)
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'error'; text: string } | null>(
     () =>
@@ -65,6 +71,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
       const rect = track.getBoundingClientRect()
       const fromBottom = rect.bottom - clientY
       const ratio = Math.max(0, Math.min(1, fromBottom / TRACK_PX))
+      setTyped(null)
       applyValue(Math.round(ratio * step.maxValue))
     },
     [step.maxValue, applyValue],
@@ -73,6 +80,8 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
   const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
     dragging.current = true
     e.currentTarget.setPointerCapture(e.pointerId)
+    // Focus the track so the advertised arrow-key control works right away.
+    e.currentTarget.focus()
     setFromClientY(e.clientY)
   }
 
@@ -85,13 +94,23 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
     dragging.current = false
   }
 
+  const nudge = (delta: number) => {
+    setTyped(null)
+    applyValue(value + delta)
+  }
+
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const big = e.shiftKey ? 5 : 1
     if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
       e.preventDefault()
-      applyValue(value + 1)
+      nudge(big)
     } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
       e.preventDefault()
-      applyValue(value - 1)
+      nudge(-big)
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      if (solved) onCorrect()
+      else submit()
     }
   }
 
@@ -161,7 +180,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
             <button
               type="button"
               className="bar-drag__step-btn"
-              onClick={() => applyValue(value + 1)}
+              onClick={() => nudge(1)}
               aria-label="Increase"
             >
               +
@@ -169,7 +188,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
             <button
               type="button"
               className="bar-drag__step-btn"
-              onClick={() => applyValue(value - 1)}
+              onClick={() => nudge(-1)}
               aria-label="Decrease"
             >
               −
@@ -219,7 +238,35 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
           </div>
         </div>
 
-        <p className="bar-drag__hint">Drag, use + / −, or arrow keys</p>
+        <p className="bar-drag__hint">Drag, use + / −, arrow keys, or type a value</p>
+
+        <div className="bar-drag__type">
+          <span className="bar-drag__type-label">Type it:</span>
+          <input
+            className="bar-drag__type-input"
+            type="number"
+            inputMode="decimal"
+            readOnly={solved}
+            value={typed ?? formatValue(value)}
+            onChange={(e) => {
+              const raw = e.target.value
+              setTyped(raw)
+              if (raw.trim() !== '' && Number.isFinite(Number(raw))) {
+                applyValue(Number(raw))
+              }
+            }}
+            onBlur={() => setTyped(null)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                if (solved) onCorrect()
+                else submit()
+              }
+            }}
+            aria-label={`Type ${step.barLabel}`}
+          />
+          <span className="bar-drag__type-unit">{step.unit}</span>
+        </div>
       </div>
 
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}

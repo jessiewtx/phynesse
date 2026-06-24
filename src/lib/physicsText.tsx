@@ -60,7 +60,7 @@ function parsePhysicsTokens(text: string, keyPrefix: string): ReactNode[] {
 
 function parseInline(text: string, keyPrefix: string): ReactNode[] {
   const nodes: ReactNode[] = []
-  const parts = text.split(/(\*\*[^*]+\*\*)/g)
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
   let i = 0
 
   for (const part of parts) {
@@ -70,6 +70,12 @@ function parseInline(text: string, keyPrefix: string): ReactNode[] {
         <strong key={`${keyPrefix}-b-${i++}`}>
           {parsePhysicsTokens(part.slice(2, -2), `${keyPrefix}-b${i}`)}
         </strong>,
+      )
+    } else if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+      nodes.push(
+        <em key={`${keyPrefix}-i-${i++}`}>
+          {parsePhysicsTokens(part.slice(1, -1), `${keyPrefix}-i${i}`)}
+        </em>,
       )
     } else {
       nodes.push(...parsePhysicsTokens(part, `${keyPrefix}-t${i++}`))
@@ -85,6 +91,64 @@ type PhysicsTextProps = {
   block?: boolean
 }
 
+const BULLET_RE = /^\s*[•\-]\s+/
+
+function renderParagraph(para: string, key: string): ReactNode {
+  const lines = para.split('\n')
+  if (!lines.some((l) => BULLET_RE.test(l))) {
+    return (
+      <p key={key} className="phys-para">
+        {parseInline(para, key)}
+      </p>
+    )
+  }
+
+  // Mixed text + bullets: group consecutive bullet lines into a <ul>, and any
+  // surrounding plain lines into their own <p>.
+  const out: ReactNode[] = []
+  let bullets: string[] = []
+  let textBuf: string[] = []
+  let n = 0
+
+  const flushBullets = () => {
+    if (!bullets.length) return
+    const items = bullets
+    out.push(
+      <ul key={`${key}-ul${n++}`} className="phys-list">
+        {items.map((b, j) => (
+          <li key={j}>{parseInline(b.replace(BULLET_RE, ''), `${key}-li${n}-${j}`)}</li>
+        ))}
+      </ul>,
+    )
+    bullets = []
+  }
+  const flushText = () => {
+    const joined = textBuf.join(' ').trim()
+    if (joined) {
+      out.push(
+        <p key={`${key}-p${n++}`} className="phys-para">
+          {parseInline(joined, `${key}-pt${n}`)}
+        </p>,
+      )
+    }
+    textBuf = []
+  }
+
+  for (const line of lines) {
+    if (BULLET_RE.test(line)) {
+      flushText()
+      bullets.push(line)
+    } else if (line.trim()) {
+      flushBullets()
+      textBuf.push(line)
+    }
+  }
+  flushBullets()
+  flushText()
+
+  return <div key={key}>{out}</div>
+}
+
 export function PhysicsText({ text, className, block = false }: PhysicsTextProps) {
   if (!block) {
     return <span className={className}>{parseInline(text, 'inline')}</span>
@@ -93,11 +157,7 @@ export function PhysicsText({ text, className, block = false }: PhysicsTextProps
   const paragraphs = text.split(/\n\n+/)
   return (
     <div className={className}>
-      {paragraphs.map((para, idx) => (
-        <p key={idx} className="phys-para">
-          {parseInline(para, `p${idx}`)}
-        </p>
-      ))}
+      {paragraphs.map((para, idx) => renderParagraph(para, `p${idx}`))}
     </div>
   )
 }

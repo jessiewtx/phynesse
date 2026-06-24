@@ -10,7 +10,7 @@ export type StreakStats = {
   completedLessons: string[]
 }
 
-export type Milestone = {
+type Milestone = {
   id: string
   label: string
   blurb: string
@@ -30,7 +30,7 @@ export function emptyStats(): StreakStats {
 }
 
 /** Local-timezone day key, e.g. "2026-06-23". */
-export function dayKey(date = new Date()): string {
+function dayKey(date = new Date()): string {
   const y = date.getFullYear()
   const m = String(date.getMonth() + 1).padStart(2, '0')
   const d = String(date.getDate()).padStart(2, '0')
@@ -46,7 +46,7 @@ function daysBetween(a: string, b: string): number {
 }
 
 /** Pure: fold a day of activity into the stats. Idempotent within the same day. */
-export function registerActivity(stats: StreakStats, today = dayKey()): StreakStats {
+function registerActivity(stats: StreakStats, today = dayKey()): StreakStats {
   if (stats.lastActiveDay === today) return stats
 
   let currentStreak: number
@@ -66,7 +66,7 @@ export function registerActivity(stats: StreakStats, today = dayKey()): StreakSt
 }
 
 /** Pure: record a finished lesson (deduped). */
-export function registerCompletion(stats: StreakStats, lessonId: string): StreakStats {
+function registerCompletion(stats: StreakStats, lessonId: string): StreakStats {
   if (stats.completedLessons.includes(lessonId)) return stats
   return { ...stats, completedLessons: [...stats.completedLessons, lessonId] }
 }
@@ -85,7 +85,7 @@ const LESSON_MILESTONES: { count: number; milestone: Milestone }[] = [
 ]
 
 /** All milestones the learner has earned, given their stats. */
-export function earnedMilestones(stats: StreakStats): Milestone[] {
+function earnedMilestones(stats: StreakStats): Milestone[] {
   const earned: Milestone[] = []
   for (const { days, milestone } of STREAK_MILESTONES) {
     if (stats.longestStreak >= days) earned.push(milestone)
@@ -97,14 +97,14 @@ export function earnedMilestones(stats: StreakStats): Milestone[] {
 }
 
 /** Milestones present in `after` but not in `before`. */
-export function newlyEarned(before: StreakStats, after: StreakStats): Milestone[] {
+function newlyEarned(before: StreakStats, after: StreakStats): Milestone[] {
   const had = new Set(earnedMilestones(before).map((m) => m.id))
   return earnedMilestones(after).filter((m) => !had.has(m.id))
 }
 
 // ── Guest (localStorage) ──────────────────────────────────────────────
 
-export function loadGuestStreak(): StreakStats {
+function loadGuestStreak(): StreakStats {
   try {
     const raw = localStorage.getItem(GUEST_KEY)
     if (!raw) return emptyStats()
@@ -114,7 +114,7 @@ export function loadGuestStreak(): StreakStats {
   }
 }
 
-export function saveGuestStreak(stats: StreakStats): void {
+function saveGuestStreak(stats: StreakStats): void {
   try {
     localStorage.setItem(GUEST_KEY, JSON.stringify(stats))
   } catch {
@@ -137,7 +137,7 @@ function pickStats(data: Record<string, unknown> | undefined): StreakStats {
   }
 }
 
-export async function fetchStreak(uid: string): Promise<StreakStats> {
+async function fetchStreak(uid: string): Promise<StreakStats> {
   if (!db) return emptyStats()
   const snap = await getDoc(doc(db, 'users', uid))
   return pickStats(snap.exists() ? snap.data() : undefined)
@@ -157,17 +157,6 @@ async function saveStreak(uid: string, stats: StreakStats): Promise<void> {
 /** Read current stats from the right backing store. */
 export async function getStreak(uid: string | null): Promise<StreakStats> {
   return uid ? fetchStreak(uid) : loadGuestStreak()
-}
-
-/** Mark today active. Returns updated stats. */
-export async function touchStreak(uid: string | null): Promise<StreakStats> {
-  const current = await getStreak(uid)
-  const next = registerActivity(current)
-  if (next !== current) {
-    if (uid) await saveStreak(uid, next)
-    else saveGuestStreak(next)
-  }
-  return next
 }
 
 export type CompletionResult = {

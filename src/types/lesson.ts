@@ -19,14 +19,26 @@ export type ConceptStep = {
   body: string
   equation?: string
   visual?:
-    | 'work_energy_intro'
+    | 'work_angle'
+    | 'zero_work'
+    | 'work_sign'
+    | 'net_work'
+    | 'ke_tool'
+    | 'ramp_height'
+    | 'pe_zero'
+    | 'energy_chain'
+    | 'friction_energy'
+    | 'power_speed'
     | 'kinetic_energy'
     | 'gravitational_pe'
     | 'elastic_pe'
     | 'conservation'
     | 'power'
   demo?:
-    | 'push_work'
+    | 'work_or_not'
+    | 'work_drag'
+    | 'work_energy_race'
+    | 'angle_explorer'
     | 'ke_explorer'
     | 'gravity_explorer'
     | 'elastic_explorer'
@@ -34,29 +46,17 @@ export type ConceptStep = {
     | 'power_explorer'
 }
 
-export type EquationFillSegment = { text: string } | { slot: string }
-
-export type EquationFillStep = {
-  type: 'equation_fill'
-  prompt: string
-  template: EquationFillSegment[]
-  slots: Record<string, number>
-  slotLabels?: Record<string, string>
-  tokens: number[]
-  result: { value: number; unit: string; tolerance: number }
-  fillHint?: string
-  computeHints: string[]
-  solution?: string
-}
-
-export type PredictMCStep = {
-  type: 'predict_mc'
-  prompt: string
-  choices: string[]
-  correctIndex: number
-  hints: string[]
-  solution?: string
-}
+export type ProblemVisual =
+  | 'push'
+  | 'angle_pull'
+  | 'push_friction'
+  | 'force_distance'
+  | 'braking'
+  | 'ramp'
+  | 'ramp_friction'
+  | 'spring_launch'
+  | 'power_car'
+  | 'stairs'
 
 export type PredictNumericStep = {
   type: 'predict_numeric'
@@ -65,20 +65,35 @@ export type PredictNumericStep = {
   unit: string
   tolerance: number
   hints: string[]
+  givens?: { label: string; value: string }[]
+  formulas?: string[]
   solution?: string
+  visual?: ProblemVisual
 }
 
-export type SimStep = {
-  type: 'sim'
-  labId: 'push_block'
-  prompt?: string
-  defaultParams: {
-    force: number
-    distance: number
-    mass: number
-    muK: number
-  }
-  requirePrediction?: boolean
+/**
+ * A scaling/relationship explorer: the learner moves ONE variable and watches the
+ * result (and its ratio vs. the original) update live, with the formula colour-coded.
+ * Result is computed as `coeff * var^power` (power 1 = linear, 2 = squared, -1 = inverse).
+ */
+export type CompareSliderStep = {
+  type: 'compare_slider'
+  prompt: string
+  formula: string
+  varSymbol: string
+  varName: string
+  varUnit: string
+  min: number
+  max: number
+  stepSize: number
+  base: number
+  constants?: { symbol: string; value: string }[]
+  result: { symbol: string; unit: string; coeff: number; power: number }
+  /** Which interactive scene to draw for the draggable variable. */
+  scene?: 'distance' | 'speed' | 'height' | 'spring' | 'time'
+  /** What the learner should do with the slider — does NOT reveal the answer. */
+  task: string
+  solution?: string
 }
 
 export type CompleteStep = {
@@ -92,10 +107,8 @@ export type CompleteStep = {
 export type Step =
   | ConceptStep
   | BarDragStep
-  | EquationFillStep
-  | PredictMCStep
   | PredictNumericStep
-  | SimStep
+  | CompareSliderStep
   | CompleteStep
 
 export type Lesson = {
@@ -106,16 +119,8 @@ export type Lesson = {
   steps: Step[]
 }
 
-export type PushBlockParams = {
-  force: number
-  distance: number
-  mass: number
-  muK: number
-}
-
 export type StepDraft = {
   answer?: string | number
-  selectedIndex?: number
   showWrongFeedback: boolean
   feedbackText?: string
   attemptCount: number
@@ -124,7 +129,6 @@ export type StepDraft = {
 export type LessonProgress = {
   lessonId: string
   stepIndex: number
-  simParams: PushBlockParams
   stepDraft?: StepDraft | null
   updatedAt: string
 }

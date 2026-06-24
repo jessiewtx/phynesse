@@ -1,19 +1,60 @@
 import type { Lesson } from '../types/lesson'
 import { isLessonUnlocked, lessonCompletionIndex } from './lessons'
 import type { StepAttemptRecord, StoredLessonProgress } from './progressFirestore'
+import { STUCK_THRESHOLD } from '../components/StuckHelp'
 
 /**
  * A lightweight mastery model in the spirit of Khan Academy / Brilliant.
  *
  * Mastery is NOT just "did you finish". It blends:
  *   • completion        — did you reach the end of the lesson
- *   • accuracy          — how often your answers were right
- *   • first-try rate    — getting it right without burning hints/retries
+ *   • per-problem credit — how cleanly you solved each problem (see below)
  *   • recency (decay)   — skills fade over time, which drives spaced review
+ *
+ * Per-problem credit (Khan-style): each graded problem is scored on its own.
+ *   • right on the first try         → full credit (1.0)
+ *   • right after a hint / retry     → partial credit, dropping with each miss
+ *   • solution revealed / never right → no credit (0) for that problem
+ * A lesson's mastery is the average credit across its problems, so leaning on
+ * the worked solution can never look like mastery.
  *
  * Everything here is pure: feed it lessons + progress + attempts and it returns
  * a fully-derived snapshot the UI can render.
  */
+
+/** Credit for a single solve given how many misses came before it. */
+function creditForMisses(wrong: number): number {
+  if (wrong <= 0) return 1
+  // Once the learner burns through STUCK_THRESHOLD misses the worked solution is
+  // on screen, so the eventual "correct" was copied from it and earns nothing.
+  if (wrong >= STUCK_THRESHOLD) return 0
+  return 1 - wrong / STUCK_THRESHOLD
+}
+
+/**
+ * Credit for a single problem from its ordered attempt list.
+ *
+ * We take the learner's BEST run at the problem: each correct answer closes a
+ * "run" (the misses since the previous correct), and we keep the highest-scoring
+ * one. So acing it first try earns full credit — but so does coming back later
+ * and nailing it cleanly, which is what makes re-doing a lesson worthwhile.
+ */
+function problemCreditFromAttempts(ordered: StepAttemptRecord[]): number {
+  let best = 0
+  let wrong = 0
+  let sawCorrect = false
+  for (const a of ordered) {
+    if (a.correct) {
+      sawCorrect = true
+      best = Math.max(best, creditForMisses(wrong))
+      wrong = 0
+    } else {
+      wrong += 1
+    }
+  }
+  // Never solved it on their own — no credit.
+  return sawCorrect ? best : 0
+}
 
 export type MasteryLevel =
   | 'locked'
@@ -66,7 +107,7 @@ export type MasterySnapshot = {
   focus: LessonMastery[]
 }
 
-export type Recommendation = {
+type Recommendation = {
   kind: 'resume' | 'review' | 'start' | 'done'
   lesson: LessonMastery | null
   reason: string
@@ -87,27 +128,15 @@ export const STRANDS: Strand[] = [
 ]
 
 const DAY_MS = 86_400_000
-// Memory half-life: retention reaches ~0.5 after ~10 days without practice.
-const TAU_DAYS = 14
-const REVIEW_RETENTION = 0.55
-
-const LEVEL_ORDER: MasteryLevel[] = [
-  'locked',
-  'not_started',
-  'learning',
-  'proficient',
-  'skilled',
-  'mastered',
-]
 
 function emptyCounts(): Record<MasteryLevel, number> {
   return { locked: 0, not_started: 0, learning: 0, proficient: 0, skilled: 0, mastered: 0 }
 }
 
 function scoreToLevel(score: number): MasteryLevel {
-  if (score >= 85) return 'mastered'
-  if (score >= 65) return 'skilled'
-  if (score >= 40) return 'proficient'
+  if (score >= 90) return 'mastered'
+  if (score >= 80) return 'skilled'
+  if (score >= 70) return 'proficient'
   return 'learning'
 }
 
@@ -120,7 +149,7 @@ export function levelMeta(level: MasteryLevel): { label: string; color: string; 
     case 'proficient':
       return { label: 'Proficient', color: 'var(--gold)', blurb: 'You can do this — keep reinforcing it.' }
     case 'learning':
-      return { label: 'Learning', color: 'var(--accent)', blurb: 'Getting the hang of it.' }
+      return { label: 'Learning', color: 'var(--accent)', blurb: 'Getting the hang of it — a clean redo will push your score up.' }
     case 'not_started':
       return { label: 'Not started', color: 'var(--text-3)', blurb: 'Ready when you are.' }
     case 'locked':
@@ -149,7 +178,7 @@ function computeLessonMastery(
   const correct = attempts.filter((a) => a.correct).length
   const accuracy = total > 0 ? correct / total : null
 
-  // First-try rate: the earliest attempt on each step, was it correct?
+  // Group attempts per problem step so we can score each one on its own.
   const byStep = new Map<number, StepAttemptRecord[]>()
   for (const a of attempts) {
     const arr = byStep.get(a.stepIndex) ?? []
@@ -158,12 +187,16 @@ function computeLessonMastery(
   }
   let firstTryCorrect = 0
   let stepsTried = 0
+  let creditSum = 0
   for (const arr of byStep.values()) {
     arr.sort((x, y) => Date.parse(x.createdAt) - Date.parse(y.createdAt))
     stepsTried += 1
     if (arr[0]?.correct) firstTryCorrect += 1
+    creditSum += problemCreditFromAttempts(arr)
   }
   const firstTryRate = stepsTried > 0 ? firstTryCorrect / stepsTried : null
+  // Average Khan-style credit across the problems the learner has attempted.
+  const problemCredit = stepsTried > 0 ? creditSum / stepsTried : null
 
   const completionIndex = lessonCompletionIndex(lesson)
   const progressFraction = completed
@@ -173,26 +206,26 @@ function computeLessonMastery(
   // Peak mastery the learner has demonstrated.
   let peak = 0
   if (completed) {
-    const acc = accuracy ?? 0.85
-    const ft = firstTryRate ?? acc
-    const quality = 0.55 * acc + 0.45 * ft
-    peak = 60 + 40 * quality // completed lessons land in 60–100
+    // Mastery is the average per-problem credit: all-first-try → 100,
+    // leaning on hints/solutions pulls it down problem by problem. Lessons with
+    // no graded problems fall back to a neutral "completed" score.
+    peak = problemCredit != null ? 100 * problemCredit : 85
   } else if (status === 'in_progress') {
     peak = 8 + 32 * progressFraction // 8–40 while working through it
   }
 
-  // Recency / decay.
+  // When the learner last touched this lesson (for "practiced 3d ago" labels).
+  // Mastery itself does NOT decay — once you've earned a level it stays put, so
+  // there's no busywork of redoing a lesson just to hold your score.
   const attemptTimes = attempts.map((a) => Date.parse(a.createdAt)).filter((t) => !Number.isNaN(t))
   const lastPracticed = Math.max(
     attemptTimes.length ? Math.max(...attemptTimes) : 0,
     parseTime(progress?.updatedAt) ?? 0,
   ) || null
   const daysSince = lastPracticed != null ? (now - lastPracticed) / DAY_MS : null
-  const retention = completed && daysSince != null ? Math.exp(-daysSince / TAU_DAYS) : 1
+  const retention = 1
 
-  const score = completed
-    ? Math.round(peak * (0.55 + 0.45 * retention))
-    : Math.round(peak)
+  const score = Math.round(peak)
 
   const level: MasteryLevel = locked
     ? 'locked'
@@ -216,7 +249,7 @@ function computeLessonMastery(
     lastPracticed,
     daysSince,
     retention,
-    dueForReview: completed && retention < REVIEW_RETENTION,
+    dueForReview: false,
     progressFraction,
   }
 }
@@ -344,5 +377,3 @@ export function relativeTime(ms: number | null, now: number = Date.now()): strin
   const months = Math.floor(days / 30)
   return `${months}mo ago`
 }
-
-export { LEVEL_ORDER }

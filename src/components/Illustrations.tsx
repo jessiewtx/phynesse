@@ -99,6 +99,120 @@ export function IconBolt({ size = 16, className }: IconProps) {
   )
 }
 
+export function IconFlame({ size = 40, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M24 4 C 15 14, 19 22, 16 28 C 13 35, 18 44, 26 43 C 35 42, 39 32, 33 22 C 32 26, 29 25, 30 20 C 31 13, 28 8, 24 4 Z"
+        fill="#ff6a3d"
+      />
+      <path
+        d="M25 22 C 21 27, 23 30, 21 33 C 19 37, 23 41, 27 39 C 32 37, 31 30, 27 26 C 27 29, 24 28, 25 22 Z"
+        fill="#ffc31e"
+      />
+    </svg>
+  )
+}
+
+export function IconParty({ size = 48, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <path d="M7 41 L19 19 L29 29 Z" fill="#ff8a3d" />
+      <path d="M7 41 L19 19 L29 29 Z" fill="none" stroke="#ff6a3d" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M13 31 L23 33" stroke="#ff6a3d" strokeWidth="1.4" strokeLinecap="round" opacity="0.6" />
+      <circle cx="30" cy="12" r="2.5" fill="#19c3d6" />
+      <rect x="35" y="17" width="4.5" height="4.5" rx="1.2" fill="#1ec487" transform="rotate(20 37 19)" />
+      <circle cx="41" cy="28" r="2.3" fill="#9b5cff" />
+      <rect x="23" y="7" width="4.5" height="4.5" rx="1.2" fill="#ffc31e" transform="rotate(-15 25 9)" />
+      <path d="M31 22 q4 -3 8 -1" stroke="#ff4d6d" strokeWidth="2" fill="none" strokeLinecap="round" />
+      <circle cx="37" cy="37" r="2" fill="#ffc31e" />
+    </svg>
+  )
+}
+
+function IconCheckBadge({ size = 28, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <rect x="8" y="8" width="32" height="32" rx="9" fill="#1ec487" />
+      <path d="M16 24 L22 30 L33 17" stroke="#fff" strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconStar({ size = 28, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M24 6 L29.6 18 L42 19.6 L33 28.4 L35.3 41 L24 35 L12.7 41 L15 28.4 L6 19.6 L18.4 18 Z"
+        fill="#ffc31e"
+        stroke="#f0a500"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function IconTrophy({ size = 28, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <path d="M15 9 h18 v7 a9 9 0 0 1 -18 0 Z" fill="#ffc31e" stroke="#f0a500" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M15 12 H10 a4 4 0 0 0 5 6.5" fill="none" stroke="#f0a500" strokeWidth="2" strokeLinecap="round" />
+      <path d="M33 12 H38 a4 4 0 0 1 -5 6.5" fill="none" stroke="#f0a500" strokeWidth="2" strokeLinecap="round" />
+      <rect x="22" y="25" width="4" height="6" fill="#f0a500" />
+      <rect x="15" y="31" width="18" height="4.5" rx="1.6" fill="#f0a500" />
+    </svg>
+  )
+}
+
+function IconBook({ size = 28, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M24 12 C 20 9, 12 9, 9 11 V36 C 12 34, 20 34, 24 37 C 28 34, 36 34, 39 36 V11 C 36 9, 28 9, 24 12 Z"
+        fill="#19c3d6"
+        stroke="#0e9aa7"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <line x1="24" y1="12" x2="24" y2="37" stroke="#0e9aa7" strokeWidth="1.5" />
+    </svg>
+  )
+}
+
+function IconCap({ size = 28, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <path d="M24 11 L43 18 L24 25 L5 18 Z" fill="#9b5cff" stroke="#7b3fe4" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M14 21 V29 a10 4.5 0 0 0 20 0 V21" fill="none" stroke="#7b3fe4" strokeWidth="2.4" strokeLinecap="round" />
+      <line x1="40" y1="19" x2="40" y2="30" stroke="#ffc31e" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="40" cy="31.5" r="2.2" fill="#ffc31e" />
+    </svg>
+  )
+}
+
+/** Maps a streak/lesson milestone id to a cute vector instead of an emoji. */
+export function MilestoneIcon({ id, size = 28, className }: IconProps & { id: string }) {
+  switch (id) {
+    case 'streak-3':
+      return <IconFlame size={size} className={className} />
+    case 'streak-7':
+      return <IconBolt size={size} className={className} />
+    case 'streak-14':
+      return <IconStar size={size} className={className} />
+    case 'streak-30':
+      return <IconTrophy size={size} className={className} />
+    case 'lessons-1':
+      return <IconCheckBadge size={size} className={className} />
+    case 'lessons-3':
+      return <IconBook size={size} className={className} />
+    case 'lessons-6':
+      return <IconCap size={size} className={className} />
+    default:
+      return <IconStar size={size} className={className} />
+  }
+}
+
 export function IconBulb({ size = 16, className }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">

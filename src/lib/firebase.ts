@@ -30,4 +30,4 @@ if (isFirebaseConfigured) {
   db = getFirestore(app)
 }
 
-export { app, auth, db, firebaseConfig }
+export { auth, db, firebaseConfig }

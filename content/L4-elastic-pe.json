@@ -2,7 +2,7 @@
   "id": "L4",
   "title": "Elastic Potential Energy",
   "order": 4,
-  "summary": "Energy stored in a squished spring. Size ½kx² and watch it launch a block.",
+  "summary": "Energy in a squished spring. Trace it through a launch: spring → motion → height up a ramp.",
   "steps": [
     {
       "type": "concept",
@@ -12,98 +12,110 @@
     {
       "type": "concept",
       "title": "The formula",
-      "body": "**k** is the spring constant — how stiff it is (N/m). **x** is how far it's pushed or pulled from its natural length (m).\n\nLike kinetic energy, **x is squared** — stretch counts double.",
+      "body": "**k** is the spring constant — how stiff it is (N/m). **x** is how far it's pushed or pulled from its natural length (m).\n\nLike kinetic energy, **x is squared** — stretch counts double.\n\nLoad the spring below (push it in or pull it out) and change its stiffness — notice how the squeeze swings the energy far more than stiffness does.",
       "equation": "PE_s = ½kx²",
-      "visual": "elastic_pe"
-    },
-    {
-      "type": "concept",
-      "title": "Get a feel for it",
-      "body": "Squeeze the spring and change its stiffness. Notice how squeeze (x) swings the energy far more than stiffness — that's the x² at work.",
       "demo": "elastic_explorer"
     },
     {
-      "type": "predict_mc",
-      "prompt": "You compress a spring twice as far. What happens to the energy it stores?",
-      "choices": [
-        "It doubles",
-        "It quadruples (×4)",
-        "It stays the same",
-        "It halves"
-      ],
-      "correctIndex": 1,
-      "hints": [
-        "Good try — but in PE_s = ½kx², the stretch x is squared.",
-        "You're close. Doubling x means 2 × 2 in the squared term — think about what that does to the stored energy."
-      ],
-      "solution": "Elastic potential energy is PE_s = ½kx², where the squeeze x is squared. Compressing twice as far makes the x² term grow by 2² = 4, while the stiffness k stays the same.\n\n**So the answer is \"It quadruples (×4)\".**"
-    },
-    {
-      "type": "equation_fill",
-      "prompt": "Plug in the numbers. A spring has **k = 200 N/m** and is squeezed **x = 0.3 m**. Drag each value into its spot, then find PE_s.",
-      "template": [
-        { "text": "PE_s = ½ × " },
-        { "slot": "k" },
-        { "text": " × " },
-        { "slot": "x" },
-        { "text": "²" }
-      ],
-      "slots": { "k": 200, "x": 0.3 },
-      "slotLabels": { "k": "stiffness", "x": "squeeze" },
-      "tokens": [0.3, 200, 0.09],
-      "result": { "value": 9, "unit": "J", "tolerance": 0.05 },
-      "fillHint": "Almost — stiffness goes in the k spot and squeeze in the x spot. Here k = 200 and x = 0.3.",
-      "computeHints": [
-        "So close — square the squeeze first (x × x), then bring in k and the ½.",
-        "Step by step: square x, multiply by k, then take half of the result."
-      ],
-      "solution": "Elastic PE is PE_s = ½kx².\n\nSquare the squeeze first: x² = 0.3² = 0.09. Then PE_s = ½ × 200 × 0.09 = **9 J**."
-    },
-    {
-      "type": "bar_drag",
-      "prompt": "Spring **k = 200 N/m**, compressed **x = 0.4 m**. Drag **PE_s**.",
-      "barLabel": "PE_s",
-      "barColor": "#ec4899",
-      "maxValue": 25,
-      "correctValue": 16,
-      "unit": "J",
-      "tolerance": 0.05,
-      "formulas": ["PE_s = ½kx²"],
-      "givens": [
-        { "label": "k", "value": "200 N/m" },
-        { "label": "x", "value": "0.4 m" }
-      ],
-      "hints": [
-        "Not quite — start by squaring x in PE_s = ½kx².",
-        "Square the 0.4 m squeeze first, then multiply by k and take half."
-      ],
-      "solution": "Elastic PE is PE_s = ½kx².\n\nSquare the squeeze first: x² = 0.4² = 0.16. Then PE_s = ½ × 200 × 0.16 = **16 J**."
+      "type": "compare_slider",
+      "prompt": "A spring with stiffness **k = 200 N/m**. Drag the block to **squeeze** it and watch the stored energy — notice the x².",
+      "formula": "PE_s = ½ · k · x²",
+      "varSymbol": "x",
+      "varName": "squeeze",
+      "scene": "spring",
+      "varUnit": "m",
+      "min": 0.1,
+      "max": 0.8,
+      "stepSize": 0.1,
+      "base": 0.3,
+      "constants": [{ "symbol": "k", "value": "200 N/m" }],
+      "result": { "symbol": "PE_s", "unit": "J", "coeff": 100, "power": 2 },
+      "task": "Drag the squeeze to **double** it — from 0.3 m to 0.6 m. Then read the two bars.",
+      "solution": "Elastic PE is PE_s = ½kx², and the squeeze is squared. Compressing twice as far (0.3 m → 0.6 m) makes the x² term grow by 2² = 4, while the stiffness stays fixed. So the stored energy jumps from 9 J to **36 J — four times as much**."
     },
     {
       "type": "concept",
-      "title": "Let it go",
-      "body": "Release the spring and that stored energy doesn't vanish — it pushes the block into motion. With no friction, **all the elastic PE becomes kinetic energy**."
+      "title": "Let it go — the energy chain",
+      "body": "Release the spring and the stored energy doesn't vanish — it flows. On a frictionless track it becomes **kinetic energy** as the block speeds off, and if the block then climbs, that motion converts into **gravitational PE**.\n\nFollow one quantity of energy through the whole chain:",
+      "equation": "PE_s → KE → PE_g",
+      "visual": "energy_chain"
     },
     {
-      "type": "bar_drag",
-      "prompt": "The spring (**k = 200 N/m**, compressed **0.4 m**) launches a block — no friction. Drag the **ΔKE** the block gains.",
-      "barLabel": "ΔKE",
-      "barColor": "#34d399",
-      "maxValue": 25,
-      "correctValue": 16,
+      "type": "predict_numeric",
+      "prompt": "**Setup:** A spring with **k = 800 N/m** is compressed **0.25 m** and used to launch a **0.50 kg** block. The whole track is **frictionless**.\n\n**Part A —** How much elastic PE is stored in the compressed spring?",
+      "correctValue": 25,
+      "visual": "spring_launch",
       "unit": "J",
-      "tolerance": 0.05,
-      "formulas": ["PE_s = ½kx²", "ΔKE = PE_s"],
-      "hints": [
-        "With no friction, the spring's stored energy doesn't leak away.",
-        "All of the elastic PE turns into motion, so ΔKE ends up equal to the PE_s you just found."
+      "tolerance": 0.02,
+      "formulas": ["PE_s = ½kx²"],
+      "givens": [
+        { "label": "k", "value": "800 N/m" },
+        { "label": "x", "value": "0.25 m" }
       ],
-      "solution": "With no friction, all the spring's stored energy becomes motion: ΔKE = PE_s.\n\nThe stored energy is PE_s = ½kx² = ½ × 200 × 0.4² = 16 J, so ΔKE = **16 J**."
+      "hints": [
+        "Square the compression first, then multiply by k and the ½.",
+        "PE_s = ½ × 800 × 0.25² = ½ × 800 × 0.0625."
+      ],
+      "solution": "Elastic PE is PE_s = ½kx².\n\nSquare the compression: 0.25² = 0.0625. Then PE_s = ½ × 800 × 0.0625 = **25 J**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part B —** The spring pushes the **0.50 kg** block along the flat. How fast is it moving as it leaves the spring?",
+      "correctValue": 10,
+      "visual": "spring_launch",
+      "unit": "m/s",
+      "tolerance": 0.03,
+      "formulas": ["½mv² = PE_s"],
+      "givens": [
+        { "label": "PE_s", "value": "25 J" },
+        { "label": "m", "value": "0.50 kg" }
+      ],
+      "hints": [
+        "Frictionless, so all 25 J of elastic PE becomes kinetic energy.",
+        "Set ½mv² = 25 and solve: v = √(2·25 / 0.50)."
+      ],
+      "solution": "All the elastic PE becomes kinetic energy: ½mv² = PE_s = 25 J.\n\nv = √(2·PE_s / m) = √(2·25 / 0.50) = √100 = **10 m/s**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part C —** The block now coasts up a frictionless ramp. What maximum *vertical* height does it reach? (g = 9.8)",
+      "correctValue": 5.1,
+      "visual": "ramp",
+      "unit": "m",
+      "tolerance": 0.03,
+      "formulas": ["mgh = PE_s"],
+      "givens": [
+        { "label": "PE_s", "value": "25 J" },
+        { "label": "m", "value": "0.50 kg" }
+      ],
+      "hints": [
+        "At the highest point the block has stopped — all the energy is now gravitational PE.",
+        "Set mgh = 25 and solve for h: h = 25 / (0.50 × 9.8)."
+      ],
+      "solution": "At the top the block is momentarily at rest, so all the energy is gravitational PE: mgh = 25 J.\n\nh = PE_s / (mg) = 25 / (0.50 × 9.8) = 25 / 4.9 ≈ **5.1 m**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part D —** If that ramp is tilted at **30°**, how far does the block travel *along the ramp's surface* before stopping?",
+      "correctValue": 10.2,
+      "visual": "ramp",
+      "unit": "m",
+      "tolerance": 0.03,
+      "formulas": ["d = h / sin θ"],
+      "givens": [
+        { "label": "h", "value": "5.1 m" },
+        { "label": "θ", "value": "30°" }
+      ],
+      "hints": [
+        "The 5.1 m is the vertical height; the ramp distance is longer. Use h = d·sin θ.",
+        "Rearrange: d = h / sin θ = 5.1 / sin 30° = 5.1 / 0.5."
+      ],
+      "solution": "The height and the slope distance are linked by h = d·sin θ, so d = h / sin θ.\n\nd = 5.1 / sin 30° = 5.1 / 0.5 ≈ **10.2 m** along the ramp."
     },
     {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You sized spring energy and watched it transfer to kinetic energy.",
+      "body": "You traced energy through a full chain — spring to motion to height — and tied it back to ramp geometry.",
       "nextLessonId": "L5",
       "nextLessonTitle": "Conservation of Energy"
     }

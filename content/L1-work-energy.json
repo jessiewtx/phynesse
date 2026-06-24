@@ -2,89 +2,189 @@
   "id": "L1",
   "title": "Work & the Work-Energy Theorem",
   "order": 1,
-  "summary": "Push a block and watch work turn into motion. Build W = F·d and the work-energy theorem.",
+  "summary": "Start from zero: what work really is, when a force does none, positive vs negative work, forces at an angle, and how net work sets an object's speed.",
   "steps": [
     {
       "type": "concept",
-      "title": "Push. Move. Transfer energy.",
-      "body": "You're about to push a block and watch energy move in real time.\n\n**Work** is energy transferred by a force over a distance. No friction? Every joule goes straight into motion. That's the deal:",
-      "equation": "W_net = ΔKE",
-      "visual": "work_energy_intro",
-      "demo": "push_work"
+      "title": "What counts as work?",
+      "body": "Here's the very first surprise: in physics, **work is not the same as effort**. You can strain every muscle holding a heavy box over your head and do **zero** work on it.\n\n**Work** is energy transferred to an object by a force — but *only* when the object actually **moves in the direction of that force**.\n\nTap through the four situations below. Before you read each verdict, predict: is work being done on the box?",
+      "demo": "work_or_not"
     },
     {
       "type": "concept",
       "title": "Putting a number on work",
-      "body": "When a force pushes in the same direction something moves:\n\n**F** is the force (newtons, N). **d** is the distance it moves (meters, m). Multiply them and you get work, measured in **joules (J)**.",
-      "equation": "W = F·d"
+      "body": "When a force pushes in the **same direction** something moves, work is simply force times distance:\n\n**F** is the force in newtons (N). **d** is the distance it moves in meters (m). Multiply them and you get work in **joules (J)** — where 1 joule = 1 newton pushing through 1 meter (1 J = 1 N·m).\n\nOne condition to remember: this clean W = F·d holds when the force is **constant** — a steady, continuous push that doesn't change as the object moves. (If the force varied, you'd use its average, or the area under a force-vs-distance graph. Every force in this lesson is constant.)\n\nPlay with it below: drag the **flag** to change how far the box moves, and pull the **back of the blue arrow** to change how hard you push. Watch the work bar respond to *both*.",
+      "equation": "W = F·d",
+      "demo": "work_drag"
     },
     {
-      "type": "predict_mc",
-      "prompt": "You push a box with the same force, but slide it twice as far. How much work do you do?",
-      "choices": [
-        "Half as much",
-        "The same",
-        "Twice as much",
-        "Four times as much"
+      "type": "predict_numeric",
+      "prompt": "Warm-up. A mover pushes a crate with a steady **80 N**, and it slides **3.0 m** in the same direction across a smooth floor. How much work does the mover do on the crate?",
+      "correctValue": 240,
+      "unit": "J",
+      "tolerance": 0.02,
+      "visual": "push",
+      "formulas": ["W = F·d"],
+      "givens": [
+        { "label": "F", "value": "80 N" },
+        { "label": "d", "value": "3.0 m" }
       ],
-      "correctIndex": 2,
       "hints": [
-        "Not quite — take another look at W = F·d. The force didn't change here; only the distance did.",
-        "You're close. Work scales directly with distance, so if the distance grows by a factor, the work grows by that same factor."
+        "Force and motion point the same way, so just multiply them.",
+        "W = F·d = 80 × 3.0."
       ],
-      "solution": "Work is force times distance: W = F·d. The force F stays the same here, and only the distance d changes. Because work is directly proportional to distance, sliding the box twice as far does twice the work.\n\n**So the answer is \"Twice as much\".**"
+      "solution": "The push and the motion are in the same direction, so work is just force times distance: W = F·d.\n\nW = 80 × 3.0 = **240 J**."
     },
     {
-      "type": "equation_fill",
-      "prompt": "Plug in the numbers. You push a block with **F = 10 N** across **d = 2 m**. Drag each value into its spot, then find the work.",
-      "template": [
-        { "text": "W = " },
-        { "slot": "F" },
-        { "text": " × " },
-        { "slot": "d" }
-      ],
-      "slots": { "F": 10, "d": 2 },
-      "slotLabels": { "F": "force", "d": "distance" },
-      "tokens": [2, 10, 20],
-      "result": { "value": 20, "unit": "J", "tolerance": 0.05 },
-      "fillHint": "Almost — force goes in the F spot and distance in the d spot. Here that's F = 10 and d = 2.",
-      "computeHints": [
-        "So close — work is force times distance, so multiply your two values together.",
-        "One step at a time: compute 10 × 2, and that product (in joules) is the work."
-      ],
-      "solution": "Work is force times distance: W = F·d.\n\nForce goes in the F spot and distance in the d spot, so W = 10 × 2 = **20 J**."
+      "type": "compare_slider",
+      "prompt": "You push a box with a **constant 10 N** force (a steady, continuous push). Drag the **distance** and watch the work change.",
+      "formula": "W = F · d",
+      "varSymbol": "d",
+      "varName": "distance",
+      "varUnit": "m",
+      "scene": "distance",
+      "min": 1,
+      "max": 6,
+      "stepSize": 0.5,
+      "base": 2,
+      "constants": [{ "symbol": "F", "value": "10 N" }],
+      "result": { "symbol": "W", "unit": "J", "coeff": 10, "power": 1 },
+      "task": "Drag the distance to **double** it — from 2 m to 4 m. Then read the two bars.",
+      "solution": "Work is force times distance: W = F·d. The force stays a steady 10 N, so only the distance changes. Going from 2 m to 4 m doubles the distance, and since work is directly proportional to distance, the work doubles too — from 20 J to **40 J (2×)**."
     },
     {
       "type": "concept",
-      "title": "Where did the energy go?",
-      "body": "With no friction, all that work lands in one place: the block's **motion**. The net work equals the change in kinetic energy. That's the **work-energy theorem**.",
-      "equation": "W_net = ΔKE"
+      "title": "When is there NO work?",
+      "body": "This is where almost everyone slips. A force can be **huge** and still do **zero** work:\n\n• **Holding** a heavy box perfectly still — your arms ache, but the box doesn't move. No distance means no work (d = 0).\n• **Carrying** a box at a steady height across a room — you push **up** to support it, but it moves **sideways**. The force and the motion are perpendicular, so *that* force does no work on the box.\n\nThe rule that saves you every time: work only happens when there's motion **in the direction of the force**.",
+      "visual": "zero_work"
     },
     {
-      "type": "bar_drag",
-      "prompt": "Same push — no friction. By the work-energy theorem, how much did the block's kinetic energy change? Drag **ΔKE**.",
-      "barLabel": "ΔKE",
-      "barColor": "#34d399",
-      "maxValue": 30,
-      "correctValue": 20,
+      "type": "concept",
+      "title": "Positive, negative, and zero work",
+      "body": "Work has a **sign**, and direction decides it:\n\n• Force **with** the motion → **positive** work — it *adds* energy (speeds things up).\n• Force **against** the motion → **negative** work — it *removes* energy. Friction is the classic example: it always drags backward, so it does negative work.\n• Force **perpendicular** to the motion → **zero** work.\n\nKeeping track of these signs is the whole game once more than one force is involved.",
+      "visual": "work_sign"
+    },
+    {
+      "type": "concept",
+      "title": "When the push is at an angle",
+      "body": "Real forces aren't always lined up with the motion. Only the part of the force **along** the direction of travel does work — the rest just pushes into (or lifts off) the surface.\n\nHere's the part that trips people up: pull straight up as hard as you want, but if the box only slides **sideways**, that upward pull does **zero work**. Work needs motion *in the direction of the force* — no vertical distance means no vertical work, no matter how big the force.\n\nSo for a force at an angle **θ** to the motion, only the component F·cos θ counts. Drag the rope below and watch the useful part change:",
+      "equation": "W = F·d·cos θ",
+      "demo": "angle_explorer"
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "A child drags a wagon **12 m** along flat ground, pulling the handle with **40 N** at **35° above horizontal**. How much work does the rope do on the wagon? (cos 35° ≈ 0.819)",
+      "correctValue": 393,
       "unit": "J",
-      "tolerance": 0.05,
-      "formulas": ["W = F·d", "W_net = ΔKE"],
+      "tolerance": 0.03,
+      "visual": "angle_pull",
+      "formulas": ["W = F·d·cos θ"],
       "givens": [
-        { "label": "F", "value": "10 N" },
-        { "label": "d", "value": "2 m" },
-        { "label": "W_net", "value": "20 J" }
+        { "label": "F", "value": "40 N" },
+        { "label": "d", "value": "12 m" },
+        { "label": "θ", "value": "35°" }
       ],
       "hints": [
-        "Not quite — by the work-energy theorem, W_net = ΔKE, and you already found W_net just above.",
-        "With no friction, every joule of net work turns into motion — so ΔKE ends up the same size as that W_net."
+        "Only the horizontal part of the pull moves the wagon — that's F·cos θ.",
+        "Find the component along the ground first: 40 × cos 35° ≈ 32.8 N. Then multiply by the 12 m."
       ],
-      "solution": "The work-energy theorem says the net work done equals the change in kinetic energy: W_net = ΔKE.\n\nThe net work here is W_net = F·d = 10 × 2 = 20 J, and with no friction all of it becomes motion. So ΔKE = **20 J**."
+      "solution": "Only the component of the force along the motion does work, so W = F·d·cos θ.\n\nThe horizontal component of the pull is 40 × cos 35° ≈ 32.8 N. Over 12 m that's W = 32.8 × 12 ≈ **393 J**. (The vertical component does no work — the wagon doesn't move up.)"
+    },
+    {
+      "type": "concept",
+      "title": "Many forces? Use the NET work",
+      "body": "Most real situations have **several** forces doing work at once. Add up their works — keeping the signs from the last screen — and you get the **net work**.\n\nFor a crate you push across a real floor, that's your push (positive) plus friction (negative):",
+      "equation": "W_net = (F − f)·d",
+      "visual": "net_work"
+    },
+    {
+      "type": "concept",
+      "title": "Where the work goes: the work-energy theorem",
+      "body": "First, clear a classic misconception: a moving object does **not** need a constant forward force to keep moving — that's just inertia (Newton's first law). What a net force actually does is **change** the motion.\n\nThe work-energy theorem makes that precise: the **net work** done on an object equals its **change in kinetic energy**. Positive net work speeds it up, negative net work slows it down. It's one of the most useful tools in all of mechanics.\n\nLaunch the block below under a steady push: the net work done (F·d) and the kinetic energy it gains climb together and stay equal the whole way. Then try a heavier block — the same net work always becomes the same kinetic energy (it just ends up slower).",
+      "equation": "W_net = ΔKE",
+      "demo": "work_energy_race"
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "Quick theorem check. You do **50 J** of net work on a **2.0 kg** cart that starts from rest on a frictionless track. What is the cart's change in kinetic energy?",
+      "correctValue": 50,
+      "unit": "J",
+      "tolerance": 0.02,
+      "visual": "push",
+      "formulas": ["W_net = ΔKE"],
+      "givens": [
+        { "label": "W_net", "value": "50 J" },
+        { "label": "m", "value": "2.0 kg" }
+      ],
+      "hints": [
+        "Read the work-energy theorem literally — it connects net work to ΔKE directly.",
+        "ΔKE equals W_net. No need to compute ½mv² here."
+      ],
+      "solution": "The work-energy theorem says W_net = ΔKE. If 50 J of net work is done, the kinetic energy changes by exactly **50 J** — no ½mv² calculation needed.\n\n(The 2.0 kg mass is a distractor here. It would only matter if the question asked for the cart's *speed*.)"
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Setup:** You push a **4.0 kg** crate **5.0 m** across a level floor with a steady horizontal **30 N**. Friction pushes back with **12 N**, and the crate starts from rest.\n\n**Part A —** What is the *net* work done on the crate?",
+      "correctValue": 90,
+      "unit": "J",
+      "tolerance": 0.02,
+      "visual": "push_friction",
+      "formulas": ["W_net = (F − f)·d"],
+      "givens": [
+        { "label": "F", "value": "30 N" },
+        { "label": "f", "value": "12 N" },
+        { "label": "d", "value": "5.0 m" }
+      ],
+      "hints": [
+        "Friction does negative work, so the net force along the floor is F − f.",
+        "Net force = 30 − 12 = 18 N. Net work = that net force × the 5.0 m."
+      ],
+      "solution": "Your push does positive work and friction does negative work, so the net force along the motion is F − f = 30 − 12 = 18 N.\n\nW_net = (F − f)·d = 18 × 5.0 = **90 J**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part B —** Using the work-energy theorem, how fast is the **4.0 kg** crate moving after that 5.0 m? (It started from rest, and W_net = 90 J.)",
+      "correctValue": 6.7,
+      "unit": "m/s",
+      "tolerance": 0.03,
+      "visual": "push_friction",
+      "formulas": ["W_net = ½mv²"],
+      "givens": [
+        { "label": "W_net", "value": "90 J" },
+        { "label": "m", "value": "4.0 kg" }
+      ],
+      "hints": [
+        "From rest, all the net work becomes kinetic energy: W_net = ½mv².",
+        "Solve for v: v = √(2·W_net / m) = √(2·90 / 4)."
+      ],
+      "solution": "From rest, the work-energy theorem gives W_net = ΔKE = ½mv².\n\nSolve for v: v = √(2·W_net / m) = √(2·90 / 4) = √45 ≈ **6.7 m/s**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Challenge — put it all together.** A **6.0 kg** sled starts from rest and is pulled **8.0 m** across flat snow by a rope at **25 N**, angled **30° above horizontal**. Friction does **−60 J** of work along the way. How fast is the sled moving after 8.0 m? (cos 30° ≈ 0.866)",
+      "correctValue": 6.1,
+      "unit": "m/s",
+      "tolerance": 0.04,
+      "visual": "angle_pull",
+      "formulas": ["W_rope = F·d·cos θ", "W_net = ΔKE = ½mv²"],
+      "givens": [
+        { "label": "m", "value": "6.0 kg" },
+        { "label": "F", "value": "25 N" },
+        { "label": "d", "value": "8.0 m" },
+        { "label": "θ", "value": "30°" },
+        { "label": "W_friction", "value": "−60 J" }
+      ],
+      "hints": [
+        "Two forces do work: the rope (use F·d·cos θ) and friction (already given as −60 J). Add them for the net work.",
+        "Rope work = 25 × 8.0 × cos 30° ≈ 173 J. Net work = 173 − 60 = 113 J.",
+        "Then from rest, W_net = ½mv² → v = √(2·W_net / m) = √(2·113 / 6)."
+      ],
+      "solution": "Find each work, then combine. The rope's work uses only the component along the motion: W_rope = F·d·cos θ = 25 × 8.0 × 0.866 ≈ 173 J.\n\nFriction already does −60 J, so the net work is W_net = 173 − 60 = 113 J.\n\nStarting from rest, the work-energy theorem gives W_net = ½mv², so v = √(2·W_net / m) = √(2·113 / 6) = √37.7 ≈ **6.1 m/s**."
     },
     {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You sized work and kinetic energy change — and saw that W_net = ΔKE every time.",
+      "body": "You built work from the ground up: what it is, when a force does none, how sign works, forces at an angle, and how net work sets an object's speed through the work-energy theorem — all the way to a multi-force challenge.",
       "nextLessonId": "L2",
       "nextLessonTitle": "Kinetic Energy"
     }

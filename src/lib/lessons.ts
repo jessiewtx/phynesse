@@ -24,12 +24,6 @@ export function getAllLessons(): Lesson[] {
   return Object.values(lessons).sort((a, b) => a.order - b.order)
 }
 
-export function getNextLesson(afterId: string): Lesson | undefined {
-  const current = lessons[afterId]
-  if (!current) return undefined
-  return getAllLessons().find((l) => l.order === current.order + 1)
-}
-
 export function lessonCompletionIndex(lesson: Lesson): number {
   const i = lesson.steps.findIndex((s) => s.type === 'complete')
   return i === -1 ? lesson.steps.length : i

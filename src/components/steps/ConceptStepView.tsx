@@ -1,11 +1,25 @@
 import { useState } from 'react'
-import { PushWorkDemo } from '../demos/PushWorkDemo'
+import { WorkEnergyRace } from '../demos/WorkEnergyRace'
 import { KineticEnergyExplorer } from '../demos/KineticEnergyExplorer'
+import { AngleWorkExplorer } from '../demos/AngleWorkExplorer'
+import { WorkOrNotExplorer } from '../demos/WorkOrNotExplorer'
+import { WorkDragExplorer } from '../demos/WorkDragExplorer'
 import { GravityPEExplorer } from '../demos/GravityPEExplorer'
 import { ElasticPEExplorer } from '../demos/ElasticPEExplorer'
 import { ConservationExplorer } from '../demos/ConservationExplorer'
 import { PowerExplorer } from '../demos/PowerExplorer'
-import { WorkEnergyIntroDiagram } from '../diagrams/WorkEnergyIntroDiagram'
+import {
+  WorkAngleDiagram,
+  ZeroWorkDiagram,
+  WorkSignDiagram,
+  NetWorkDiagram,
+  KEToolDiagram,
+  RampHeightDiagram,
+  PEZeroDiagram,
+  EnergyChainDiagram,
+  FrictionEnergyDiagram,
+  PowerSpeedDiagram,
+} from '../diagrams/ConceptDiagrams'
 import { KineticEnergyDiagram } from '../diagrams/KineticEnergyDiagram'
 import { GravitationalPEDiagram } from '../diagrams/GravitationalPEDiagram'
 import { ElasticPEDiagram } from '../diagrams/ElasticPEDiagram'
@@ -20,9 +34,8 @@ type Props = {
 }
 
 export function ConceptStepView({ step, onContinue }: Props) {
-  const needsDemo = step.demo === 'push_work'
+  const needsDemo = step.demo === 'work_energy_race'
   const [demoDone, setDemoDone] = useState(!needsDemo)
-  const [pushedValues, setPushedValues] = useState<{ force: number; distance: number } | null>(null)
 
   return (
     <div className="step step--concept">
@@ -32,12 +45,13 @@ export function ConceptStepView({ step, onContinue }: Props) {
 
       {step.equation && <PhysicsEquation text={step.equation} />}
 
-      {needsDemo && (
-        <PushWorkDemo
-          onTried={() => setDemoDone(true)}
-          onPushed={(f, d) => setPushedValues({ force: f, distance: d })}
-        />
-      )}
+      {needsDemo && <WorkEnergyRace onLaunched={() => setDemoDone(true)} />}
+
+      {step.demo === 'work_or_not' && <WorkOrNotExplorer />}
+
+      {step.demo === 'work_drag' && <WorkDragExplorer />}
+
+      {step.demo === 'angle_explorer' && <AngleWorkExplorer />}
 
       {step.demo === 'ke_explorer' && <KineticEnergyExplorer />}
 
@@ -49,7 +63,25 @@ export function ConceptStepView({ step, onContinue }: Props) {
 
       {step.demo === 'power_explorer' && <PowerExplorer />}
 
-      {step.visual === 'work_energy_intro' && <WorkEnergyIntroDiagram values={pushedValues} />}
+      {step.visual === 'work_angle' && <WorkAngleDiagram />}
+
+      {step.visual === 'zero_work' && <ZeroWorkDiagram />}
+
+      {step.visual === 'work_sign' && <WorkSignDiagram />}
+
+      {step.visual === 'net_work' && <NetWorkDiagram />}
+
+      {step.visual === 'ke_tool' && <KEToolDiagram />}
+
+      {step.visual === 'ramp_height' && <RampHeightDiagram />}
+
+      {step.visual === 'pe_zero' && <PEZeroDiagram />}
+
+      {step.visual === 'energy_chain' && <EnergyChainDiagram />}
+
+      {step.visual === 'friction_energy' && <FrictionEnergyDiagram />}
+
+      {step.visual === 'power_speed' && <PowerSpeedDiagram />}
 
       {step.visual === 'kinetic_energy' && <KineticEnergyDiagram />}
 
@@ -67,7 +99,7 @@ export function ConceptStepView({ step, onContinue }: Props) {
         onClick={onContinue}
         disabled={!demoDone}
       >
-        {demoDone ? 'Continue' : 'Push the block to continue'}
+        {demoDone ? 'Continue' : 'Launch the block to continue'}
       </button>
     </div>
   )

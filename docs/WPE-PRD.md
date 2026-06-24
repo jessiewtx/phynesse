@@ -1,191 +1,123 @@
-# Phynesse — AP Physics 1: Work, Power & Energy
+# Phynesse — Product Requirements Document
 
-**Product:** Phynesse · **Subject:** AP Physics 1 Unit 4 (WPE) · **Phase:** 1 — MVP · **Status:** PRD v0.3
-
----
-
-## 1. What we're building
-
-Phynesse is a **learn-by-doing** web app that teaches the full **AP Physics 1 Unit 4: Work, Power, and Energy** — one subject, taught deep, Brilliant-style.
-
-Students **predict, manipulate simulations, get instant feedback, and retry** until concepts click. The through-line across the whole unit: **motion + live energy bar charts + AP-style problems**.
-
-**Topics covered (the whole unit):** work and sign conventions · work-energy theorem · kinetic & potential energy · conservation of mechanical energy · when energy is *not* conserved (friction → thermal) · power · choosing work-energy vs other methods · mixed AP problem-solving.
-
-**Prerequisite:** basic kinematics and forces. We reference FBDs only where needed.
-
-**Phase 1 rule:** no AI. Every interaction, hint, and problem is hand-authored. Prove the app teaches on its own before adding intelligence later.
+**What:** a learn-by-doing web app that teaches **AP Physics 1 · Unit 4 (Work, Power & Energy)** in depth.
+**Status:** v1.0 · live at `phynesse-wpe.web.app`
 
 ---
 
-## 2. MVP scope (Phase 1)
+## 1. Problem & solution
 
-### In
+AP Physics students can recite `KE = ½mv²` and still have no idea *when* to use energy instead of kinematics. Energy gets memorized as formulas, not understood as a story. Videos and quizzes don't fix this — you can watch someone solve a problem all day and still freeze on your own.
 
-| Area | Deliverable |
+**Phynesse teaches by doing.** Every step drops the learner into a problem they manipulate — drag an energy bar, change a pull angle, set a speed — get instant feedback, and *then* see the idea named. They play with a concept until it clicks. One unit, taught deep, instead of a shallow tour of physics.
+
+**Why it's different:** Brilliant's guess-then-teach loop fused with a Khan-style visible mastery ladder, focused on a single unit so the path actually knows where you are.
+
+---
+
+## 2. User persona
+
+**Alex — 17, junior taking AP Physics 1.**
+
+- **Context:** AP exam in ~6 weeks. Solid on kinematics; energy feels like disconnected formulas.
+- **Behavior:** studies on their **phone** in 10–15 minute bursts, usually at night. Bails instantly if instructions are long or the UI is fiddly.
+- **Frustration:** "I can plug into the formula but I don't know which one to use, or why."
+- **Success looks like:** Alex can sketch the energy story before calculating, knows when energy conservation applies, and reaches for work-energy over kinematics because it's faster.
+
+---
+
+## 3. Core user story
+
+> **As Alex, I want to work through a physics concept hands-on and get told exactly where I went wrong, so I actually understand it instead of memorizing it — and I want to pick up where I left off when I come back on my phone.**
+
+**Acceptance criteria**
+
+- Each lesson is a sequence of interactive steps, not a wall of text — at least one step the learner directly manipulates.
+- Every answer gets instant (<100 ms), specific feedback; wrong answers get a hint, then a full worked solution.
+- Leaving mid-lesson and returning (any device) restores the exact step and progress.
+- Finishing a lesson updates a visible streak and recommends a sensible next step.
+
+---
+
+## 4. MVP scope
+
+### In scope (built)
+
+| Area | What ships |
 |---|---|
-| **Subject** | Full WPE unit — linear course path from work → conservation → power → mixed practice → capstone |
-| **Interactives** | Multiple problem types (sliders, drag-to-balance bar charts, predictions, numeric entry) — not just MC |
-| **Visuals** | Canvas simulations + energy bar charts that respond in real time to learner input |
-| **Feedback** | Instant, specific, author-written hints on every answer |
-| **Content model** | Lessons as JSON step sequences — add new problems without rewriting UI |
-| **Progress** | Step-level state; resume mid-lesson on any device |
-| **Auth** | Firebase Auth (Google + email); display name |
-| **Course path** | Locked/unlocked lessons; "next up" recommendation; streak + milestones |
-| **Platform** | Responsive web; touch-friendly; deployed publicly |
+| **Course** | 6-lesson path through the full WPE unit (~60 steps), linear, building L1 → L6 |
+| **Interactions** | numeric entry, drag-to-set energy bars, draggable problem scenes, compare-sliders — **no multiple choice** |
+| **Visuals** | 8 interactive SVG explorers (e.g. drag a rope's angle, a speedometer, compress a spring) with live formulas/bars |
+| **Feedback** | hand-written per-step hints + a worked `solution` on every problem; closed-form grading |
+| **Progress** | step-level resume; per-lesson mastery model + a `/progress` dashboard with a next-step recommendation |
+| **Habit loop** | streak (advances only on lesson completion) + milestones + a completion celebration |
+| **Accounts** | Firebase Auth (Google + email); guest mode that **migrates into your account** on sign-in |
+| **Platform** | responsive/touch; works on phone screens; public deploy |
 
-### Build order (how we ship it)
+### Out of scope (for now)
 
-Start vertical, then widen:
-
-1. **Content model + step renderer** — JSON steps → UI
-2. **First interaction:** slider sim (Push the block) — proves sim + bar chart + grading loop
-3. **More interaction types** — bar chart balancing, ramp/spring sims, etc.
-4. **Fill the course path** — lessons across the full WPE arc
-5. **Auth, progress, streaks, deploy**
-
-We don't need every lesson on day one. We need the **platform and one rich interaction working first**, then stack content on the same rails.
-
-### Out — not Phase 1
-
-| Area | When |
-|---|---|
-| AI (generation, adaptive hints, chat) | Phase 2 |
-| Spaced repetition, interleaving, mastery algorithms | Phase 3 |
-| Teacher dashboard, LMS, native apps | Post-MVP |
-
-### Done when
-
-Alex can work through the **WPE course** — predict, manipulate visuals, recover from wrong answers, resume progress, and finish with a unit capstone at ≥70%. The app runs at **≥60 fps**, feedback in **<100ms**, first interaction in **<2s** on mobile.
+AI features (hints/generation) · spaced-repetition drills · the L7 mixed-practice capstone · teacher dashboard · additional units. *(Roadmap, §8.)*
 
 ---
 
-## 3. Persona
+## 5. How it works
 
-**Alex, 17 — AP Physics 1 student**
-
-- Exam in ~6 weeks. Fine with kinematics; energy problems feel like memorizing formulas.
-- Studies on phone in 10–15 min chunks. Quits if instructions are long or UI is confusing.
-- **Wins when:** they can draw an energy bar chart before calculating, know when conservation applies, and pick work-energy over kinematics when it is easier.
-
----
-
-## 4. User stories
-
-| Story | Acceptance |
-|---|---|
-| Learn by doing | Every lesson has hands-on steps — manipulate, predict, or build — not passive reading |
-| Predict before reveal | Key sim steps require a prediction before the answer is shown |
-| Manipulate & watch | Inputs (sliders, drags, taps) update sim + bar chart live |
-| Balance energy | Drag bar heights to show before/after energy accounting; instant check |
-| Instant feedback | Every answer: <100ms, specific hint on wrong |
-| Resume anywhere | Mid-lesson exit → return → same step, same state |
-| Follow the path | Lessons unlock in order; capstone gates unit completion |
-| Come back | Streak + progress visible on home screen |
-
----
-
-## 5. WPE curriculum
-
-| # | Topic | Focus |
-|---|---|---|
-| 1 | Work & work-energy theorem | W = Fd cos θ, sign of work, W_net = ΔKE |
-| 2 | Kinetic energy | KE = ½mv², work → speed |
-| 3 | Gravitational PE | U_g = mgh, reference level |
-| 4 | Elastic PE | U_s = ½kx² |
-| 5 | Conservation of energy | KE + U = const; bar charts before/after |
-| 6 | Non-conservative forces | Friction; energy to thermal; when conservation breaks |
-| 7 | Power | P = W/Δt, P = Fv |
-| 8 | Mixed AP practice + **capstone** | Multi-step problems; ≥70% to complete unit |
-
-**Formulas (in-app reference):** W = Fd cos θ · W_net = ΔKE · KE = ½mv² · U_g = mgh · U_s = ½kx² · KE_i + U_i = KE_f + U_f + E_th · P = W/Δt
-
-### Interaction families (not exhaustive)
-
-Problems mix these patterns across lessons — specifics are authored in content, not hardcoded in the PRD:
-
-| Type | Teaches |
-|---|---|
-| **Slider sim** | Change force, height, k, μ — watch motion + bars update |
-| **Drag bar chart** | Set bar heights to match a before/after energy story; balance the system |
-| **Predict → reveal** | MC or numeric guess before sim confirms |
-| **Tap to label** | Mark which forces do positive/negative/zero work |
-| **Scenario compare** | Two setups side-by-side (e.g. steep vs gentle ramp, same height) |
-| **Build the equation** | Drag terms into W_net = ΔKE or conservation equation |
-| **Path trace** | Release from height on ramp; predict speed at bottom |
-
-**First build target:** slider sim (Push the block) — everything else reuses the same step renderer and bar chart component.
-
----
-
-## 6. Content model
-
-Lessons are JSON arrays of typed steps. New lessons and problem types plug in without new pages.
+**Content model.** Lessons are JSON arrays of typed steps, so new lessons plug in without UI changes (and AI can emit the same schema later):
 
 ```typescript
 type Step =
-  | { type: 'concept'; body: string }
-  | { type: 'predict_mc'; prompt: string; choices: string[]; correctIndex: number; hints: string[] }
-  | { type: 'predict_numeric'; prompt: string; correctValue: number; unit: string; tolerance: number; hints: string[] }
-  | { type: 'sim'; labId: string; defaultParams: Record<string, number> }
-  | { type: 'bar_chart_drag'; /* initial state, target bars, hints */ }
-  | { type: 'complete'; nextLessonId: string };
-
-type Lesson = { id: string; title: string; order: number; steps: Step[] };
+  | { type: 'concept';         body; equation?; visual?; demo? }
+  | { type: 'predict_numeric'; prompt; correctValue; unit; tolerance; hints[]; givens?; formulas?; solution; visual? }
+  | { type: 'compare_slider';  prompt; formula; result; scene?; solution }
+  | { type: 'bar_drag';        prompt; correctValue; tolerance; hints[]; solution }
+  | { type: 'complete';        nextLessonId }
+type Lesson = { id; title; order; summary?; steps: Step[] }
 ```
 
-Content in repo as JSON → seeded to Firestore. Progress: `{ lessonId, stepIndex, params, attempts[] }`.
+**Lesson shape.** Each lesson runs *misconception-first concept → interactive explorer → proportional-reasoning compare-slider → scaffolded multi-part problems → worked solution.* Difficulty ramps from "what work actually is" (L1) to multi-concept AP problems with friction, ramps, and angles (L4–L5).
 
-**Grading:** numeric ±2% tolerance; MC exact match; bar charts compare category totals; all physics via closed-form formulas.
+**Feedback & grading.** Physics is graded closed-form (numeric within ±2–5% tolerance), so feedback is instant and offline. Authored `hints[]` escalate per attempt; the full `solution` powers a *Why?* panel after a correct answer and a *Stuck?* walkthrough after 3 misses.
+
+**Mastery & habit.** A mastery function scores each lesson from accuracy, first-try rate, and time-decayed retention, assigns a named level (*learning → proficient → skilled → mastered*), builds a review queue, and picks the next step (resume → review → start next). Streaks advance only when real work is completed — never on app-opens.
 
 ---
 
-## 7. Tech stack
+## 6. Tech stack
 
-| Layer | Choice | Role |
+| Layer | Choice | Why |
 |---|---|---|
-| **Frontend** | React + TypeScript + Vite | SPA; generic step renderer + sim components |
-| **Simulations** | HTML Canvas + `requestAnimationFrame` | Motion + bar charts at 60 fps |
-| **Physics** | Deterministic analytic formulas | Predictable grading; no physics engine library |
-| **Auth** | Firebase Auth (Google + email) | Sign-in + display name |
-| **Database** | Firestore | Progress, attempts, lesson JSON, streaks |
-| **Hosting** | Firebase Hosting | Public deploy; CDN |
-| **Content** | JSON in repo → seed script | Version-controlled; add lessons without refactoring |
-
-**Architecture:** client ↔ Firestore via security rules. No custom API. No AI in Phase 1.
+| **Frontend** | React + TypeScript + Vite | fast SPA; one generic step renderer drives all lessons |
+| **Visuals** | hand-built SVG + CSS, `requestAnimationFrame` | crisp, lightweight, 60 fps without a physics/canvas engine |
+| **Physics/grading** | deterministic closed-form formulas | predictable, instant grading; ground truth for future AI checks |
+| **Auth** | Firebase Auth (Google + email/password) | low-friction sign-in + display name |
+| **Database** | Firestore (per-user, rules-scoped) | progress, attempts, streak; cross-device sync |
+| **Hosting** | Firebase Hosting | public CDN deploy; multi-user, stateless client |
+| **Content** | versioned JSON in repo | add lessons without redeploying logic; AI-emittable schema |
 
 ---
 
-## 8. Data
+## 7. Success metrics
 
-| What | Why |
+**North star:** concepts taken to *proficient* per active learner per week — it only moves if someone genuinely learns.
+
+| Supporting metric | Target |
 |---|---|
-| User profile (uid, name, email) | Auth + personalization |
-| Lesson progress (step, params, status) | Resume mid-lesson |
-| Step attempts (answer, correct, hint, timestamp) | Feedback + future mastery |
-| Streak (last active, count) | Habit loop |
-| Lesson content (JSON) | Render without redeploy |
-
-**Don't store:** frame telemetry, chat logs, AI data.
+| Time to first interaction | < 2 s |
+| Lesson completion rate | 50–60% |
+| Wrong → recover rate (continues after a miss) | ≥ 60% |
+| D1 / D7 retention | ≥ 35% / ≥ 15% |
 
 ---
 
-## 9. Testing & performance
+## 8. Roadmap (post-MVP)
 
-| Test | Pass criteria |
-|---|---|
-| Full lesson flow | Wrong → hint → recover → complete |
-| Live interaction | Input → sim + bar chart update same frame |
-| Persistence | Leave mid-lesson → return → restored |
-| Course path | Finish lesson → sensible next step unlocked |
-| Mobile | Touch-friendly; full flow on phone viewport |
-| Feedback | <100ms |
-| Sim | ≥60 fps while interacting |
-| Load | <2s to first interaction on 4G |
+- **AI assist** — targeted hints from the learner's actual wrong answer, plain-language wrong-answer explanations, and new practice generated at the right difficulty. Guardrail: the model shapes *wording*; a math engine (math.js/SymPy) verifies every number, and abstains if it can't. App always works with AI off.
+- **Learning science** — spaced resurfacing of low-retention concepts, an interleaved L7 capstone (≥70% to finish the unit), and mastery-gated lesson unlocking (the gating UI is already built, currently dormant).
 
 ---
 
-## 10. Open questions
+## 9. Open questions
 
-1. Sign-in required at start, or one free step then gate?
-2. Capstone: in-app badge only, or exportable certificate?
+1. Require sign-in up front, or allow one free lesson then prompt?
+2. Capstone reward: in-app badge, or exportable certificate?
+3. When gating turns on, which mastery level unlocks the next lesson — *proficient* or *skilled*?

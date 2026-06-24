@@ -1,10 +1,8 @@
-import type { Step, PushBlockParams, StepDraft } from '../types/lesson'
+import type { Step, StepDraft } from '../types/lesson'
 import { ConceptStepView } from './steps/ConceptStepView'
 import { BarDragStepView } from './steps/BarDragStepView'
-import { EquationFillStepView } from './steps/EquationFillStepView'
-import { PredictMCStepView } from './steps/PredictMCStepView'
 import { PredictNumericStepView } from './steps/PredictNumericStepView'
-import { SimStepView } from './steps/SimStepView'
+import { CompareSliderStepView } from './steps/CompareSliderStepView'
 import { CompleteStepView } from './steps/CompleteStepView'
 
 type AttemptHandler = (
@@ -19,10 +17,9 @@ type Props = {
   lessonId?: string
   stepDraft: StepDraft | null
   onDraftChange: (draft: StepDraft | null) => void
-  simParams: PushBlockParams
-  onSimChange: (params: PushBlockParams) => void
   onAdvance: () => void
   onComplete: () => void
+  onRestart: () => void
   onAttempt: AttemptHandler
 }
 
@@ -31,10 +28,9 @@ export function StepRenderer({
   lessonId,
   stepDraft,
   onDraftChange,
-  simParams,
-  onSimChange,
   onAdvance,
   onComplete,
+  onRestart,
   onAttempt,
 }: Props) {
   const log = (answer: string | number, correct: boolean, hint?: string) => {
@@ -54,26 +50,6 @@ export function StepRenderer({
           onAttempt={(answer, correct, hint) => log(answer, correct, hint)}
         />
       )
-    case 'equation_fill':
-      return (
-        <EquationFillStepView
-          step={step}
-          draft={stepDraft}
-          onDraftChange={onDraftChange}
-          onCorrect={onAdvance}
-          onAttempt={(answer, correct, hint) => log(answer, correct, hint)}
-        />
-      )
-    case 'predict_mc':
-      return (
-        <PredictMCStepView
-          step={step}
-          draft={stepDraft}
-          onDraftChange={onDraftChange}
-          onCorrect={onAdvance}
-          onAttempt={(answer, correct, hint) => log(answer, correct, hint)}
-        />
-      )
     case 'predict_numeric':
       return (
         <PredictNumericStepView
@@ -84,17 +60,25 @@ export function StepRenderer({
           onAttempt={(answer, correct, hint) => log(answer, correct, hint)}
         />
       )
-    case 'sim':
+    case 'compare_slider':
       return (
-        <SimStepView
+        <CompareSliderStepView
           step={step}
-          params={simParams}
-          onChange={onSimChange}
-          onContinue={onAdvance}
+          draft={stepDraft}
+          onDraftChange={onDraftChange}
+          onCorrect={onAdvance}
+          onAttempt={(answer, correct, hint) => log(answer, correct, hint)}
         />
       )
     case 'complete':
-      return <CompleteStepView step={step} lessonId={lessonId} onFinish={onComplete} />
+      return (
+        <CompleteStepView
+          step={step}
+          lessonId={lessonId}
+          onFinish={onComplete}
+          onRestart={onRestart}
+        />
+      )
     default:
       return null
   }

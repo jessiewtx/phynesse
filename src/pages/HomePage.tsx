@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { HomeTeaser } from '../components/HomeTeaser'
+import { HomeHeroArt } from '../components/HomeHeroArt'
 import { LessonPath } from '../components/LessonPath'
 import { MasteryRing } from '../components/MasteryRing'
 import { IconTarget, IconBars, IconScale, IconPencil } from '../components/Illustrations'
@@ -55,8 +55,7 @@ export function HomePage() {
         </div>
 
         <div className="home-hero__visual">
-          <HomeTeaser />
-          <p className="home-hero__visual-cap">Drag the bars — energy is interactive here.</p>
+          <HomeHeroArt />
         </div>
       </section>
 

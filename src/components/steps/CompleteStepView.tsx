@@ -3,15 +3,17 @@ import { Link } from 'react-router-dom'
 import { getAllLessons, getLesson } from '../../lib/lessons'
 import { useLearnerData } from '../../lib/useLearnerData'
 import { buildMastery, levelMeta } from '../../lib/mastery'
+import { IconParty, IconFlame } from '../Illustrations'
 import type { CompleteStep } from '../../types/lesson'
 
 type Props = {
   step: CompleteStep
   lessonId?: string
   onFinish: () => void
+  onRestart: () => void
 }
 
-export function CompleteStepView({ step, lessonId, onFinish }: Props) {
+export function CompleteStepView({ step, lessonId, onFinish, onRestart }: Props) {
   const lessons = getAllLessons()
   const { progressMap, attempts, streak } = useLearnerData()
   const nextLesson = getLesson(step.nextLessonId)
@@ -25,7 +27,7 @@ export function CompleteStepView({ step, lessonId, onFinish }: Props) {
 
   return (
     <div className="step step--complete complete-card">
-      <div className="complete-card__burst" aria-hidden="true">🎉</div>
+      <div className="complete-card__burst" aria-hidden="true"><IconParty size={56} /></div>
       <h2 className="complete-card__title">{step.title}</h2>
       <p className="complete-card__body">{step.body}</p>
 
@@ -38,7 +40,9 @@ export function CompleteStepView({ step, lessonId, onFinish }: Props) {
           </div>
         )}
         <div className="complete-card__stat">
-          <span className="complete-card__stat-value">🔥 {streak.currentStreak}</span>
+          <span className="complete-card__stat-value complete-card__stat-value--icon">
+            <IconFlame size={22} /> {streak.currentStreak}
+          </span>
           <span className="complete-card__stat-label">day streak</span>
         </div>
         <div className="complete-card__stat">
@@ -69,7 +73,9 @@ export function CompleteStepView({ step, lessonId, onFinish }: Props) {
             Back to course
           </button>
         )}
-        <Link to="/progress" className="btn btn--ghost">View mastery</Link>
+        <button type="button" className="btn btn--ghost" onClick={onRestart}>
+          ↺ Start over
+        </button>
       </div>
 
       {dueReview && (

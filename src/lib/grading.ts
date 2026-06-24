@@ -13,19 +13,6 @@ export function gradeNumeric(
   return { correct: correctAnswer }
 }
 
-export function gradeMC(
-  selected: number,
-  correctIndex: number,
-  hints: string[],
-  attempt: number,
-): GradeResult {
-  if (selected === correctIndex) {
-    return { correct: true }
-  }
-  const hint = hints[Math.min(attempt, hints.length - 1)]
-  return { correct: false, hint }
-}
-
 export function hintForNumeric(
   hints: string[],
   attempt: number,

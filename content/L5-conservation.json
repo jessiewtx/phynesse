@@ -2,7 +2,7 @@
   "id": "L5",
   "title": "Conservation of Energy",
   "order": 5,
-  "summary": "Energy changes form but never disappears — balance it with and without friction.",
+  "summary": "Energy changes form but never disappears — budget it down a rough ramp, heat and all.",
   "steps": [
     {
       "type": "concept",
@@ -12,87 +12,110 @@
     {
       "type": "concept",
       "title": "The rule",
-      "body": "When only **conservative** forces (like gravity or springs) act, mechanical energy stays constant — KE and PE just trade back and forth.",
+      "body": "When only **conservative** forces (like gravity or springs) act, mechanical energy stays constant — KE and PE just trade back and forth.\n\nSlide the ball down the frictionless ramp below — watch potential energy pour into kinetic energy while the total bar never moves.",
       "equation": "KE + PE = constant",
-      "visual": "conservation"
-    },
-    {
-      "type": "concept",
-      "title": "Get a feel for it",
-      "body": "Slide the ball down the frictionless ramp. Watch potential energy pour into kinetic energy — while the total bar never moves.",
       "demo": "conservation_explorer"
     },
     {
-      "type": "predict_mc",
-      "prompt": "A ball is released from rest at the top of a frictionless ramp. At the bottom, compared to the top, it has…",
-      "choices": [
-        "The same total energy, now all kinetic",
-        "More energy than it started with",
-        "Less energy — some was destroyed",
-        "Zero energy"
-      ],
-      "correctIndex": 0,
-      "hints": [
-        "No friction is the key here — what does that mean for the total mechanical energy?",
-        "The energy isn't created or destroyed: the PE_g it gives up reappears as KE. Same total, just a new form."
-      ],
-      "solution": "On a frictionless ramp, mechanical energy is conserved — none is created or destroyed. The gravitational PE the ball gives up on the way down reappears as kinetic energy, so the total stays the same and is now all kinetic at the bottom.\n\n**So the answer is \"The same total energy, now all kinetic\".**"
-    },
-    {
-      "type": "concept",
-      "title": "Work through one",
-      "body": "A **2 kg** block starts at rest at **h = 2 m** on a frictionless ramp.\n\nAt the top: PE_g = mgh = 2 × 9.8 × 2 = 39.2 J, KE = 0.\nAt the bottom: all of it is kinetic → KE = **39.2 J**.\n\nYour turn."
-    },
-    {
       "type": "bar_drag",
-      "prompt": "A **2 kg** block starts at rest at **h = 2 m** and slides down a **frictionless** ramp. Drag the **KE** at the bottom.",
-      "barLabel": "KE",
-      "barColor": "#34d399",
+      "prompt": "A ball is released from rest at the top of a **frictionless** ramp, where it has **PE_g = 30 J** (and KE = 0). Drag the **total mechanical energy** it has at the bottom.",
+      "barLabel": "Total energy",
+      "barColor": "#6366f1",
       "maxValue": 45,
-      "correctValue": 39.2,
+      "correctValue": 30,
       "unit": "J",
       "tolerance": 0.05,
-      "formulas": ["PE_g = mgh", "KE = PE_g"],
-      "givens": [
-        { "label": "m", "value": "2 kg" },
-        { "label": "h", "value": "2 m" }
-      ],
+      "formulas": ["KE + PE = constant"],
+      "givens": [{ "label": "PE_g (top)", "value": "30 J" }],
       "hints": [
-        "No friction means the PE_g it loses becomes KE it gains.",
-        "Find the PE_g at the top with m × g × h — that whole amount shows up as KE at the bottom."
+        "With no friction, mechanical energy is conserved — the total can't grow or shrink.",
+        "The energy just changes form (PE → KE). The total at the bottom equals the total at the top."
       ],
-      "solution": "With no friction, all the gravitational PE at the top becomes kinetic energy at the bottom: KE = PE_g.\n\nPE_g = mgh = 2 × 9.8 × 2 = 39.2 J, so KE = **39.2 J**."
+      "solution": "On a frictionless ramp, mechanical energy is conserved: KE + PE stays constant. At the top it's all potential (30 J); at the bottom it's all kinetic — but the total never changed. So the total mechanical energy at the bottom is **30 J**."
     },
     {
       "type": "concept",
       "title": "When friction joins in",
-      "body": "Friction doesn't destroy energy either — it turns mechanical energy into **thermal energy (E_th)**, which heats things up. So now the books balance like this:",
-      "equation": "PE_g = KE + E_th"
+      "body": "Friction doesn't destroy energy — it turns mechanical energy into **thermal energy (E_th)** that heats the surfaces. The amount lost is just the friction force acting over the distance slid: E_th = f·d.\n\nSo the full energy balance for a slide down a ramp is:",
+      "equation": "PE_g = KE + E_th",
+      "visual": "friction_energy"
     },
     {
-      "type": "bar_drag",
-      "prompt": "Same drop, but friction made **E_th = 19.6 J**. Starting from **PE_g = 39.2 J**, drag the **KE** left at the bottom.",
-      "barLabel": "KE",
-      "barColor": "#34d399",
-      "maxValue": 45,
-      "correctValue": 19.6,
+      "type": "predict_numeric",
+      "prompt": "**Setup:** A **2.0 kg** sled starts from rest and slides down a **4.0 m**-long ramp, dropping a vertical height of **2.0 m**. Friction turns **10 J** of energy into heat.\n\n**Part A —** How much gravitational PE does the sled have at the top? (g = 9.8)",
+      "correctValue": 39.2,
+      "visual": "ramp_friction",
       "unit": "J",
-      "tolerance": 0.06,
-      "formulas": ["PE_g = KE + E_th"],
+      "tolerance": 0.02,
+      "formulas": ["PE_g = mgh"],
       "givens": [
-        { "label": "PE_g", "value": "39.2 J" },
-        { "label": "E_th", "value": "19.6 J" }
+        { "label": "m", "value": "2.0 kg" },
+        { "label": "h", "value": "2.0 m" }
       ],
       "hints": [
-        "Friction turns some energy into heat, so the books balance as PE_g = KE + E_th.",
-        "Rearrange to KE = PE_g − E_th, then subtract the thermal energy from the starting PE_g."
+        "Use the vertical height, not the 4.0 m along the ramp.",
+        "PE_g = mgh = 2.0 × 9.8 × 2.0."
       ],
-      "solution": "With friction, energy balances as PE_g = KE + E_th. Rearranging gives KE = PE_g − E_th.\n\nKE = 39.2 − 19.6 = **19.6 J**."
+      "solution": "Gravitational PE uses the vertical height: PE_g = mgh = 2.0 × 9.8 × 2.0 = **39.2 J**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part B —** How much kinetic energy does the **2.0 kg** sled have at the bottom, after friction takes its cut?",
+      "correctValue": 29.2,
+      "visual": "ramp_friction",
+      "unit": "J",
+      "tolerance": 0.02,
+      "formulas": ["KE = PE_g − E_th"],
+      "givens": [
+        { "label": "PE_g", "value": "39.2 J" },
+        { "label": "E_th", "value": "10 J" }
+      ],
+      "hints": [
+        "Energy balances as PE_g = KE + E_th. Solve for KE.",
+        "KE = PE_g − E_th = 39.2 − 10."
+      ],
+      "solution": "The energy balance is PE_g = KE + E_th, so KE = PE_g − E_th.\n\nKE = 39.2 − 10 = **29.2 J**. (Without friction it would have been the full 39.2 J.)"
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part C —** How fast is the **2.0 kg** sled moving at the bottom?",
+      "correctValue": 5.4,
+      "visual": "ramp_friction",
+      "unit": "m/s",
+      "tolerance": 0.03,
+      "formulas": ["½mv² = KE"],
+      "givens": [
+        { "label": "KE", "value": "29.2 J" },
+        { "label": "m", "value": "2.0 kg" }
+      ],
+      "hints": [
+        "The kinetic energy at the bottom sets the speed: ½mv² = KE.",
+        "v = √(2·KE / m) = √(2·29.2 / 2.0)."
+      ],
+      "solution": "Kinetic energy gives the speed: ½mv² = KE.\n\nv = √(2·KE / m) = √(2·29.2 / 2.0) = √29.2 ≈ **5.4 m/s**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part D —** The sled slid **4.0 m** along the ramp while losing 10 J to heat. What was the average friction force?",
+      "correctValue": 2.5,
+      "visual": "ramp_friction",
+      "unit": "N",
+      "tolerance": 0.02,
+      "formulas": ["E_th = f·d"],
+      "givens": [
+        { "label": "E_th", "value": "10 J" },
+        { "label": "d", "value": "4.0 m" }
+      ],
+      "hints": [
+        "Heat generated equals the friction force times the distance slid: E_th = f·d.",
+        "Solve for f: f = E_th / d = 10 / 4.0."
+      ],
+      "solution": "The thermal energy is the friction force acting over the slide distance: E_th = f·d.\n\nf = E_th / d = 10 / 4.0 = **2.5 N**."
     },
     {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You balanced energy with and without friction — conserved when it applies, turned to heat when friction acts.",
+      "body": "You ran a full energy budget down a rough ramp — PE in, heat out, motion left over — and even backed out the friction force.",
       "nextLessonId": "L6",
       "nextLessonTitle": "Power"
     }
