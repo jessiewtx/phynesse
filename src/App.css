@@ -3296,8 +3296,9 @@
 .awe__line { font-size: 0.95rem; }
 .awe__bar-row { display: flex; align-items: center; gap: 0.6rem; }
 .awe__bar-tag { font-size: 0.8rem; font-weight: 800; color: var(--text-2); width: 3rem; }
-.awe__bar-track { flex: 1; height: 0.8rem; border-radius: 999px; background: rgba(0, 0, 0, 0.08); overflow: hidden; }
-.awe__bar-fill { height: 100%; border-radius: 999px; background: #1f9d6b; transition: width 0.08s linear; }
+.awe__bar-track { position: relative; flex: 1; height: 0.8rem; border-radius: 999px; background: rgba(0, 0, 0, 0.08); overflow: hidden; }
+.awe__bar-zero { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; background: rgba(0, 0, 0, 0.22); transform: translateX(-1px); z-index: 1; }
+.awe__bar-fill { position: absolute; top: 0; bottom: 0; height: 100%; border-radius: 999px; background: #1f9d6b; transition: left 0.08s linear, width 0.08s linear; }
 .awe__bar-val { font-weight: 800; min-width: 3.2rem; text-align: right; }
 .awe__formula { font-size: 1rem; font-weight: 700; }
 .awe__note { margin: 0; font-size: 0.85rem; color: var(--text-2); }

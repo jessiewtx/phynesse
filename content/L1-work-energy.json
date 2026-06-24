@@ -61,13 +61,13 @@
     {
       "type": "concept",
       "title": "Positive, negative, and zero work",
-      "body": "Work has a **sign**, and direction decides it:\n\n• Force **with** the motion → **positive** work — it *adds* energy (speeds things up).\n• Force **against** the motion → **negative** work — it *removes* energy. Friction is the classic example: it always drags backward, so it does negative work.\n• Force **perpendicular** to the motion → **zero** work.\n\nKeeping track of these signs is the whole game once more than one force is involved.",
+      "body": "Here's the single most important thing work does: **it changes an object's kinetic energy — its speed.** The *sign* of the work tells you which way:\n\n• **Positive work:** the force runs *with* the motion, so energy goes into the object and it **speeds up** (KE increases).\n• **Negative work:** the force runs *against* the motion, so energy is pulled out and it **slows down** (KE decreases). Friction is the classic example — it always drags backward.\n• **Zero work:** either the force or the distance is zero, *or* the force is perpendicular to the motion. No energy is transferred, so the speed doesn't change.\n\nThat's the heart of it: **positive work speeds things up, negative work slows them down.** Get the signs right and the rest of mechanics falls into place.",
       "visual": "work_sign"
     },
     {
       "type": "concept",
       "title": "When the push is at an angle",
-      "body": "Real forces aren't always lined up with the motion. Only the part of the force **along** the direction of travel does work — the rest just pushes into (or lifts off) the surface.\n\nHere's the part that trips people up: pull straight up as hard as you want, but if the box only slides **sideways**, that upward pull does **zero work**. Work needs motion *in the direction of the force* — no vertical distance means no vertical work, no matter how big the force.\n\nSo for a force at an angle **θ** to the motion, only the component F·cos θ counts. Drag the rope below and watch the useful part change:",
+      "body": "Real forces aren't always lined up with the motion. Only the part of the force **along** the direction of travel does work — the rest just pushes into (or lifts off) the surface.\n\nHere's the part that trips people up: pull straight up as hard as you want, but if the box only slides **sideways**, that upward pull does **zero work**. Work needs motion *in the direction of the force* — no vertical distance means no vertical work, no matter how big the force.\n\nSo for a force at an angle **θ** to the motion, only the component F·cos θ counts. And its *direction* sets the sign: swing the rope **forward** (θ < 90°) and that part runs with the motion → **positive** work, speeding the box up. Swing it **backward** (θ > 90°) and it runs against the motion → **negative** work, slowing the box down — even though the box keeps sliding the same way. Drag the rope all the way around to see it:",
       "equation": "W = F·d·cos θ",
       "demo": "angle_explorer"
     },

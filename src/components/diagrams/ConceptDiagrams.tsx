@@ -143,13 +143,13 @@ export function WorkSignDiagram() {
       </svg>
 
       <div className="wfd__legend">
-        <Key color={F_COLOR}>with motion → positive</Key>
-        <Key color={FRIC_COLOR}>against motion → negative</Key>
-        <Key color="#9aa3ad">perpendicular → zero</Key>
+        <Key color={F_COLOR}>with motion: +work, speeds up</Key>
+        <Key color={FRIC_COLOR}>against motion: −work, slows down</Key>
+        <Key color="#9aa3ad">perpendicular: 0 work, no change</Key>
       </div>
 
       <div className="wfd__calc">
-        <div className="wfd__plug">{'The sign comes from cos\u00A0θ:\u00A0 cos\u00A00°\u00A0=\u00A0+1,\u00A0 cos\u00A0180°\u00A0=\u00A0\u22121,\u00A0 cos\u00A090°\u00A0=\u00A00.'}</div>
+        <div className="wfd__plug">{'Positive work adds kinetic energy (speeds up); negative work removes it (slows down). The sign comes from cos\u00A0θ:\u00A0 cos\u00A00°\u00A0=\u00A0+1,\u00A0 cos\u00A0180°\u00A0=\u00A0\u22121,\u00A0 cos\u00A090°\u00A0=\u00A00.'}</div>
       </div>
     </div>
   )

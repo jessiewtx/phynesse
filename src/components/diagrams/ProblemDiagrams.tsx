@@ -77,14 +77,54 @@ export function AnglePullProblem() {
       }
     >
       <line x1="20" y1={groundY} x2="340" y2={groundY} stroke="rgba(0,0,0,0.16)" strokeWidth="2" />
-      <Box x={boxX} y={groundY - BOX} w={BOX} h={BOX} label="wagon" />
-      {/* rope */}
+
+      {/* little red wagon full of toys */}
+      <g>
+        {/* toy blocks poking out of the tub */}
+        <rect x="66" y="50" width="15" height="15" rx="2" fill="#f2b134" />
+        <rect x="83" y="46" width="17" height="18" rx="2" fill="#1f9d6b" />
+        <rect x="101" y="52" width="13" height="13" rx="2" fill="#9b5cff" />
+        <circle cx="73.5" cy="57.5" r="2.4" fill="#fff" opacity="0.85" />
+        {/* tub */}
+        <path d="M60 62 L118 62 L114 84 L64 84 Z" fill="#cf4646" stroke="#a83232" strokeWidth="1.5" strokeLinejoin="round" />
+        <rect x="60" y="60" width="58" height="5" rx="2.5" fill="#e25b5b" />
+        {/* wheels */}
+        <circle cx="76" cy="88" r="8" fill="#2b2f36" stroke="#8b95a8" strokeWidth="1.5" />
+        <circle cx="76" cy="88" r="2.6" fill="#c0c8d4" />
+        <circle cx="104" cy="88" r="8" fill="#2b2f36" stroke="#8b95a8" strokeWidth="1.5" />
+        <circle cx="104" cy="88" r="2.6" fill="#c0c8d4" />
+      </g>
+
+      {/* rope tied to the wagon, with a little natural sag, running up to the kid's hands */}
+      <path
+        d={`M ${ox} ${oy} Q ${(ox + tx) / 2} ${(oy + ty) / 2 + 12} ${tx} ${ty}`}
+        fill="none"
+        stroke="#8a5a2c"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      {/* attachment loop where the rope ties onto the wagon */}
+      <circle cx={ox} cy={oy} r="4.2" fill="none" stroke="#5d3f23" strokeWidth="2.4" />
+
+      {/* the kid, leaning back into the pull, hands gripping the rope end */}
+      <g stroke="#3d4450" strokeWidth="3.2" strokeLinecap="round" fill="none">
+        <line x1="201" y1="58" x2="197" y2="76" />
+        <line x1="197" y1="76" x2="188" y2="96" />
+        <line x1="197" y1="76" x2="210" y2="95" />
+        <line x1="200" y1="62" x2={tx} y2={ty + 3} />
+        <line x1="203" y1="64" x2={tx + 3} y2={ty + 4} />
+      </g>
+      <circle cx="204" cy="50" r="7.5" fill="#3d4450" />
+      {/* fist gripping the rope */}
+      <circle cx={tx + 1} cy={ty + 3} r="3.4" fill="#3d4450" />
+
+      {/* rope / pull force */}
       <line x1={ox} y1={oy} x2={baseX} y2={baseY} stroke={F_COLOR} strokeWidth="6" strokeLinecap="round" />
       <polygon
         points={`${tx},${ty} ${baseX + perpX * aHalf},${baseY + perpY * aHalf} ${baseX - perpX * aHalf},${baseY - perpY * aHalf}`}
         fill={F_COLOR}
       />
-      <text x={tx + 8} y={ty - 2} fill={F_COLOR} fontSize="13" fontWeight="800">F</text>
+      <text x={tx - 10} y={ty - 9} textAnchor="end" fill={F_COLOR} fontSize="13" fontWeight="800">F</text>
       {/* horizontal reference (the 0° baseline the angle is measured from) */}
       <line x1={ox} y1={oy} x2={ox + 52} y2={oy} stroke="#b8bdc6" strokeWidth="1.4" strokeDasharray="4 4" />
       {/* angle */}
