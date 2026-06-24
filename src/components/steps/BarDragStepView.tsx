@@ -5,6 +5,8 @@ import { PhysicsText } from '../../lib/physicsText'
 import { EnergyReadout } from '../EnergyReadout'
 import { Feedback } from '../Feedback'
 import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
+import { WhyPanel } from '../WhyPanel'
+import { buildSolution } from '../../lib/solution'
 
 type Props = {
   step: BarDragStep
@@ -24,6 +26,8 @@ function initialValue(draft: StepDraft | null): number {
 export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttempt }: Props) {
   const [value, setValue] = useState(() => initialValue(draft))
   const [attempt, setAttempt] = useState(() => draft?.attemptCount ?? 0)
+  const [solved, setSolved] = useState(false)
+  const solution = buildSolution(step)
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'error'; text: string } | null>(
     () =>
       draft?.showWrongFeedback && draft.feedbackText
@@ -96,11 +100,11 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
     if (result.correct) {
       onAttempt?.(value, true)
       onDraftChange(null)
+      setSolved(true)
       setFeedback({
         variant: 'success',
         text: `Nice! ${step.correctValue} ${step.unit}`,
       })
-      setTimeout(onCorrect, 700)
     } else {
       const nextAttempt = attempt + 1
       const hint = hintForNumeric(step.hints, attempt)
@@ -220,17 +224,21 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
 
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
 
-      {attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
-        <StuckHelp
-          answer={`${step.correctValue} ${step.unit}`}
-          explanation={step.hints[step.hints.length - 1]}
-          nudge="Set the bar to this value, then tap Check to continue."
-        />
+      {!solved && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
+        <StuckHelp answer={`${step.correctValue} ${step.unit}`} solution={solution} />
       )}
 
-      <button type="button" className="btn btn--primary" onClick={submit}>
-        {feedback?.variant === 'error' ? 'Try again' : 'Check'}
-      </button>
+      <WhyPanel solved={solved} solution={solution} />
+
+      {solved ? (
+        <button type="button" className="btn btn--primary" onClick={onCorrect}>
+          Continue →
+        </button>
+      ) : (
+        <button type="button" className="btn btn--primary" onClick={submit}>
+          {feedback?.variant === 'error' ? 'Try again' : 'Check'}
+        </button>
+      )}
     </div>
   )
 }

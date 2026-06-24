@@ -10,12 +10,11 @@ import {
   type StoredLessonProgress,
 } from '../lib/progressFirestore'
 import { getStreak, emptyStats, type StreakStats } from '../lib/streak'
-import { displayFirstName } from '../lib/displayName'
 
 type Accuracy = { correct: number; total: number }
 
 export function ProgressPage() {
-  const { user, isSignedIn, signOut } = useAuth()
+  const { user, isSignedIn } = useAuth()
   const lessons = getAllLessons()
   const [progressMap, setProgressMap] = useState<Record<string, StoredLessonProgress>>({})
   const [streak, setStreak] = useState<StreakStats>(() => emptyStats())
@@ -78,21 +77,6 @@ export function ProgressPage() {
 
   return (
     <div className="home">
-      <nav className="home-nav">
-        <span className="home-nav__brand">Phynesse</span>
-        <div className="home-nav__right">
-          <Link to="/" className="btn btn--ghost btn--sm">Course</Link>
-          {isSignedIn && user && (
-            <>
-              <span>{displayFirstName(user)}</span>
-              <button type="button" className="btn btn--ghost btn--sm" onClick={() => signOut()}>
-                Sign out
-              </button>
-            </>
-          )}
-        </div>
-      </nav>
-
       <section className="home-display" style={{ paddingBottom: '1.5rem' }}>
         <p className="home-display__eyebrow">Your progress</p>
         <h1 className="home-display__title">Mastery</h1>

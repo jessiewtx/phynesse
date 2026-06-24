@@ -3,6 +3,8 @@ import type { PredictMCStep, StepDraft } from '../../types/lesson'
 import { gradeMC } from '../../lib/grading'
 import { Feedback } from '../Feedback'
 import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
+import { WhyPanel } from '../WhyPanel'
+import { buildSolution } from '../../lib/solution'
 
 type Props = {
   step: PredictMCStep
@@ -21,12 +23,14 @@ export function PredictMCStepView({
 }: Props) {
   const [selected, setSelected] = useState<number | null>(draft?.selectedIndex ?? null)
   const [attempt, setAttempt] = useState(draft?.attemptCount ?? 0)
+  const [solved, setSolved] = useState(false)
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'error'; text: string } | null>(
     () =>
       draft?.showWrongFeedback && draft.feedbackText
         ? { variant: 'error', text: draft.feedbackText }
         : null,
   )
+  const solution = buildSolution(step)
 
   const pick = (i: number) => {
     setSelected(i)
@@ -46,8 +50,8 @@ export function PredictMCStepView({
     if (result.correct) {
       onAttempt?.(choice, true)
       onDraftChange(null)
+      setSolved(true)
       setFeedback({ variant: 'success', text: 'Correct!' })
-      setTimeout(onCorrect, 600)
     } else {
       const nextAttempt = attempt + 1
       setAttempt(nextAttempt)
@@ -72,7 +76,8 @@ export function PredictMCStepView({
           <button
             key={choice}
             type="button"
-            className={`choice ${selected === i ? 'choice--selected' : ''} ${feedback?.variant === 'error' && selected === i ? 'choice--wrong' : ''}`}
+            disabled={solved}
+            className={`choice ${selected === i ? 'choice--selected' : ''} ${feedback?.variant === 'error' && selected === i ? 'choice--wrong' : ''} ${solved && i === step.correctIndex ? 'choice--correct' : ''}`}
             onClick={() => pick(i)}
           >
             {choice}
@@ -80,21 +85,26 @@ export function PredictMCStepView({
         ))}
       </div>
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
-      {attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
-        <StuckHelp
-          answer={step.choices[step.correctIndex]}
-          explanation={step.hints[step.hints.length - 1]}
-          nudge="Pick this option, then tap Check to continue."
-        />
+      {!solved && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
+        <StuckHelp answer={step.choices[step.correctIndex]} solution={solution} />
       )}
-      <button
-        type="button"
-        className="btn btn--primary"
-        disabled={selected === null}
-        onClick={submit}
-      >
-        {feedback?.variant === 'error' ? 'Try again' : 'Check'}
-      </button>
+
+      <WhyPanel solved={solved} solution={solution} />
+
+      {solved ? (
+        <button type="button" className="btn btn--primary" onClick={onCorrect}>
+          Continue →
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="btn btn--primary"
+          disabled={selected === null}
+          onClick={submit}
+        >
+          {feedback?.variant === 'error' ? 'Try again' : 'Check'}
+        </button>
+      )}
     </div>
   )
 }

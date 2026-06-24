@@ -26,14 +26,14 @@ export function ElasticPEExplorer() {
       ]}
       compute={(v) => 0.5 * v.k * v.x * v.x}
       goal={{
-        target: 40,
-        tol: 5,
-        label: 'Goal: tune the spring until U_s ≈ 40 J.',
-        hitLabel: '✓ Nice! See how squeeze (x) is squared — it dominates the energy.',
+        target: 50,
+        tol: 0.01,
+        label: 'Goal: tune the spring until PE_s = 50 J exactly.',
+        hitLabel: '✓ Nice! See how squeeze (x) is squared — it dominates the energy. (k=100 @ x=1.0 m matches k=400 @ x=0.5 m.)',
       }}
       formula={(v, r) => (
         <>
-          U<sub>s</sub> = ½·k·<span className="ke-explorer__sq">x²</span> = ½ × {v.k} ×{' '}
+          PE<sub>s</sub> = ½·k·<span className="ke-explorer__sq">x²</span> = ½ × {v.k} ×{' '}
           {(v.x * v.x).toFixed(2)} = <strong>{r.toFixed(0)} J</strong>
         </>
       )}

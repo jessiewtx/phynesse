@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 const PHYS =
-  /(Δ)([A-Z])_([a-z0-9]+)|(Δ)([A-Z]+)|([A-Z])_([a-z0-9]+)|(μ)_([a-z0-9]+)/g
+  /(Δ)([A-Z]{1,3})_([a-z0-9]+)|(Δ)([A-Z]+)|([A-Z]{1,3})_([a-z0-9]+)|(μ)_([a-z0-9]+)/g
 
 function parsePhysicsTokens(text: string, keyPrefix: string): ReactNode[] {
   const nodes: ReactNode[] = []

@@ -23,7 +23,7 @@ export function ConservationExplorer() {
         <div className="cons-expl__bars">
           <div className="cons-expl__bar">
             <div className="cons-expl__bar-fill cons-expl__bar-fill--u" style={{ height: `${u}%` }} />
-            <span className="cons-expl__bar-cap">U {u.toFixed(0)}</span>
+            <span className="cons-expl__bar-cap">PE {u.toFixed(0)}</span>
           </div>
           <div className="cons-expl__bar">
             <div className="cons-expl__bar-fill cons-expl__bar-fill--ke" style={{ height: `${ke}%` }} />
@@ -37,7 +37,7 @@ export function ConservationExplorer() {
       </div>
 
       <div className="ke-explorer__formula">
-        KE + U = {ke.toFixed(0)} + {u.toFixed(0)} = <strong>{TOTAL} J</strong> (always)
+        KE + PE = {ke.toFixed(0)} + {u.toFixed(0)} = <strong>{TOTAL} J</strong> (always)
       </div>
 
       <div className="ke-explorer__controls">
@@ -58,8 +58,8 @@ export function ConservationExplorer() {
 
       <p className={`ke-explorer__goal ${balanced ? 'ke-explorer__goal--hit' : ''}`}>
         {balanced
-          ? '✓ Halfway down — KE and U are equal. The total never budged.'
-          : 'Slide the ball down. Watch U turn into KE — but the total stays fixed. Can you find where KE = U?'}
+          ? '✓ Halfway down — KE and PE are equal. The total never budged.'
+          : 'Slide the ball down. Watch PE turn into KE — but the total stays fixed. Can you find where KE = PE?'}
       </p>
     </div>
   )

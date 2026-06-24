@@ -2,6 +2,7 @@
   "id": "L3",
   "title": "Gravitational Potential Energy",
   "order": 3,
+  "summary": "Energy stored by lifting. Work with PE_g = mgh and why the zero line is your choice.",
   "steps": [
     {
       "type": "concept",
@@ -11,8 +12,8 @@
     {
       "type": "concept",
       "title": "The formula",
-      "body": "**m** is mass (kg), **g** is gravity's pull (**9.8 m/s²** on Earth), and **h** is height above your chosen zero line.",
-      "equation": "U_g = mgh",
+      "body": "**m** is mass (kg), **g** is gravity's pull (**9.8 m/s²** on Earth), and **h** is height above your chosen zero line.\n\nWe'll write potential energy as **PE** — heads up that many textbooks call it **U** instead.",
+      "equation": "PE_g = mgh",
       "visual": "gravitational_pe"
     },
     {
@@ -32,15 +33,16 @@
       ],
       "correctIndex": 0,
       "hints": [
-        "Close — look at U_g = mgh. Height shows up just once (it isn't squared).",
-        "Since height isn't squared, U_g scales directly with it — picture what doubling the height does."
-      ]
+        "Close — look at PE_g = mgh. Height shows up just once (it isn't squared).",
+        "Since height isn't squared, PE_g scales directly with it — picture what doubling the height does."
+      ],
+      "solution": "Gravitational potential energy is PE_g = mgh. Height h appears just once (it isn't squared), so PE_g is directly proportional to height. Lifting the same box to twice the height doubles PE_g.\n\n**So the answer is \"It doubles\".**"
     },
     {
       "type": "equation_fill",
-      "prompt": "Plug in the numbers. A **2 kg** book sits **1.5 m** up (g = 9.8). Drag mass and height into their spots, then find U_g.",
+      "prompt": "Plug in the numbers. A **2 kg** book sits **1.5 m** up (g = 9.8). Drag mass and height into their spots, then find PE_g.",
       "template": [
-        { "text": "U_g = " },
+        { "text": "PE_g = " },
         { "slot": "m" },
         { "text": " × 9.8 × " },
         { "slot": "h" }
@@ -53,27 +55,30 @@
       "computeHints": [
         "So close — just multiply the three values together: mass, then 9.8, then height.",
         "Work left to right: 2 × 9.8 first, then multiply that by 1.5."
-      ]
+      ],
+      "solution": "Gravitational PE is PE_g = mgh.\n\nWith m = 2 kg, g = 9.8 m/s², and h = 1.5 m: PE_g = 2 × 9.8 × 1.5 = **29.4 J**."
     },
     {
       "type": "concept",
       "title": "Zero is your choice",
-      "body": "Here's the twist: **h is measured from a zero line you pick**. Move the zero line and U_g changes. Only **changes** in U_g (between two points) are fixed."
+      "body": "**The PE_g number isn't physical.** You pick where h\u00A0=\u00A00. Zero line at the book → PE_g\u00A0=\u00A00. Zero line on the floor → PE_g is positive. Same book, different number.\n\nThat's fine: real answers depend on the **change**, ΔPE_g, as something moves — and that only depends on Δh, not on where you called zero.\n\nSo pick whatever zero line is easiest (usually the lowest point). The physics comes out the same.",
+      "equation": "ΔPE_g = mg·Δh"
     },
     {
       "type": "bar_drag",
-      "prompt": "Same book, same spot — but you redefine the floor as **1.5 m higher**, so the book is now at h = 0. Drag **U_g**.",
-      "barLabel": "U_g",
+      "prompt": "Same book, same spot — but you redefine the floor as **1.5 m higher**, so the book is now at h = 0. Drag **PE_g**.",
+      "barLabel": "PE_g",
       "barColor": "#8b5cf6",
       "maxValue": 40,
       "correctValue": 0,
       "unit": "J",
       "tolerance": 0.05,
-      "formulas": ["U_g = mgh"],
+      "formulas": ["PE_g = mgh"],
       "hints": [
-        "Think about your zero line — U_g is always measured from it.",
-        "If the book sits right at the reference level, its height above it is zero. So what does that make U_g?"
-      ]
+        "Think about your zero line — PE_g is always measured from it.",
+        "If the book sits right at the reference level, its height above it is zero. So what does that make PE_g?"
+      ],
+      "solution": "Height is always measured from the zero line you choose, and here the floor is redefined so the book sits right at it: h = 0.\n\nPE_g = mgh, and with h = 0 the whole product is zero. So PE_g = **0 J**.\n\nNotice the book never moved — only the number did, because we moved the zero line. Any real ΔPE_g between two actual heights would come out exactly the same no matter where we put h = 0."
     },
     {
       "type": "complete",

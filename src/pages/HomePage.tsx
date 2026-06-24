@@ -1,7 +1,8 @@
-import { type CSSProperties, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { SignInPanel } from '../components/SignInPanel'
 import { HomeTeaser } from '../components/HomeTeaser'
+import { LessonPath } from '../components/LessonPath'
+import { IconTarget, IconBars, IconScale, IconPencil } from '../components/Illustrations'
 import { useAuth } from '../contexts/AuthContext'
 import { getAllLessons, isLessonUnlocked, statusForStepIndex } from '../lib/lessons'
 import { loadProgress } from '../lib/progress'
@@ -9,14 +10,11 @@ import {
   fetchAllLessonProgress,
   type StoredLessonProgress,
 } from '../lib/progressFirestore'
-import { displayFirstName } from '../lib/displayName'
 import { getStreak, emptyStats, type StreakStats } from '../lib/streak'
 import { StreakBanner } from '../components/StreakBanner'
 
-const LESSON_COLORS = ['#0ab5c5', '#e63946', '#e9a800', '#14a89b', '#7c3aed', '#f57c20']
-
 export function HomePage() {
-  const { user, isSignedIn, loading, signOut, authReady } = useAuth()
+  const { user, isSignedIn, authReady } = useAuth()
   const lessons = getAllLessons()
   const [progressMap, setProgressMap] = useState<Record<string, StoredLessonProgress>>({})
   const [streak, setStreak] = useState<StreakStats>(() => emptyStats())
@@ -48,98 +46,84 @@ export function HomePage() {
     setProgressMap(guest)
   }, [isSignedIn, user])
 
+  const masteredCount = lessons.filter((l) => progressMap[l.id]?.status === 'completed').length
+  const started = Object.keys(progressMap).length > 0
+  const nextLesson = lessons.find(
+    (l) => isLessonUnlocked(l, progressMap) && progressMap[l.id]?.status !== 'completed',
+  )
+  const ctaLesson = nextLesson ?? lessons[0]
+  const ctaLabel = !started
+    ? 'Start the course'
+    : nextLesson
+      ? progressMap[nextLesson.id]?.status === 'in_progress'
+        ? `Resume: ${nextLesson.title}`
+        : `Continue: ${nextLesson.title}`
+      : 'Review the course'
+
   return (
     <div className="home">
-      {/* ── Minimal nav ── */}
-      <nav className="home-nav">
-        <span className="home-nav__brand">Phynesse</span>
-        <div className="home-nav__right">
-          <Link to="/progress" className="btn btn--ghost btn--sm">Progress</Link>
-          {isSignedIn && user ? (
-            <>
-              <span>{displayFirstName(user)}</span>
-              <button type="button" className="btn btn--ghost btn--sm" onClick={() => signOut()}>
-                Sign out
-              </button>
-            </>
-          ) : (
-            loading && authReady && <span style={{ color: 'var(--text-3)', fontSize: '0.8rem' }}>…</span>
-          )}
-        </div>
-      </nav>
+      {/* ── Hero ── */}
+      <section className="home-hero">
+        <div className="home-hero__text">
+          <p className="home-display__eyebrow">AP Physics 1 · Unit 4</p>
+          <h1 className="home-display__title">Work, Power &amp; Energy</h1>
+          <p className="home-display__tagline">
+            Drag bars. Watch energy move. Actually understand it — six hands-on
+            lessons that take you from a single push to full conservation of energy.
+          </p>
 
-      {/* ── Centered editorial display ── */}
-      <section className="home-display">
-        <p className="home-display__eyebrow">AP Physics 1 · Unit 4</p>
-        <h1 className="home-display__title">Work, Power &amp; Energy</h1>
-        <p className="home-display__tagline">
-          Drag bars. Watch energy move. Actually understand it.
-        </p>
-        <HomeTeaser />
+          <div className="home-hero__cta">
+            <Link to={`/lesson/${ctaLesson.id}`} className="btn btn--primary btn--lg">
+              {ctaLabel} →
+            </Link>
+            <Link to="/progress" className="btn btn--ghost btn--lg">
+              View progress
+            </Link>
+          </div>
+
+          <div className="home-hero__stats">
+            <span><strong>{masteredCount}/{lessons.length}</strong> lessons mastered</span>
+            <span aria-hidden="true">·</span>
+            <span>🔥 <strong>{streak.currentStreak}</strong> day streak</span>
+          </div>
+        </div>
+
+        <div className="home-hero__visual">
+          <HomeTeaser />
+          <p className="home-hero__visual-cap">Drag the bars — energy is interactive here.</p>
+        </div>
       </section>
-
-      {/* ── Sign-in (only when guest) ── */}
-      {!isSignedIn && !loading && authReady && (
-        <div className="home-signin">
-          <SignInPanel compact />
-        </div>
-      )}
 
       {/* ── Habit loop ── */}
       <section className="home-streak">
         <StreakBanner stats={streak} totalLessons={lessons.length} />
       </section>
 
-      {/* ── Lesson list ── */}
-      <section className="home-lessons">
-        <h2 className="home-lessons__label">Lessons</h2>
+      {/* ── Lesson path ── */}
+      <section className="home-section home-section--path">
+        <h2 className="home-section__label">Your path</h2>
+        <LessonPath lessons={lessons} progressMap={progressMap} />
+      </section>
 
-        {lessons.map((lesson) => {
-          const locked = !isLessonUnlocked(lesson, progressMap)
-          const prog = progressMap[lesson.id]
-          const complete = prog?.status === 'completed'
-          const inProgress = prog?.status === 'in_progress'
-          const color = LESSON_COLORS[(lesson.order - 1) % LESSON_COLORS.length]
-          const style = { '--c': color } as CSSProperties
-          const num = lesson.order.toString().padStart(2, '0')
-
-          if (locked) {
-            return (
-              <div key={lesson.id} className="lesson-row lesson-row--locked" style={style}>
-                <span className="lesson-row__n">{num}</span>
-                <div className="lesson-row__body">
-                  <span className="lesson-row__title">{lesson.title}</span>
-                </div>
-                <span className="lesson-row__arrow">🔒</span>
-              </div>
-            )
-          }
-
-          return (
-            <Link
-              key={lesson.id}
-              to={`/lesson/${lesson.id}`}
-              className="lesson-row"
-              style={style}
-            >
-              <span className="lesson-row__n">{num}</span>
-              <div className="lesson-row__body">
-                <span className="lesson-row__title">{lesson.title}</span>
-                {complete && <span className="lesson-row__pill lesson-row__pill--done">Done</span>}
-                {inProgress && <span className="lesson-row__pill lesson-row__pill--in">In progress</span>}
-              </div>
-              <span className="lesson-row__arrow">→</span>
-            </Link>
-          )
-        })}
-
-        <div className="lesson-row lesson-row--locked">
-          <span className="lesson-row__n">07</span>
-          <div className="lesson-row__body">
-            <span className="lesson-row__title">Mixed problems & unit capstone</span>
-            <span className="lesson-row__pill" style={{ background: '#f5f5f5', color: 'var(--text-3)' }}>
-              Coming soon
-            </span>
+      {/* ── Outcomes ── */}
+      <section className="home-section">
+        <h2 className="home-section__label">What you'll be able to do</h2>
+        <div className="home-outcomes">
+          <div className="home-outcome">
+            <span className="home-outcome__icon"><IconTarget size={40} /></span>
+            <span><strong>Predict before you calculate.</strong> Reason about where energy goes, then check the math.</span>
+          </div>
+          <div className="home-outcome">
+            <span className="home-outcome__icon"><IconBars size={40} /></span>
+            <span><strong>Read live energy bar charts.</strong> See work, KE, and PE trade off in real time.</span>
+          </div>
+          <div className="home-outcome">
+            <span className="home-outcome__icon"><IconScale size={40} /></span>
+            <span><strong>Apply the work-energy theorem.</strong> Connect forces, motion, and energy.</span>
+          </div>
+          <div className="home-outcome">
+            <span className="home-outcome__icon"><IconPencil size={40} /></span>
+            <span><strong>Solve AP-style problems.</strong> Build the formulas step by step, with instant feedback.</span>
           </div>
         </div>
       </section>

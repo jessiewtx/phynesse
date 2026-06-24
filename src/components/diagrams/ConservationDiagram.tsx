@@ -7,10 +7,10 @@ export function ConservationDiagram() {
     const uH = Math.round(u * total)
     return (
       <g>
-        {/* U on top */}
+        {/* PE on top */}
         <rect x={x} y={baseY} width={48} height={uH} fill="#8b5cf6" rx={3} />
         {uH > 16 && (
-          <text x={x + 24} y={baseY + uH / 2 + 4} textAnchor="middle" fill="#fff" fontSize="10" fontWeight="700" fontFamily="system-ui">U</text>
+          <text x={x + 24} y={baseY + uH / 2 + 4} textAnchor="middle" fill="#fff" fontSize="10" fontWeight="700" fontFamily="system-ui">PE</text>
         )}
         {/* KE below */}
         <rect x={x} y={baseY + uH} width={48} height={keH} fill="#34d399" rx={3} />
@@ -30,7 +30,7 @@ export function ConservationDiagram() {
         <Bar x={264} ke={1} u={0} label="bottom" />
       </svg>
       <figcaption id="cons-diagram-caption" className="concept-diagram__caption">
-        No friction: energy just trades between U and KE — the total stays the same.
+        No friction: energy just trades between PE and KE — the total stays the same.
       </figcaption>
     </figure>
   )

@@ -16,7 +16,6 @@ import type { PushBlockParams, SimStep, StepDraft } from '../types/lesson'
 import { displayFirstName } from '../lib/displayName'
 import { completeLesson, type CompletionResult } from '../lib/streak'
 import { StreakCelebrationOverlay } from '../components/StreakCelebrationOverlay'
-import { LessonSidebar } from '../components/LessonSidebar'
 
 const DEFAULT_PARAMS: PushBlockParams = {
   force: 10,
@@ -89,7 +88,12 @@ export function LessonPage() {
     celebratedRef.current = true
     void completeLesson(user?.uid ?? null, lessonId).then((result) => {
       setCelebration(result)
-      setShowCelebration(true)
+      // Only celebrate on the FIRST completion of the day (when the streak
+      // actually starts or advances) — or when a new milestone is earned.
+      // Later lessons the same day finish quietly.
+      const worthCelebrating =
+        result.streakStarted || result.streakIncreased || result.milestones.length > 0
+      setShowCelebration(worthCelebrating)
     })
   }, [ready, lesson, lessonId, stepIndex, user])
 
@@ -236,29 +240,26 @@ export function LessonPage() {
           </div>
           <div className="lesson-header__right" />
         </header>
-        <div className="lesson-body">
-          <LessonSidebar currentLessonId={lessonId} />
-          <main className="lesson-main">
-            <div className="lesson-nav">
-              <button type="button" className="lesson-nav__btn" onClick={handleBack}>
-                ← Previous
-              </button>
-              <button type="button" className="lesson-nav__btn lesson-nav__btn--restart" onClick={handleRestart}>
-                ↺ Start over
-              </button>
+        <main className="lesson-main">
+          <div className="lesson-nav">
+            <button type="button" className="lesson-nav__btn" onClick={handleBack}>
+              ← Previous
+            </button>
+            <button type="button" className="lesson-nav__btn lesson-nav__btn--restart" onClick={handleRestart}>
+              ↺ Start over
+            </button>
+          </div>
+          <div className="lesson-complete-splash">
+            <div className="lesson-complete-splash__icon">🎉</div>
+            <h2 className="lesson-complete-splash__title">Lesson complete!</h2>
+            <p className="lesson-complete-splash__body">
+              {lesson.title} — all done. Review any step or head back to choose your next lesson.
+            </p>
+            <div className="lesson-complete-splash__actions">
+              <Link to="/" className="btn btn--primary">Back to course →</Link>
             </div>
-            <div className="lesson-complete-splash">
-              <div className="lesson-complete-splash__icon">🎉</div>
-              <h2 className="lesson-complete-splash__title">Lesson complete!</h2>
-              <p className="lesson-complete-splash__body">
-                {lesson.title} — all done. Review any step or head back to choose your next lesson.
-              </p>
-              <div className="lesson-complete-splash__actions">
-                <Link to="/" className="btn btn--primary">Back to course →</Link>
-              </div>
-            </div>
-          </main>
-        </div>
+          </div>
+        </main>
       </div>
     )
   }
@@ -288,35 +289,32 @@ export function LessonPage() {
         </div>
       )}
 
-      <div className="lesson-body">
-        <LessonSidebar currentLessonId={lessonId} />
-        <main className="lesson-main">
-          <div className="lesson-nav">
-            {stepIndex > 0 ? (
-              <button type="button" className="lesson-nav__btn" onClick={handleBack}>
-                ← Previous
-              </button>
-            ) : (
-              <span />
-            )}
-            <button type="button" className="lesson-nav__btn lesson-nav__btn--restart" onClick={handleRestart}>
-              ↺ Start over
+      <main className="lesson-main">
+        <div className="lesson-nav">
+          {stepIndex > 0 ? (
+            <button type="button" className="lesson-nav__btn" onClick={handleBack}>
+              ← Previous
             </button>
-          </div>
+          ) : (
+            <span />
+          )}
+          <button type="button" className="lesson-nav__btn lesson-nav__btn--restart" onClick={handleRestart}>
+            ↺ Start over
+          </button>
+        </div>
 
-          <StepRenderer
-            key={stepIndex}
-            step={step}
-            stepDraft={stepDraft}
-            onDraftChange={handleDraftChange}
-            simParams={simParams}
-            onSimChange={setSimParams}
-            onAdvance={advance}
-            onComplete={handleComplete}
-            onAttempt={handleAttempt}
-          />
-        </main>
-      </div>
+        <StepRenderer
+          key={stepIndex}
+          step={step}
+          stepDraft={stepDraft}
+          onDraftChange={handleDraftChange}
+          simParams={simParams}
+          onSimChange={setSimParams}
+          onAdvance={advance}
+          onComplete={handleComplete}
+          onAttempt={handleAttempt}
+        />
+      </main>
     </div>
   )
 }

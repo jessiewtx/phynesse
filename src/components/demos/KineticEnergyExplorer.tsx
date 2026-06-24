@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
 const TARGET = 50
-const TARGET_TOL = 4
+// 50 J is hit exactly by m=4,v=5 or m=1,v=10, so require an exact match —
+// otherwise near-misses like m=2,v=7 (49 J) read as "you hit 50 J".
+const TARGET_TOL = 0
 
 export function KineticEnergyExplorer() {
   const [m, setM] = useState(2)
@@ -84,8 +86,8 @@ export function KineticEnergyExplorer() {
 
       <p className={`ke-explorer__goal ${hit ? 'ke-explorer__goal--hit' : ''}`}>
         {hit
-          ? '✓ Nice — you hit 50 J! Notice how many speed/mass combos get there.'
-          : 'Goal: tune the sliders until KE ≈ 50 J.'}
+          ? '✓ Nice — exactly 50 J! Try the other combo that lands here too (4 kg @ 5 m/s vs 1 kg @ 10 m/s).'
+          : 'Goal: tune the sliders until KE = 50 J exactly.'}
       </p>
     </div>
   )

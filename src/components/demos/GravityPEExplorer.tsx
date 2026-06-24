@@ -12,14 +12,14 @@ export function GravityPEExplorer() {
       ]}
       compute={(v) => v.m * 9.8 * v.h}
       goal={{
-        target: 100,
-        tol: 8,
-        label: 'Goal: tune mass and height until U_g ≈ 100 J.',
-        hitLabel: '✓ Got it! Height and mass both push U_g up the same way — no squaring here.',
+        target: 98,
+        tol: 0.1,
+        label: 'Goal: tune mass and height until PE_g = 98 J (g = 9.8).',
+        hitLabel: '✓ Got it! Height and mass both push PE_g up the same way — no squaring here.',
       }}
       formula={(v, r) => (
         <>
-          U<sub>g</sub> = m·g·h = {v.m} × 9.8 × {v.h} = <strong>{r.toFixed(0)} J</strong>
+          PE<sub>g</sub> = m·g·h = {v.m} × 9.8 × {v.h} = <strong>{r.toFixed(0)} J</strong>
         </>
       )}
       stage={(v) => (

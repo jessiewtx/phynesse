@@ -2,6 +2,7 @@
   "id": "L1",
   "title": "Work & the Work-Energy Theorem",
   "order": 1,
+  "summary": "Push a block and watch work turn into motion. Build W = F·d and the work-energy theorem.",
   "steps": [
     {
       "type": "concept",
@@ -30,7 +31,8 @@
       "hints": [
         "Not quite — take another look at W = F·d. The force didn't change here; only the distance did.",
         "You're close. Work scales directly with distance, so if the distance grows by a factor, the work grows by that same factor."
-      ]
+      ],
+      "solution": "Work is force times distance: W = F·d. The force F stays the same here, and only the distance d changes. Because work is directly proportional to distance, sliding the box twice as far does twice the work.\n\n**So the answer is \"Twice as much\".**"
     },
     {
       "type": "equation_fill",
@@ -49,7 +51,8 @@
       "computeHints": [
         "So close — work is force times distance, so multiply your two values together.",
         "One step at a time: compute 10 × 2, and that product (in joules) is the work."
-      ]
+      ],
+      "solution": "Work is force times distance: W = F·d.\n\nForce goes in the F spot and distance in the d spot, so W = 10 × 2 = **20 J**."
     },
     {
       "type": "concept",
@@ -75,7 +78,8 @@
       "hints": [
         "Not quite — by the work-energy theorem, W_net = ΔKE, and you already found W_net just above.",
         "With no friction, every joule of net work turns into motion — so ΔKE ends up the same size as that W_net."
-      ]
+      ],
+      "solution": "The work-energy theorem says the net work done equals the change in kinetic energy: W_net = ΔKE.\n\nThe net work here is W_net = F·d = 10 × 2 = 20 J, and with no friction all of it becomes motion. So ΔKE = **20 J**."
     },
     {
       "type": "complete",

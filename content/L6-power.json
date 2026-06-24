@@ -2,6 +2,7 @@
   "id": "L6",
   "title": "Power",
   "order": 6,
+  "summary": "How fast energy moves. Connect work and time through P = W/Δt, measured in watts.",
   "steps": [
     {
       "type": "concept",
@@ -34,7 +35,8 @@
       "hints": [
         "Take a look at P = W / Δt — the work on top stays the same, but the time on the bottom shrinks.",
         "When the bottom of a fraction gets smaller, the result gets bigger — so what happens if the time is cut in half?"
-      ]
+      ],
+      "solution": "Power is the rate of doing work: P = W / Δt. The work W on top is unchanged, while the time Δt on the bottom is cut in half. Halving the denominator doubles the result.\n\n**So the answer is \"It doubles\".**"
     },
     {
       "type": "equation_fill",
@@ -53,7 +55,8 @@
       "computeHints": [
         "So close — power is work divided by time, so divide your two values.",
         "Just work out 120 ÷ 4 for the power in watts."
-      ]
+      ],
+      "solution": "Power is work divided by time: P = W / Δt.\n\nWork goes on top and time on the bottom, so P = 120 ÷ 4 = **30 W**."
     },
     {
       "type": "concept",
@@ -78,7 +81,8 @@
       "hints": [
         "At constant speed there's no change in KE, so the work is just W = mgh.",
         "Find W with m × g × h first, then divide that by the time to get the power."
-      ]
+      ],
+      "solution": "At constant speed there's no change in KE, so all the work goes into lifting: W = mgh. Power is then P = W / Δt.\n\nW = 4 × 9.8 × 2.5 = 98 J, and P = 98 ÷ 5 = **19.6 W**."
     },
     {
       "type": "complete",

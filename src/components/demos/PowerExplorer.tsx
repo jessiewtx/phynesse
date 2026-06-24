@@ -13,8 +13,8 @@ export function PowerExplorer() {
       compute={(v) => v.W / v.t}
       goal={{
         target: 60,
-        tol: 5,
-        label: 'Goal: tune work and time until P ≈ 60 W.',
+        tol: 0.01,
+        label: 'Goal: tune work and time until P = 60 W exactly.',
         hitLabel: '✓ Got it! Same work in less time = more power. Time is on the bottom.',
       }}
       formula={(v, r) => (

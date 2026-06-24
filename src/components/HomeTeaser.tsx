@@ -1,10 +1,10 @@
 import { useRef, useState, type PointerEvent } from 'react'
 
 const BARS = [
-  { label: 'W', color: '#4f8cff', init: 0.62 },
-  { label: 'KE', color: '#34d399', init: 0.82 },
-  { label: 'U', color: '#8b5cf6', init: 0.46 },
-  { label: 'P', color: '#06b6d4', init: 0.7 },
+  { label: 'W', color: '#ff8a3d', init: 0.62 },
+  { label: 'KE', color: '#1ec487', init: 0.82 },
+  { label: 'PE', color: '#9b5cff', init: 0.46 },
+  { label: 'P', color: '#ff4d6d', init: 0.7 },
 ]
 
 // In-memory so the teaser keeps its position across navigation within a session,

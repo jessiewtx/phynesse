@@ -4,6 +4,8 @@ import { gradeNumeric, hintForNumeric } from '../../lib/grading'
 import { PhysicsText } from '../../lib/physicsText'
 import { Feedback } from '../Feedback'
 import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
+import { WhyPanel } from '../WhyPanel'
+import { buildSolution } from '../../lib/solution'
 
 type Props = {
   step: EquationFillStep
@@ -30,12 +32,14 @@ export function EquationFillStepView({ step, draft, onDraftChange, onCorrect, on
     startCompute && typeof draft?.answer === 'string' ? draft.answer : '',
   )
   const [attempt, setAttempt] = useState(draft?.attemptCount ?? 0)
+  const [solved, setSolved] = useState(false)
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'error'; text: string } | null>(
     () =>
       draft?.showWrongFeedback && draft.feedbackText
         ? { variant: 'error', text: draft.feedbackText }
         : null,
   )
+  const solution = buildSolution(step)
 
   const usedTokens = new Set(Object.values(placed).filter((v): v is number => v !== null))
   const allFilled = slotIds.every((id) => placed[id] !== null)
@@ -90,8 +94,8 @@ export function EquationFillStepView({ step, draft, onDraftChange, onCorrect, on
     if (result.correct) {
       onAttempt?.(num, true)
       onDraftChange(null)
+      setSolved(true)
       setFeedback({ variant: 'success', text: `Correct! ${step.result.value} ${step.result.unit}` })
-      setTimeout(onCorrect, 700)
     } else {
       const nextAttempt = attempt + 1
       const hint = hintForNumeric(step.computeHints, attempt)
@@ -147,6 +151,7 @@ export function EquationFillStepView({ step, draft, onDraftChange, onCorrect, on
               inputMode="decimal"
               value={answer}
               placeholder="?"
+              readOnly={solved}
               onChange={(e) => setAnswer(e.target.value)}
             />
             <span className="eqfill__text">{step.result.unit}</span>
@@ -181,17 +186,19 @@ export function EquationFillStepView({ step, draft, onDraftChange, onCorrect, on
 
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
 
-      {phase === 'compute' && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
-        <StuckHelp
-          answer={`${step.result.value} ${step.result.unit}`}
-          explanation={step.computeHints[step.computeHints.length - 1]}
-          nudge="Enter this value, then tap Check to continue."
-        />
+      {phase === 'compute' && !solved && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
+        <StuckHelp answer={`${step.result.value} ${step.result.unit}`} solution={solution} />
       )}
+
+      {phase === 'compute' && <WhyPanel solved={solved} solution={solution} />}
 
       {phase === 'fill' ? (
         <button type="button" className="btn btn--primary" onClick={checkFill} disabled={!allFilled}>
           Check placement
+        </button>
+      ) : solved ? (
+        <button type="button" className="btn btn--primary" onClick={onCorrect}>
+          Continue →
         </button>
       ) : (
         <button

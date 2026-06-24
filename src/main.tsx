@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
+import { AppShell } from './components/AppShell'
 import { HomePage } from './pages/HomePage'
 import { LessonPage } from './pages/LessonPage'
 import { ProgressPage } from './pages/ProgressPage'
@@ -19,9 +20,11 @@ createRoot(document.getElementById('root')!).render(
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/progress" element={<ProgressPage />} />
-          <Route path="/lesson/:lessonId" element={<LessonRoute />} />
+          <Route element={<AppShell />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/progress" element={<ProgressPage />} />
+            <Route path="/lesson/:lessonId" element={<LessonRoute />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

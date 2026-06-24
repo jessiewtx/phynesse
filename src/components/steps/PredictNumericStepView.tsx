@@ -3,6 +3,8 @@ import type { PredictNumericStep, StepDraft } from '../../types/lesson'
 import { gradeNumeric, hintForNumeric } from '../../lib/grading'
 import { Feedback } from '../Feedback'
 import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
+import { WhyPanel } from '../WhyPanel'
+import { buildSolution } from '../../lib/solution'
 
 type Props = {
   step: PredictNumericStep
@@ -23,12 +25,14 @@ export function PredictNumericStepView({
     draft?.answer !== undefined ? String(draft.answer) : '',
   )
   const [attempt, setAttempt] = useState(draft?.attemptCount ?? 0)
+  const [solved, setSolved] = useState(false)
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'error'; text: string } | null>(
     () =>
       draft?.showWrongFeedback && draft.feedbackText
         ? { variant: 'error', text: draft.feedbackText }
         : null,
   )
+  const solution = buildSolution(step)
 
   const submit = () => {
     const num = Number(value)
@@ -36,8 +40,8 @@ export function PredictNumericStepView({
     if (result.correct) {
       onAttempt?.(num, true)
       onDraftChange(null)
+      setSolved(true)
       setFeedback({ variant: 'success', text: `Correct! ${step.correctValue} ${step.unit}` })
-      setTimeout(onCorrect, 700)
     } else {
       const nextAttempt = attempt + 1
       const hint = hintForNumeric(step.hints, attempt)
@@ -62,6 +66,7 @@ export function PredictNumericStepView({
           type="number"
           inputMode="decimal"
           value={value}
+          readOnly={solved}
           onChange={(e) => {
             setValue(e.target.value)
             onDraftChange({
@@ -77,16 +82,21 @@ export function PredictNumericStepView({
         <span className="numeric-input__unit">{step.unit}</span>
       </div>
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
-      {attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
-        <StuckHelp
-          answer={`${step.correctValue} ${step.unit}`}
-          explanation={step.hints[step.hints.length - 1]}
-          nudge="Enter this value, then tap Check to continue."
-        />
+      {!solved && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
+        <StuckHelp answer={`${step.correctValue} ${step.unit}`} solution={solution} />
       )}
-      <button type="button" className="btn btn--primary" onClick={submit}>
-        {feedback?.variant === 'error' ? 'Try again' : 'Check'}
-      </button>
+
+      <WhyPanel solved={solved} solution={solution} />
+
+      {solved ? (
+        <button type="button" className="btn btn--primary" onClick={onCorrect}>
+          Continue →
+        </button>
+      ) : (
+        <button type="button" className="btn btn--primary" onClick={submit}>
+          {feedback?.variant === 'error' ? 'Try again' : 'Check'}
+        </button>
+      )}
     </div>
   )
 }

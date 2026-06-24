@@ -10,6 +10,7 @@ export type BarDragStep = {
   hints: string[]
   givens?: { label: string; value: string }[]
   formulas?: string[]
+  solution?: string
 }
 
 export type ConceptStep = {
@@ -45,6 +46,7 @@ export type EquationFillStep = {
   result: { value: number; unit: string; tolerance: number }
   fillHint?: string
   computeHints: string[]
+  solution?: string
 }
 
 export type PredictMCStep = {
@@ -53,6 +55,7 @@ export type PredictMCStep = {
   choices: string[]
   correctIndex: number
   hints: string[]
+  solution?: string
 }
 
 export type PredictNumericStep = {
@@ -62,6 +65,7 @@ export type PredictNumericStep = {
   unit: string
   tolerance: number
   hints: string[]
+  solution?: string
 }
 
 export type SimStep = {
@@ -98,6 +102,7 @@ export type Lesson = {
   id: string
   title: string
   order: number
+  summary?: string
   steps: Step[]
 }
 
