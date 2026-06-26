@@ -12,6 +12,9 @@ export function toBarDragStep(p: GeneratedProblem): BarDragStep {
   }))
   const maxValue = Math.max(5, Math.ceil((p.value * 1.4) / 5) * 5)
   const givensText = givens.map((g) => `${g.label} = ${g.value}`).join(', ')
+  // Exact grading for clean-arithmetic concepts; gravitational PE keeps a small
+  // tolerance only because it rounds through g = 9.8.
+  const tolerance = p.conceptId === 'grav_pe' ? 0.02 : 0
   return {
     type: 'bar_drag',
     prompt: p.scenario,
@@ -20,7 +23,7 @@ export function toBarDragStep(p: GeneratedProblem): BarDragStep {
     maxValue,
     correctValue: p.value,
     unit: c.unit,
-    tolerance: 0.03,
+    tolerance,
     hints: [
       `Use ${c.display}.`,
       `Substitute the given values into ${c.display}, then compute.`,

@@ -22,7 +22,7 @@
       "prompt": "Warm-up. A mover pushes a crate with a steady **80 N**, and it slides **3.0 m** in the same direction across a smooth floor. How much work does the mover do on the crate?",
       "correctValue": 240,
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "visual": "push",
       "formulas": ["W = F_A·d"],
       "givens": [
@@ -109,7 +109,7 @@
       "prompt": "Quick theorem check. You do **50 J** of net work on a **2.0 kg** cart that starts from rest on a frictionless track. What is the cart's change in kinetic energy?",
       "correctValue": 50,
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "visual": "push",
       "formulas": ["W_net = ΔKE"],
       "givens": [
@@ -127,7 +127,7 @@
       "prompt": "**Setup:** You push a **4.0 kg** crate **5.0 m** across a level floor with a steady horizontal **30 N**. Friction pushes back with **12 N**, and the crate starts from rest.\n\n**Part A —** What is the *net* work done on the crate?",
       "correctValue": 90,
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "visual": "push_friction",
       "formulas": ["W_net = (F_A − F_f)·d"],
       "givens": [

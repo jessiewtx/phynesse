@@ -27,6 +27,7 @@ import { ElasticPEDiagram } from '../diagrams/ElasticPEDiagram'
 import { ConservationDiagram } from '../diagrams/ConservationDiagram'
 import { PowerDiagram } from '../diagrams/PowerDiagram'
 import { PhysicsEquation, PhysicsText } from '../../lib/physicsText'
+import { useEnterAdvance } from '../../lib/useEnterAdvance'
 import type { ConceptStep } from '../../types/lesson'
 
 type Props = {
@@ -37,6 +38,8 @@ type Props = {
 export function ConceptStepView({ step, onContinue }: Props) {
   const needsDemo = step.demo === 'work_energy_race'
   const [demoDone, setDemoDone] = useState(!needsDemo)
+
+  useEnterAdvance(onContinue, demoDone)
 
   return (
     <div className="step step--concept">

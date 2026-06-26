@@ -24,7 +24,7 @@
       "maxValue": 45,
       "correctValue": 30,
       "unit": "J",
-      "tolerance": 0.05,
+      "tolerance": 0,
       "formulas": ["KE + PE = constant"],
       "givens": [{ "label": "PE_g (top)", "value": "30 J" }],
       "hints": [
@@ -100,7 +100,7 @@
       "correctValue": 2.5,
       "visual": "ramp_friction",
       "unit": "N",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "formulas": ["E_th = F_f·d"],
       "givens": [
         { "label": "E_th", "value": "10 J" },

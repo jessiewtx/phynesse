@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { getAllLessons } from '../lib/lessons'
 import { useLearnerData } from '../lib/useLearnerData'
+import { useTricky } from '../lib/useTricky'
 import { buildMastery, levelMeta } from '../lib/mastery'
 import { displayFirstName } from '../lib/displayName'
 import { SignInPanel } from './SignInPanel'
@@ -49,6 +50,7 @@ export function AppSidebar({ onNavigate }: Props) {
   const location = useLocation()
   const lessons = getAllLessons()
   const { progressMap, attempts, streak } = useLearnerData()
+  const { due } = useTricky()
 
   const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
 
@@ -81,6 +83,15 @@ export function AppSidebar({ onNavigate }: Props) {
         >
           <span className="app-sidebar__link-icon">📊</span>
           Progress &amp; mastery
+        </Link>
+        <Link
+          to="/review"
+          className={`app-sidebar__link ${location.pathname === '/review' ? 'app-sidebar__link--active' : ''}`}
+          onClick={onNavigate}
+        >
+          <span className="app-sidebar__link-icon">🧠</span>
+          Tricky problems
+          {due.length > 0 && <span className="app-sidebar__badge">{due.length}</span>}
         </Link>
       </nav>
 

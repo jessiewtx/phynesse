@@ -68,7 +68,7 @@
       "prompt": "**Setup:** A **2.0 kg** block is released from rest at the top of a **frictionless** ramp. The ramp is **4.0 m** long along the slope and tilted at **30°**.\n\n**Part A —** How far does the block drop *vertically* by the time it reaches the bottom? (sin 30° = 0.5)",
       "correctValue": 2.0,
       "unit": "m",
-      "tolerance": 0.03,
+      "tolerance": 0,
       "visual": "ramp",
       "formulas": ["h = d·sin θ"],
       "givens": [
@@ -182,7 +182,7 @@
       "prompt": "**Challenge — put it all together.** A **4.0 kg** crate is released from rest at the top of a **6.0 m** ramp tilted at **30°**. Friction pushes back along the slope with a steady **5.0 N**. (sin 30° = 0.5, g = 9.8 m/s²)\n\n**Part A —** What is the crate's *vertical* drop from top to bottom?",
       "correctValue": 3.0,
       "unit": "m",
-      "tolerance": 0.03,
+      "tolerance": 0,
       "visual": "ramp_friction",
       "formulas": ["h = d·sin θ"],
       "givens": [

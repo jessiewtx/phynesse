@@ -46,7 +46,7 @@
       "correctValue": 27000,
       "visual": "power_car",
       "unit": "W",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "formulas": ["P = F_A·v"],
       "givens": [
         { "label": "F_A", "value": "900 N" },

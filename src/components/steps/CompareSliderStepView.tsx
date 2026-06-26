@@ -4,6 +4,7 @@ import { PhysicsText } from '../../lib/physicsText'
 import { Feedback } from '../Feedback'
 import { WhyPanel } from '../WhyPanel'
 import { CompareScene } from './CompareScene'
+import { useEnterAdvance } from '../../lib/useEnterAdvance'
 
 type Props = {
   step: CompareSliderStep
@@ -26,6 +27,8 @@ export function CompareSliderStepView({ step, onDraftChange, onCorrect, onAttemp
   const [guess, setGuess] = useState('')
   const [solved, setSolved] = useState(false)
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'error'; text: string } | null>(null)
+
+  useEnterAdvance(onCorrect, solved)
 
   const baseResult = compute(step.result.coeff, step.result.power, step.base)
   const current = compute(step.result.coeff, step.result.power, v)
@@ -171,12 +174,13 @@ export function CompareSliderStepView({ step, onDraftChange, onCorrect, onAttemp
             if (feedback?.variant === 'error') setFeedback(null)
           }}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.repeat) {
               e.preventDefault()
               if (solved) onCorrect()
               else submit()
             }
           }}
+          onWheel={(e) => e.currentTarget.blur()}
           placeholder="?"
           aria-label="How many times the original"
         />

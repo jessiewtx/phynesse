@@ -46,7 +46,7 @@
       "correctValue": 25,
       "visual": "spring_launch",
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "formulas": ["PE_s = ½kx²"],
       "givens": [
         { "label": "k", "value": "800 N/m" },
@@ -64,7 +64,7 @@
       "correctValue": 10,
       "visual": "spring_launch",
       "unit": "m/s",
-      "tolerance": 0.03,
+      "tolerance": 0,
       "formulas": ["½mv² = PE_s"],
       "givens": [
         { "label": "PE_s", "value": "25 J" },

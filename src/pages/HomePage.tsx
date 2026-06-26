@@ -7,6 +7,7 @@ import { IconTarget, IconBars, IconScale, IconPencil } from '../components/Illus
 import { useAuth } from '../contexts/AuthContext'
 import { getAllLessons } from '../lib/lessons'
 import { useLearnerData } from '../lib/useLearnerData'
+import { useTricky } from '../lib/useTricky'
 import { buildMastery, levelMeta, relativeTime } from '../lib/mastery'
 import { displayFirstName } from '../lib/displayName'
 
@@ -14,6 +15,7 @@ export function HomePage() {
   const { user, isSignedIn, authReady } = useAuth()
   const lessons = getAllLessons()
   const { progressMap, attempts, streak } = useLearnerData()
+  const { due: trickyDue } = useTricky()
 
   const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
 
@@ -129,6 +131,25 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Tricky problems (spaced retrieval) ── */}
+      {trickyDue.length > 0 && (
+        <section className="home-section">
+          <h2 className="home-section__label">Tricky problems to retry</h2>
+          <Link to="/review" className="tricky-banner">
+            <span className="tricky-banner__icon">🧠</span>
+            <span className="tricky-banner__body">
+              <span className="tricky-banner__title">
+                {trickyDue.length} problem{trickyDue.length === 1 ? '' : 's'} ready for a retry
+              </span>
+              <span className="tricky-banner__note">
+                Problems you missed, brought back at just the right moment so they actually stick.
+              </span>
+            </span>
+            <span className="tricky-banner__cta">Review →</span>
+          </Link>
+        </section>
+      )}
 
       {/* ── Review strip ── */}
       {m.reviewQueue.length > 0 && (

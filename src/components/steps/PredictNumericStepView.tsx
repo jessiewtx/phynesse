@@ -8,6 +8,7 @@ import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
 import { WhyPanel } from '../WhyPanel'
 import { buildSolution } from '../../lib/solution'
 import { aiEnabled } from '../../lib/ai'
+import { useEnterAdvance } from '../../lib/useEnterAdvance'
 import { ProblemVisualView } from '../diagrams/ProblemVisualView'
 
 type Props = {
@@ -48,6 +49,8 @@ export function PredictNumericStepView({
         : null,
   )
   const solution = buildSolution(step)
+
+  useEnterAdvance(onCorrect, solved)
 
   const submit = () => {
     const num = Number(value)
@@ -121,12 +124,13 @@ export function PredictNumericStepView({
             })
           }}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.repeat) {
               e.preventDefault()
               if (solved) onCorrect()
               else submit()
             }
           }}
+          onWheel={(e) => e.currentTarget.blur()}
           placeholder="Your answer"
           aria-label="Numeric answer"
         />

@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getAllLessons, getLesson } from '../../lib/lessons'
 import { useLearnerData } from '../../lib/useLearnerData'
 import { buildMastery, levelMeta } from '../../lib/mastery'
 import { LESSON_CONCEPT } from '../../lib/practiceConcepts'
 import { CONCEPTS } from '../../lib/physics'
 import { IconParty, IconFlame } from '../Illustrations'
+import { useEnterAdvance } from '../../lib/useEnterAdvance'
 import type { CompleteStep } from '../../types/lesson'
 
 type Props = {
@@ -16,9 +17,15 @@ type Props = {
 }
 
 export function CompleteStepView({ step, lessonId, onFinish, onRestart }: Props) {
+  const navigate = useNavigate()
   const lessons = getAllLessons()
   const { progressMap, attempts, streak } = useLearnerData()
   const nextLesson = getLesson(step.nextLessonId)
+
+  useEnterAdvance(() => {
+    if (nextLesson) navigate(`/lesson/${step.nextLessonId}`, { replace: true })
+    else onFinish()
+  })
 
   const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
   const lm = lessonId ? m.byId[lessonId] : null

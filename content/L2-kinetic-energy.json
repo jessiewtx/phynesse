@@ -39,7 +39,7 @@
       "prompt": "Warm-up. A **3.0 kg** bowling ball rolls down the lane at **4.0 m/s**. How much kinetic energy does it carry?",
       "correctValue": 24,
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "formulas": ["KE = ½mv²"],
       "givens": [
         { "label": "m", "value": "3.0 kg" },
@@ -63,7 +63,7 @@
       "prompt": "You push a loaded sled (total mass **20 kg**) from rest across smooth, level snow. After you've pushed it **8.0 m**, it's gliding at **6.0 m/s**. Ignoring friction, what average force did you apply?",
       "correctValue": 45,
       "unit": "N",
-      "tolerance": 0.03,
+      "tolerance": 0,
       "visual": "force_distance",
       "formulas": ["F_A·d = ΔKE", "KE = ½mv²"],
       "givens": [
@@ -82,7 +82,7 @@
       "prompt": "You push a small **0.50 kg** sled from rest along smooth, level ice, pressing with a steady **5.0 N** over a distance of **5.0 m**. How fast is the sled moving when you let go?",
       "correctValue": 10,
       "unit": "m/s",
-      "tolerance": 0.03,
+      "tolerance": 0,
       "visual": "force_distance",
       "formulas": ["F_A·d = ½mv²", "v = √(2·F_A·d / m)"],
       "givens": [
@@ -108,7 +108,7 @@
       "prompt": "**Setup:** A **1200 kg** car travels at **24 m/s**. When the driver brakes hard, the road applies a constant **7200 N** friction force.\n\n**Part A —** How far does the car travel before it stops?",
       "correctValue": 48,
       "unit": "m",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "visual": "braking",
       "formulas": ["F_f·d = ½mv²"],
       "givens": [
@@ -127,7 +127,7 @@
       "prompt": "**Part B —** Same car, same brakes — but now it's driving **twice as fast, at 48 m/s**. How far does it travel before stopping now?",
       "correctValue": 192,
       "unit": "m",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "visual": "braking",
       "formulas": ["F_f·d = ½mv²"],
       "givens": [
@@ -151,7 +151,7 @@
       "prompt": "Two objects are moving. **Object A** is a heavy **4.0 kg** ball rolling at **3.0 m/s**. **Object B** is a light **1.0 kg** ball whizzing along at **6.0 m/s**. How much kinetic energy does the *lighter, faster* Object B have?",
       "correctValue": 18,
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "formulas": ["KE = ½mv²"],
       "givens": [
         { "label": "m_B", "value": "1.0 kg" },
@@ -168,7 +168,7 @@
       "prompt": "**Challenge — put it all together.** A **8.0 kg** crate starts from rest. You push it **6.0 m** across a level floor with a steady horizontal **40 N**, while friction drags back with a constant **16 N**.\n\n**Part A —** What is the *net* work done on the crate over those 6.0 m?",
       "correctValue": 144,
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0,
       "visual": "push_friction",
       "formulas": ["W_net = (F_A − F_f)·d"],
       "givens": [
@@ -187,7 +187,7 @@
       "prompt": "**Part B —** The crate started from rest and the net work on it was **144 J**. Using the work-energy theorem, how fast is the **8.0 kg** crate moving after the 6.0 m?",
       "correctValue": 6,
       "unit": "m/s",
-      "tolerance": 0.03,
+      "tolerance": 0,
       "visual": "push_friction",
       "formulas": ["W_net = ½mv²", "v = √(2·W_net / m)"],
       "givens": [

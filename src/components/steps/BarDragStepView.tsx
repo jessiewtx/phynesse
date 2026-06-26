@@ -8,6 +8,7 @@ import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
 import { WhyPanel } from '../WhyPanel'
 import { buildSolution } from '../../lib/solution'
 import { aiEnabled } from '../../lib/ai'
+import { useEnterAdvance } from '../../lib/useEnterAdvance'
 
 type Props = {
   step: BarDragStep
@@ -44,6 +45,8 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
   const dragging = useRef(false)
   const trackRef = useRef<HTMLDivElement>(null)
   const lastSnappedValue = useRef<number | null>(null)
+
+  useEnterAdvance(onCorrect, solved)
 
   const heightPct = (value / step.maxValue) * 100
 
@@ -108,7 +111,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
     } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
       e.preventDefault()
       nudge(-big)
-    } else if (e.key === 'Enter') {
+    } else if (e.key === 'Enter' && !e.repeat) {
       e.preventDefault()
       if (solved) onCorrect()
       else submit()
@@ -261,12 +264,13 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
             }}
             onBlur={() => setTyped(null)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === 'Enter' && !e.repeat) {
                 e.preventDefault()
                 if (solved) onCorrect()
                 else submit()
               }
             }}
+            onWheel={(e) => e.currentTarget.blur()}
             aria-label={`Type ${step.barLabel}`}
           />
           <span className="bar-drag__type-unit">{step.unit}</span>
