@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { getAllLessons, getLesson } from '../../lib/lessons'
 import { useLearnerData } from '../../lib/useLearnerData'
 import { buildMastery, levelMeta } from '../../lib/mastery'
+import { LESSON_CONCEPT } from '../../lib/practiceConcepts'
+import { CONCEPTS } from '../../lib/physics'
 import { IconParty, IconFlame } from '../Illustrations'
 import type { CompleteStep } from '../../types/lesson'
 
@@ -24,6 +26,8 @@ export function CompleteStepView({ step, lessonId, onFinish, onRestart }: Props)
 
   // A review that's now due (other than the lesson just finished) is worth surfacing.
   const dueReview = m.reviewQueue.find((r) => r.lessonId !== lessonId)
+
+  const practiceConcept = lessonId ? LESSON_CONCEPT[lessonId] : undefined
 
   return (
     <div className="step step--complete complete-card">
@@ -77,6 +81,12 @@ export function CompleteStepView({ step, lessonId, onFinish, onRestart }: Props)
           ↺ Start over
         </button>
       </div>
+
+      {practiceConcept && (
+        <Link to={`/practice/${practiceConcept}`} className="complete-card__practice">
+          ∞ Keep practicing <strong>{CONCEPTS[practiceConcept].name}</strong> — fresh problems, never the same twice.
+        </Link>
+      )}
 
       {dueReview && (
         <Link to={`/lesson/${dueReview.lessonId}`} className="complete-card__review" replace>

@@ -47,16 +47,16 @@
       "visual": "power_car",
       "unit": "W",
       "tolerance": 0.02,
-      "formulas": ["P = F·v"],
+      "formulas": ["P = F_A·v"],
       "givens": [
-        { "label": "F", "value": "900 N" },
+        { "label": "F_A", "value": "900 N" },
         { "label": "v", "value": "30 m/s" }
       ],
       "hints": [
-        "Constant speed means the engine force just balances the 900 N of drag. Use P = F·v.",
-        "P = F·v = 900 × 30."
+        "Constant speed means the engine force just balances the 900 N of drag. Use P = F_A·v.",
+        "P = F_A·v = 900 × 30."
       ],
-      "solution": "At constant speed the engine's drive force equals the 900 N of resistance, so use P = F·v.\n\nP = 900 × 30 = **27,000 W** (27 kW, about 36 horsepower)."
+      "solution": "At constant speed the engine's drive force equals the 900 N of resistance, so use P = F_A·v.\n\nP = 900 × 30 = **27,000 W** (27 kW, about 36 horsepower)."
     },
     {
       "type": "predict_numeric",

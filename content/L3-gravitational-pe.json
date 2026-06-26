@@ -2,28 +2,29 @@
   "id": "L3",
   "title": "Gravitational Potential Energy",
   "order": 3,
-  "summary": "Energy stored by lifting. Handle ramps with h = d·sinθ and solve for speed at the bottom.",
+  "summary": "Energy stored by lifting. Build PE_g = mgh from scratch, see why only vertical height counts, why the zero line is your choice, and turn stored height into speed — even when friction takes a cut.",
   "steps": [
     {
       "type": "concept",
       "title": "Energy you store by lifting",
-      "body": "Lift something up and you've stored energy in it — gravity is ready to give it back the moment you let go.\n\nA raised hammer, water held behind a dam, a roller coaster at the top of the hill: all carry **gravitational potential energy**. The higher and heavier, the more."
+      "body": "Here's a quiet little fact: just by *raising* something, you load it with energy — and gravity is standing by to hand it all back the instant you let go.\n\nLook around and you'll spot it everywhere:\n\n• A **raised hammer**, cocked back before the swing.\n• **Water** held high behind a **dam**, ready to spin turbines.\n• A **roller coaster** parked at the very top of the first hill, about to plunge.\n\nNone of them are moving yet — but each is loaded. We call this stored, position-based energy **gravitational potential energy**. The recurring theme of this lesson: the **higher** you lift it and the **heavier** it is, the more you store.",
+      "visual": "gravitational_pe"
     },
     {
       "type": "concept",
-      "title": "The formula",
-      "body": "**m** is mass (kg), **g** is gravity's pull (**9.8 m/s²** on Earth), and **h** is height above your chosen zero line.\n\nWe'll write potential energy as **PE** — heads up that many textbooks call it **U** instead.\n\nLift the block below and slide its mass around — watch how stored energy climbs with both, then try to hit the goal.",
+      "title": "Putting a number on it",
+      "body": "Three things set how much gravitational energy you've stored:\n\n• **m** — the object's mass in kilograms (kg). Heavier stores more.\n• **g** — gravity's pull, **9.8 m/s²** here on Earth.\n• **h** — the height above whatever line you call *zero*, in meters (m).\n\nMultiply all three and you get the stored energy in **joules (J)**. We'll write it as **PE_g** — heads up that many textbooks write the very same quantity as **U** instead.\n\nPlay with the explorer below: **lift** the block to change its height and **slide** its mass around. Watch the stored-energy bar climb with *both* — then try to hit the goal.",
       "equation": "PE_g = mgh",
       "demo": "gravity_explorer"
     },
     {
       "type": "compare_slider",
-      "prompt": "A **2 kg** box on Earth (g = 9.8). Drag the **height** and watch its stored gravitational energy.",
+      "prompt": "A **2 kg** box on Earth (g = 9.8 m/s²). Drag the **height** and watch its stored gravitational energy respond.",
       "formula": "PE_g = m · g · h",
       "varSymbol": "h",
       "varName": "height",
-      "scene": "height",
       "varUnit": "m",
+      "scene": "height",
       "min": 0.5,
       "max": 4,
       "stepSize": 0.5,
@@ -33,81 +34,100 @@
         { "symbol": "g", "value": "9.8 m/s²" }
       ],
       "result": { "symbol": "PE_g", "unit": "J", "coeff": 19.6, "power": 1 },
-      "task": "Drag the height to **double** it — from 1.5 m to 3 m. Then read the two bars.",
-      "solution": "Gravitational PE is PE_g = mgh. Height appears just once (it isn't squared), so PE_g is directly proportional to height. Going from 1.5 m to 3 m doubles the height, so PE_g doubles — from 29.4 J to **58.8 J**."
+      "task": "Drag the height to **double** it — from 1.5 m to 3 m. Then compare the two bars.",
+      "solution": "Gravitational PE is PE_g = mgh. Notice height appears just **once** — it isn't squared — so PE_g is *directly proportional* to height. Doubling the height from 1.5 m to 3 m doubles the stored energy, from 29.4 J to **58.8 J (2×)**.\n\nThis is the big contrast with kinetic energy (½mv²), where doubling the speed *quadruples* the energy. Height is gentle and linear; speed is not."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "Warm-up. You climb a staircase carrying a **12 kg** backpack, rising **5.0 m** from the floor. Relative to the floor, how much gravitational PE is now stored in the pack? (g = 9.8 m/s²)",
+      "correctValue": 588,
+      "unit": "J",
+      "tolerance": 0.02,
+      "visual": "stairs",
+      "formulas": ["PE_g = mgh"],
+      "givens": [
+        { "label": "m", "value": "12 kg" },
+        { "label": "h", "value": "5.0 m" },
+        { "label": "g", "value": "9.8 m/s²" }
+      ],
+      "hints": [
+        "Stored gravitational energy is just mass times gravity times height — plug straight into PE_g = mgh.",
+        "PE_g = 12 × 9.8 × 5.0."
+      ],
+      "solution": "Stored gravitational energy is PE_g = mgh, measured here from the floor as the zero line.\n\nPE_g = 12 × 9.8 × 5.0 = **588 J**."
     },
     {
       "type": "concept",
       "title": "Height on a ramp",
-      "body": "Objects rarely fall straight down — they slide along ramps. What matters for gravitational PE is only the **vertical** height gained or lost, not the distance along the slope.\n\nFor a ramp of length d tilted at angle θ, the vertical height is h = d·sin θ. That's the bridge between a ramp problem and energy.",
+      "body": "Objects rarely fall straight down — they **slide along ramps**. So which distance goes into PE_g: the long slope, or the vertical rise?\n\nOnly the **vertical** height counts. Gravity pulls straight down, so it only \"sees\" how far up or down you've actually moved — not how far you traveled along the incline.\n\nFor a ramp of length **d** tilted at angle **θ**, basic trig gives the vertical height: **h = d·sin θ**. That single relationship is the bridge between every ramp problem and energy. Glide along the slope below and watch the vertical height it really gains.",
       "equation": "h = d·sin θ",
       "visual": "ramp_height"
     },
     {
       "type": "predict_numeric",
-      "prompt": "**Setup:** A **3.0 kg** block is released from rest and slides **5.0 m** down a **frictionless** ramp angled at **30°**.\n\n**Part A —** How far does the block drop *vertically*?",
-      "correctValue": 2.5,
-      "visual": "ramp",
+      "prompt": "**Setup:** A **2.0 kg** block is released from rest at the top of a **frictionless** ramp. The ramp is **4.0 m** long along the slope and tilted at **30°**.\n\n**Part A —** How far does the block drop *vertically* by the time it reaches the bottom? (sin 30° = 0.5)",
+      "correctValue": 2.0,
       "unit": "m",
       "tolerance": 0.03,
+      "visual": "ramp",
       "formulas": ["h = d·sin θ"],
       "givens": [
-        { "label": "d", "value": "5.0 m" },
+        { "label": "d", "value": "4.0 m" },
         { "label": "θ", "value": "30°" }
       ],
       "hints": [
-        "Only the vertical drop matters for PE — use the ramp length and its angle.",
-        "h = d·sin θ = 5.0 × sin 30° = 5.0 × 0.5."
+        "Only the vertical drop matters for PE — convert the slope length using the angle.",
+        "h = d·sin θ = 4.0 × sin 30° = 4.0 × 0.5."
       ],
-      "solution": "The vertical drop is the ramp length times the sine of the angle: h = d·sin θ.\n\nh = 5.0 × sin 30° = 5.0 × 0.5 = **2.5 m**."
+      "solution": "The vertical drop is the ramp length times the sine of the angle: h = d·sin θ.\n\nh = 4.0 × sin 30° = 4.0 × 0.5 = **2.0 m**. (The block travels 4.0 m along the slope, but only drops 2.0 m straight down — and that's all gravity cares about.)"
     },
     {
       "type": "predict_numeric",
-      "prompt": "**Part B —** How much gravitational PE does the **3.0 kg** block lose over that 2.5 m drop? (g = 9.8)",
-      "correctValue": 73.5,
-      "visual": "ramp",
+      "prompt": "**Part B —** Over that 2.0 m vertical drop, how much gravitational PE does the **2.0 kg** block lose? (g = 9.8 m/s²)",
+      "correctValue": 39.2,
       "unit": "J",
       "tolerance": 0.02,
+      "visual": "ramp",
       "formulas": ["ΔPE_g = mg·Δh"],
       "givens": [
-        { "label": "m", "value": "3.0 kg" },
-        { "label": "Δh", "value": "2.5 m" },
+        { "label": "m", "value": "2.0 kg" },
+        { "label": "Δh", "value": "2.0 m" },
         { "label": "g", "value": "9.8 m/s²" }
       ],
       "hints": [
-        "Use the vertical drop you just found, not the 5.0 m along the ramp.",
-        "ΔPE_g = mg·Δh = 3.0 × 9.8 × 2.5."
+        "Use the vertical drop you found in Part A — not the 4.0 m along the ramp.",
+        "ΔPE_g = mg·Δh = 2.0 × 9.8 × 2.0."
       ],
-      "solution": "Use the vertical drop (2.5 m), not the slope length: ΔPE_g = mg·Δh.\n\nΔPE_g = 3.0 × 9.8 × 2.5 = **73.5 J**."
+      "solution": "The change in stored energy depends only on the vertical drop: ΔPE_g = mg·Δh, using Δh = 2.0 m.\n\nΔPE_g = 2.0 × 9.8 × 2.0 = **39.2 J**."
     },
     {
       "type": "predict_numeric",
-      "prompt": "**Part C —** With no friction, all that lost PE becomes motion. How fast is the **3.0 kg** block moving at the bottom?",
-      "correctValue": 7.0,
-      "visual": "ramp",
+      "prompt": "**Part C —** With **no friction**, every joule of lost PE turns into motion. How fast is the **2.0 kg** block moving at the bottom of the ramp?",
+      "correctValue": 6.26,
       "unit": "m/s",
       "tolerance": 0.03,
-      "formulas": ["½mv² = ΔPE_g"],
+      "visual": "ramp",
+      "formulas": ["½mv² = ΔPE_g", "v = √(2·ΔPE_g / m)"],
       "givens": [
-        { "label": "ΔPE_g", "value": "73.5 J" },
-        { "label": "m", "value": "3.0 kg" }
+        { "label": "ΔPE_g", "value": "39.2 J" },
+        { "label": "m", "value": "2.0 kg" }
       ],
       "hints": [
-        "No friction means the 73.5 J of lost PE all becomes kinetic energy.",
-        "Set ½mv² = 73.5 and solve: v = √(2·73.5 / 3.0)."
+        "Frictionless means all 39.2 J of lost PE becomes kinetic energy: ½mv² = ΔPE_g.",
+        "Solve for v: v = √(2·ΔPE_g / m) = √(2·39.2 / 2.0)."
       ],
-      "solution": "Frictionless, so the lost gravitational PE becomes kinetic energy: ½mv² = ΔPE_g.\n\nv = √(2·ΔPE_g / m) = √(2·73.5 / 3.0) = √49 = **7.0 m/s**. Notice the answer doesn't depend on the ramp's angle — only the height dropped."
+      "solution": "With no friction, the lost gravitational PE becomes kinetic energy: ½mv² = ΔPE_g.\n\nv = √(2·ΔPE_g / m) = √(2·39.2 / 2.0) = √39.2 ≈ **6.26 m/s**.\n\nA beautiful twist: since ΔPE_g = mgh and ½mv² both carry the mass, it cancels — v = √(2gh). The speed at the bottom depends only on the **height dropped**, never on the mass *or* the ramp's angle."
     },
     {
       "type": "concept",
       "title": "Zero is your choice",
-      "body": "**The PE_g number isn't physical.** You pick where h\u00A0=\u00A00. Zero line at the book → PE_g\u00A0=\u00A00. Zero line on the floor → PE_g is positive. Same book, different number.\n\nThat's fine: real answers depend on the **change**, ΔPE_g, as something moves — and that only depends on Δh, not on where you called zero.\n\nSo pick whatever zero line is easiest (usually the lowest point). The physics comes out the same.",
+      "body": "Here's a subtlety that trips people up: **the PE_g number by itself isn't physical.** *You* decide where h = 0.\n\nSet the zero line at a book on a desk and the book has PE_g = 0. Set the zero line on the floor instead and the *same* book now has a positive PE_g. Same book, two different numbers — and neither is \"wrong.\"\n\nSo what *is* real? The **change**, ΔPE_g, as the object actually moves. And that only depends on **Δh** — the height it rises or falls — never on where you happened to call zero.\n\nThe practical takeaway: pick whatever zero line makes the math easiest (usually the lowest point of the motion). The physics comes out identical.",
       "equation": "ΔPE_g = mg·Δh",
       "visual": "pe_zero"
     },
     {
       "type": "bar_drag",
-      "prompt": "Same book, same spot — but you redefine the floor as **1.5 m higher**, so the book is now at h = 0. Drag **PE_g**.",
+      "prompt": "A **1.5 kg** book sits on a desk. You redefine your zero line to be the **desktop itself**, so the book rests right at h = 0. Drag the bar to the book's gravitational PE_g in this reference frame.",
       "barLabel": "PE_g",
       "barColor": "#8b5cf6",
       "maxValue": 40,
@@ -115,16 +135,109 @@
       "unit": "J",
       "tolerance": 0.05,
       "formulas": ["PE_g = mgh"],
-      "hints": [
-        "Think about your zero line — PE_g is always measured from it.",
-        "If the book sits right at the reference level, its height above it is zero. So what does that make PE_g?"
+      "givens": [
+        { "label": "m", "value": "1.5 kg" },
+        { "label": "g", "value": "9.8 m/s²" }
       ],
-      "solution": "Height is always measured from the zero line you choose, and here the floor is redefined so the book sits right at it: h = 0.\n\nPE_g = mgh, and with h = 0 the whole product is zero. So PE_g = **0 J**.\n\nNotice the book never moved — only the number did, because we moved the zero line. Any real ΔPE_g between two actual heights would come out exactly the same no matter where we put h = 0."
+      "hints": [
+        "Height is always measured from *your* zero line — and you just put the zero line right at the book.",
+        "If the book sits exactly at h = 0, what is mgh?"
+      ],
+      "solution": "Height is always measured from the zero line you choose. Here the desktop *is* the zero line, so the book sits at h = 0.\n\nPE_g = mgh = 1.5 × 9.8 × 0 = **0 J**.\n\nThe book never moved — only the number did, because we moved the zero line. Any real ΔPE_g between two actual heights would come out exactly the same no matter where we set h = 0."
+    },
+    {
+      "type": "concept",
+      "title": "The great trade: PE ⇄ KE",
+      "body": "Stored height doesn't just sit there forever — let go, and gravity **trades it for speed**.\n\nAs an object falls or slides downhill, its height shrinks, so its gravitational PE drops. With no friction, that energy doesn't vanish — it pours straight into **kinetic energy**, and the object speeds up. Climb back up and the trade runs in reverse: speed converts back into stored height.\n\nThis back-and-forth is the engine behind roller coasters, pendulums, and skateboard ramps. Watch the two bars below seesaw as the object moves: whatever PE gives up, KE gains — the total stays put.",
+      "equation": "PE_g → KE (frictionless)",
+      "visual": "energy_chain"
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "A **1.5 kg** cart is released from rest at the top of a smooth, **frictionless** track and drops a vertical height of **1.8 m** to the bottom. How fast is it moving at the bottom? (g = 9.8 m/s²)",
+      "correctValue": 5.94,
+      "unit": "m/s",
+      "tolerance": 0.03,
+      "visual": "ramp",
+      "formulas": ["mgh = ½mv²", "v = √(2gh)"],
+      "givens": [
+        { "label": "m", "value": "1.5 kg" },
+        { "label": "h", "value": "1.8 m" },
+        { "label": "g", "value": "9.8 m/s²" }
+      ],
+      "hints": [
+        "Frictionless: all the lost PE becomes KE, so mgh = ½mv². Watch what happens to the mass on both sides.",
+        "The mass cancels, leaving v = √(2gh) = √(2 × 9.8 × 1.8)."
+      ],
+      "solution": "With no friction, lost PE becomes KE: mgh = ½mv². The mass sits on both sides and cancels, giving v = √(2gh).\n\nv = √(2 × 9.8 × 1.8) = √35.28 ≈ **5.94 m/s**. The 1.5 kg never entered the answer — every object dropped from 1.8 m reaches this same speed."
+    },
+    {
+      "type": "concept",
+      "title": "When friction takes a cut",
+      "body": "Real ramps aren't perfectly smooth. **Friction** drags backward along the slope, doing **negative** work the whole way down — and that energy leaves the PE-to-KE trade for good (it warms up the surfaces).\n\nSo the clean \"all PE becomes KE\" no longer holds. Instead, the kinetic energy at the bottom is whatever PE was lost **minus** the energy friction skimmed off:\n\nWith W_friction = F_f·d (the friction force times the distance along the slope), the object always ends up *slower* than the frictionless case. Up next, you'll put every piece together to find that real speed.",
+      "equation": "mgh − W_friction = ½mv²"
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Challenge — put it all together.** A **4.0 kg** crate is released from rest at the top of a **6.0 m** ramp tilted at **30°**. Friction pushes back along the slope with a steady **5.0 N**. (sin 30° = 0.5, g = 9.8 m/s²)\n\n**Part A —** What is the crate's *vertical* drop from top to bottom?",
+      "correctValue": 3.0,
+      "unit": "m",
+      "tolerance": 0.03,
+      "visual": "ramp_friction",
+      "formulas": ["h = d·sin θ"],
+      "givens": [
+        { "label": "d", "value": "6.0 m" },
+        { "label": "θ", "value": "30°" }
+      ],
+      "hints": [
+        "Friction doesn't change the geometry — the vertical drop is still h = d·sin θ.",
+        "h = 6.0 × sin 30° = 6.0 × 0.5."
+      ],
+      "solution": "The vertical drop comes straight from the ramp geometry: h = d·sin θ.\n\nh = 6.0 × sin 30° = 6.0 × 0.5 = **3.0 m**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part B —** How much gravitational PE does the **4.0 kg** crate lose over that 3.0 m vertical drop? (g = 9.8 m/s²)",
+      "correctValue": 117.6,
+      "unit": "J",
+      "tolerance": 0.02,
+      "visual": "ramp_friction",
+      "formulas": ["ΔPE_g = mg·Δh"],
+      "givens": [
+        { "label": "m", "value": "4.0 kg" },
+        { "label": "Δh", "value": "3.0 m" },
+        { "label": "g", "value": "9.8 m/s²" }
+      ],
+      "hints": [
+        "Use the vertical drop from Part A — friction doesn't affect how much PE is released by the fall.",
+        "ΔPE_g = mg·Δh = 4.0 × 9.8 × 3.0."
+      ],
+      "solution": "The released gravitational PE depends only on the vertical drop: ΔPE_g = mg·Δh.\n\nΔPE_g = 4.0 × 9.8 × 3.0 = **117.6 J**. (This is the *total* energy budget the fall provides — friction will claim part of it next.)"
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part C —** Friction does negative work the whole 6.0 m down the slope, with a force of 5.0 N. Using mgh − W_friction = ½mv², how fast is the **4.0 kg** crate moving at the bottom?",
+      "correctValue": 6.6,
+      "unit": "m/s",
+      "tolerance": 0.04,
+      "visual": "ramp_friction",
+      "formulas": ["W_friction = F_f·d", "mgh − W_friction = ½mv²"],
+      "givens": [
+        { "label": "ΔPE_g", "value": "117.6 J" },
+        { "label": "F_f", "value": "5.0 N" },
+        { "label": "d", "value": "6.0 m" },
+        { "label": "m", "value": "4.0 kg" }
+      ],
+      "hints": [
+        "First find the energy friction removes over the full slope length: W_friction = F_f·d. Subtract it from the lost PE to get the leftover KE.",
+        "W_friction = 5.0 × 6.0 = 30 J, so ½mv² = 117.6 − 30 = 87.6 J. Then v = √(2 × 87.6 / 4.0)."
+      ],
+      "solution": "Friction acts over the full slope distance, not the vertical drop: W_friction = F_f·d = 5.0 × 6.0 = 30 J.\n\nThe kinetic energy at the bottom is what's left after friction's cut: ½mv² = mgh − W_friction = 117.6 − 30 = 87.6 J.\n\nSolve for v: v = √(2 × 87.6 / 4.0) = √43.8 ≈ **6.6 m/s**. (Frictionless, the same crate would have reached √(2·9.8·3.0) ≈ 7.7 m/s — friction cost it about a meter per second.)"
     },
     {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You sized gravitational PE and saw why the reference level matters.",
+      "body": "You built gravitational PE from the ground up: PE_g = mgh, why only the *vertical* height counts on a ramp, why the zero line is yours to choose while only ΔPE_g is real, and how stored height trades for speed — all the way to a friction-loaded challenge where you tracked every joule from top to bottom.",
       "nextLessonId": "L4",
       "nextLessonTitle": "Elastic PE"
     }

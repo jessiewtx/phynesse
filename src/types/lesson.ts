@@ -28,6 +28,7 @@ export type ConceptStep = {
     | 'pe_zero'
     | 'energy_chain'
     | 'friction_energy'
+    | 'braking_energy'
     | 'power_speed'
     | 'kinetic_energy'
     | 'gravitational_pe'

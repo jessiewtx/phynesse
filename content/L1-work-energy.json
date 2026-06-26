@@ -24,21 +24,21 @@
       "unit": "J",
       "tolerance": 0.02,
       "visual": "push",
-      "formulas": ["W = F·d"],
+      "formulas": ["W = F_A·d"],
       "givens": [
-        { "label": "F", "value": "80 N" },
+        { "label": "F_A", "value": "80 N" },
         { "label": "d", "value": "3.0 m" }
       ],
       "hints": [
         "Force and motion point the same way, so just multiply them.",
-        "W = F·d = 80 × 3.0."
+        "W = F_A·d = 80 × 3.0."
       ],
-      "solution": "The push and the motion are in the same direction, so work is just force times distance: W = F·d.\n\nW = 80 × 3.0 = **240 J**."
+      "solution": "The push and the motion are in the same direction, so work is just force times distance: W = F_A·d.\n\nW = 80 × 3.0 = **240 J**."
     },
     {
       "type": "compare_slider",
       "prompt": "You push a box with a **constant 10 N** force (a steady, continuous push). Drag the **distance** and watch the work change.",
-      "formula": "W = F · d",
+      "formula": "W = F_A · d",
       "varSymbol": "d",
       "varName": "distance",
       "varUnit": "m",
@@ -47,7 +47,7 @@
       "max": 6,
       "stepSize": 0.5,
       "base": 2,
-      "constants": [{ "symbol": "F", "value": "10 N" }],
+      "constants": [{ "symbol": "F_A", "value": "10 N" }],
       "result": { "symbol": "W", "unit": "J", "coeff": 10, "power": 1 },
       "task": "Drag the distance to **double** it — from 2 m to 4 m. Then read the two bars.",
       "solution": "Work is force times distance: W = F·d. The force stays a steady 10 N, so only the distance changes. Going from 2 m to 4 m doubles the distance, and since work is directly proportional to distance, the work doubles too — from 20 J to **40 J (2×)**."
@@ -78,23 +78,23 @@
       "unit": "J",
       "tolerance": 0.03,
       "visual": "angle_pull",
-      "formulas": ["W = F·d·cos θ"],
+      "formulas": ["W = F_A·d·cos θ"],
       "givens": [
-        { "label": "F", "value": "40 N" },
+        { "label": "F_A", "value": "40 N" },
         { "label": "d", "value": "12 m" },
         { "label": "θ", "value": "35°" }
       ],
       "hints": [
-        "Only the horizontal part of the pull moves the wagon — that's F·cos θ.",
+        "Only the horizontal part of the pull moves the wagon — that's F_A·cos θ.",
         "Find the component along the ground first: 40 × cos 35° ≈ 32.8 N. Then multiply by the 12 m."
       ],
-      "solution": "Only the component of the force along the motion does work, so W = F·d·cos θ.\n\nThe horizontal component of the pull is 40 × cos 35° ≈ 32.8 N. Over 12 m that's W = 32.8 × 12 ≈ **393 J**. (The vertical component does no work — the wagon doesn't move up.)"
+      "solution": "Only the component of the force along the motion does work, so W = F_A·d·cos θ.\n\nThe horizontal component of the pull is 40 × cos 35° ≈ 32.8 N. Over 12 m that's W = 32.8 × 12 ≈ **393 J**. (The vertical component does no work — the wagon doesn't move up.)"
     },
     {
       "type": "concept",
       "title": "Many forces? Use the NET work",
-      "body": "Most real situations have **several** forces doing work at once. Add up their works — keeping the signs from the last screen — and you get the **net work**.\n\nFor a crate you push across a real floor, that's your push (positive) plus friction (negative):",
-      "equation": "W_net = (F − f)·d",
+      "body": "Most real situations have **several** forces doing work at once. Add up their works — keeping the signs from the last screen — and you get the **net work**.\n\nFor a crate you push across a real floor, that's your applied push **F_A** (positive) plus friction **F_f** (negative):",
+      "equation": "W_net = (F_A − F_f)·d",
       "visual": "net_work"
     },
     {
@@ -129,17 +129,17 @@
       "unit": "J",
       "tolerance": 0.02,
       "visual": "push_friction",
-      "formulas": ["W_net = (F − f)·d"],
+      "formulas": ["W_net = (F_A − F_f)·d"],
       "givens": [
-        { "label": "F", "value": "30 N" },
-        { "label": "f", "value": "12 N" },
+        { "label": "F_A", "value": "30 N" },
+        { "label": "F_f", "value": "12 N" },
         { "label": "d", "value": "5.0 m" }
       ],
       "hints": [
-        "Friction does negative work, so the net force along the floor is F − f.",
+        "Friction does negative work, so the net force along the floor is F_A − F_f.",
         "Net force = 30 − 12 = 18 N. Net work = that net force × the 5.0 m."
       ],
-      "solution": "Your push does positive work and friction does negative work, so the net force along the motion is F − f = 30 − 12 = 18 N.\n\nW_net = (F − f)·d = 18 × 5.0 = **90 J**."
+      "solution": "Your push does positive work and friction does negative work, so the net force along the motion is F_A − F_f = 30 − 12 = 18 N.\n\nW_net = (F_A − F_f)·d = 18 × 5.0 = **90 J**."
     },
     {
       "type": "predict_numeric",
@@ -166,20 +166,20 @@
       "unit": "m/s",
       "tolerance": 0.04,
       "visual": "angle_pull",
-      "formulas": ["W_rope = F·d·cos θ", "W_net = ΔKE = ½mv²"],
+      "formulas": ["W_rope = F_A·d·cos θ", "W_net = ΔKE = ½mv²"],
       "givens": [
         { "label": "m", "value": "6.0 kg" },
-        { "label": "F", "value": "25 N" },
+        { "label": "F_A", "value": "25 N" },
         { "label": "d", "value": "8.0 m" },
         { "label": "θ", "value": "30°" },
         { "label": "W_friction", "value": "−60 J" }
       ],
       "hints": [
-        "Two forces do work: the rope (use F·d·cos θ) and friction (already given as −60 J). Add them for the net work.",
+        "Two forces do work: the rope (use F_A·d·cos θ) and friction (already given as −60 J). Add them for the net work.",
         "Rope work = 25 × 8.0 × cos 30° ≈ 173 J. Net work = 173 − 60 = 113 J.",
         "Then from rest, W_net = ½mv² → v = √(2·W_net / m) = √(2·113 / 6)."
       ],
-      "solution": "Find each work, then combine. The rope's work uses only the component along the motion: W_rope = F·d·cos θ = 25 × 8.0 × 0.866 ≈ 173 J.\n\nFriction already does −60 J, so the net work is W_net = 173 − 60 = 113 J.\n\nStarting from rest, the work-energy theorem gives W_net = ½mv², so v = √(2·W_net / m) = √(2·113 / 6) = √37.7 ≈ **6.1 m/s**."
+      "solution": "Find each work, then combine. The rope's work uses only the component along the motion: W_rope = F_A·d·cos θ = 25 × 8.0 × 0.866 ≈ 173 J.\n\nFriction already does −60 J, so the net work is W_net = 173 − 60 = 113 J.\n\nStarting from rest, the work-energy theorem gives W_net = ½mv², so v = √(2·W_net / m) = √(2·113 / 6) = √37.7 ≈ **6.1 m/s**."
     },
     {
       "type": "complete",

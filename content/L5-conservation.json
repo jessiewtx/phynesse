@@ -36,7 +36,7 @@
     {
       "type": "concept",
       "title": "When friction joins in",
-      "body": "Friction doesn't destroy energy — it turns mechanical energy into **thermal energy (E_th)** that heats the surfaces. The amount lost is just the friction force acting over the distance slid: E_th = f·d.\n\nSo the full energy balance for a slide down a ramp is:",
+      "body": "Friction doesn't destroy energy — it turns mechanical energy into **thermal energy (E_th)** that heats the surfaces. The amount lost is just the friction force acting over the distance slid: E_th = F_f·d.\n\nSo the full energy balance for a slide down a ramp is:",
       "equation": "PE_g = KE + E_th",
       "visual": "friction_energy"
     },
@@ -101,16 +101,16 @@
       "visual": "ramp_friction",
       "unit": "N",
       "tolerance": 0.02,
-      "formulas": ["E_th = f·d"],
+      "formulas": ["E_th = F_f·d"],
       "givens": [
         { "label": "E_th", "value": "10 J" },
         { "label": "d", "value": "4.0 m" }
       ],
       "hints": [
-        "Heat generated equals the friction force times the distance slid: E_th = f·d.",
-        "Solve for f: f = E_th / d = 10 / 4.0."
+        "Heat generated equals the friction force times the distance slid: E_th = F_f·d.",
+        "Solve for F_f: F_f = E_th / d = 10 / 4.0."
       ],
-      "solution": "The thermal energy is the friction force acting over the slide distance: E_th = f·d.\n\nf = E_th / d = 10 / 4.0 = **2.5 N**."
+      "solution": "The thermal energy is the friction force acting over the slide distance: E_th = F_f·d.\n\nF_f = E_th / d = 10 / 4.0 = **2.5 N**."
     },
     {
       "type": "complete",

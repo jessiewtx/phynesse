@@ -14,8 +14,8 @@ export function GravityPEExplorer() {
       goal={{
         target: 98,
         tol: 0.1,
-        label: 'Goal: tune mass and height until PE_g = 98 J (g = 9.8).',
-        hitLabel: '✓ Got it! Height and mass both push PE_g up the same way — no squaring here.',
+        label: 'Goal: tune mass and height until the stored energy = 98 J (g = 9.8).',
+        hitLabel: '✓ Got it! Height and mass both push the stored energy up the same way — no squaring here.',
       }}
       formula={(v, r) => (
         <>

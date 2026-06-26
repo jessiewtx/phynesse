@@ -43,6 +43,15 @@ function Key({ color, children }: { color: string; children: React.ReactNode }) 
   )
 }
 
+/** Subscript inside an SVG <text> (e.g. the "g" in PE_g). Rendered last. */
+function Sub({ children }: { children: React.ReactNode }) {
+  return (
+    <tspan dy="3" fontSize="8">
+      {children}
+    </tspan>
+  )
+}
+
 /* ---------------- L1: when is there NO work? ---------------- */
 function StickPerson({ x, groundY, armUp = false }: { x: number; groundY: number; armUp?: boolean }) {
   return (
@@ -299,13 +308,13 @@ export function NetWorkDiagram() {
         {/* push F to the right (blue, fixed) */}
         <line x1={boxX + BOX} y1={cy} x2={boxX + BOX + lF} y2={cy} stroke={F_COLOR} strokeWidth="7" strokeLinecap="round" />
         <polygon points={`${boxX + BOX + lF + 14},${cy} ${boxX + BOX + lF},${cy - 9} ${boxX + BOX + lF},${cy + 9}`} fill={F_COLOR} />
-        <text x={boxX + BOX + lF / 2} y={cy - 14} textAnchor="middle" fill={F_COLOR} fontSize="12" fontWeight="800">F = {NW_F} N</text>
+        <text x={boxX + BOX + lF / 2} y={cy - 14} textAnchor="middle" fill={F_COLOR} fontSize="12" fontWeight="800">F<tspan dy="3" fontSize="9">A</tspan><tspan dy="-3"> = {NW_F} N</tspan></text>
 
         {/* friction f to the left (red, draggable by its tip) */}
         <line x1={boxX} y1={cy} x2={boxX - lf} y2={cy} stroke={FRIC_COLOR} strokeWidth="7" strokeLinecap="round" />
         <polygon points={`${fricTipX},${cy} ${boxX - lf},${cy - 9} ${boxX - lf},${cy + 9}`} fill={FRIC_COLOR} />
         <circle cx={fricTipX + 4} cy={cy} r="11" fill={FRIC_COLOR} opacity="0.24" className="wfx__grab" />
-        <text x={boxX - lf / 2} y={cy - 14} textAnchor="middle" fill={FRIC_COLOR} fontSize="12" fontWeight="800">f = {f} N</text>
+        <text x={boxX - lf / 2} y={cy - 14} textAnchor="middle" fill={FRIC_COLOR} fontSize="12" fontWeight="800">F<tspan dy="3" fontSize="9">f</tspan><tspan dy="-3"> = {f} N</tspan></text>
 
         {/* fixed distance the box slides */}
         <g>
@@ -319,13 +328,13 @@ export function NetWorkDiagram() {
       <p className="cmp__hint-drag">Drag the tip of the red friction arrow ← to change f</p>
 
       <div className="wfd__legend">
-        <Key color={F_COLOR}>F = your push (positive work)</Key>
-        <Key color={FRIC_COLOR}>f = friction (negative work)</Key>
+        <Key color={F_COLOR}>F<sub>A</sub> = your push (positive work)</Key>
+        <Key color={FRIC_COLOR}>F<sub>f</sub> = friction (negative work)</Key>
       </div>
 
       <div className="wfd__calc">
         <div className="wfd__formula">
-          W<sub>net</sub> = (<span style={{ color: F_COLOR }}>F</span> − <span style={{ color: FRIC_COLOR }}>f</span>) · <span style={{ color: D_COLOR }}>d</span>
+          W<sub>net</sub> = (<span style={{ color: F_COLOR }}>F<sub>A</sub></span> − <span style={{ color: FRIC_COLOR }}>F<sub>f</sub></span>) · <span style={{ color: D_COLOR }}>d</span>
         </div>
         <div className="wfd__plug">
           W<sub>net</sub> = (<span style={{ color: F_COLOR }}>{NW_F}&nbsp;N</span> − <span style={{ color: FRIC_COLOR }}>{f}&nbsp;N</span>) × <span style={{ color: D_COLOR }}>{NW_D}&nbsp;m</span> = <strong>{wnet}&nbsp;J</strong>
@@ -488,7 +497,7 @@ export function EnergyChainDiagram() {
         <rect x="16" y={groundY - 50} width="8" height="50" fill="#9aa3ad" />
         <path d="M24 88 l8 -8 l8 8 l8 -8 l8 8 l8 -8" fill="none" stroke="#6b7480" strokeWidth="2.5" />
         <rect x="72" y={groundY - 28} width="22" height="28" rx="3" fill="#3d4450" stroke="#8b95a8" strokeWidth="1.5" />
-        <text x="54" y={groundY + 18} textAnchor="middle" fill={PE_COLOR} fontSize="11" fontWeight="800">PE_s</text>
+        <text x="54" y={groundY + 18} textAnchor="middle" fill={PE_COLOR} fontSize="11" fontWeight="800">PE<Sub>s</Sub></text>
 
         {/* arrow */}
         <line x1="104" y1={groundY - 14} x2="128" y2={groundY - 14} stroke="#888" strokeWidth="2" />
@@ -509,7 +518,7 @@ export function EnergyChainDiagram() {
         <line x1="244" y1={groundY} x2="338" y2={groundY - 56} stroke="#9aa3ad" strokeWidth="2" />
         <rect x="300" y={groundY - 64} width="22" height="22" rx="3" fill="#3d4450" stroke="#8b95a8" strokeWidth="1.5" transform="rotate(-31 311 53)" />
         <line x1="332" y1={groundY - 50} x2="332" y2={groundY} stroke={D_COLOR} strokeWidth="2" strokeDasharray="3 3" />
-        <text x="290" y={groundY + 18} textAnchor="middle" fill={D_COLOR} fontSize="11" fontWeight="800">PE_g</text>
+        <text x="290" y={groundY + 18} textAnchor="middle" fill={D_COLOR} fontSize="11" fontWeight="800">PE<Sub>g</Sub></text>
       </svg>
 
       <div className="wfd__legend">
@@ -520,7 +529,7 @@ export function EnergyChainDiagram() {
 
       <div className="wfd__calc">
         <div className="wfd__formula">
-          <span style={{ color: PE_COLOR }}>PE_s</span> → <span style={{ color: COMP_COLOR }}>KE</span> → <span style={{ color: D_COLOR }}>PE_g</span>
+          <span style={{ color: PE_COLOR }}>PE<sub>s</sub></span> → <span style={{ color: COMP_COLOR }}>KE</span> → <span style={{ color: D_COLOR }}>PE<sub>g</sub></span>
         </div>
         <div className="wfd__plug">Total energy stays the same at every stage.</div>
       </div>
@@ -541,7 +550,7 @@ export function FrictionEnergyDiagram() {
       <svg viewBox="0 0 360 156" className="wfd__svg" role="img" aria-label="Potential energy splits into kinetic energy plus heat">
         {/* PE_g bar */}
         <rect x="60" y={baseY - peH} width={barW} height={peH} rx="3" fill={PE_COLOR} />
-        <text x={60 + barW / 2} y={baseY + 14} textAnchor="middle" fill={PE_COLOR} fontSize="11" fontWeight="800">PE_g</text>
+        <text x={60 + barW / 2} y={baseY + 14} textAnchor="middle" fill={PE_COLOR} fontSize="11" fontWeight="800">PE<Sub>g</Sub></text>
 
         <text x="150" y={baseY - maxH / 2} textAnchor="middle" fontSize="22" fill="#555">=</text>
 
@@ -552,20 +561,57 @@ export function FrictionEnergyDiagram() {
         <text x="270" y={baseY - maxH / 2} textAnchor="middle" fontSize="22" fill="#555">+</text>
 
         <rect x="290" y={baseY - thH} width={barW} height={thH} rx="3" fill={FRIC_COLOR} />
-        <text x={290 + barW / 2} y={baseY + 14} textAnchor="middle" fill={FRIC_COLOR} fontSize="11" fontWeight="800">E_th</text>
+        <text x={290 + barW / 2} y={baseY + 14} textAnchor="middle" fill={FRIC_COLOR} fontSize="11" fontWeight="800">E<Sub>th</Sub></text>
       </svg>
 
       <div className="wfd__legend">
-        <Key color={PE_COLOR}>PE_g = energy you started with</Key>
+        <Key color={PE_COLOR}>PE<sub>g</sub> = energy you started with</Key>
         <Key color={COMP_COLOR}>KE = motion</Key>
-        <Key color={FRIC_COLOR}>E_th = heat lost to friction</Key>
+        <Key color={FRIC_COLOR}>E<sub>th</sub> = heat lost to friction</Key>
       </div>
 
       <div className="wfd__calc">
         <div className="wfd__formula">
-          <span style={{ color: PE_COLOR }}>PE_g</span> = <span style={{ color: COMP_COLOR }}>KE</span> + <span style={{ color: FRIC_COLOR }}>E_th</span>
+          <span style={{ color: PE_COLOR }}>PE<sub>g</sub></span> = <span style={{ color: COMP_COLOR }}>KE</span> + <span style={{ color: FRIC_COLOR }}>E<sub>th</sub></span>
         </div>
         <div className="wfd__plug">Friction doesn't destroy energy — it turns some into heat.</div>
+      </div>
+    </div>
+  )
+}
+
+/* ---------------- L2: braking — KE becomes heat (KE = E_th = F_f·d) ---------------- */
+export function BrakingEnergyDiagram() {
+  const baseY = 122
+  const barH = 86
+  const barW = 64
+  return (
+    <div className="wfd">
+      <svg viewBox="0 0 360 156" className="wfd__svg" role="img" aria-label="A moving car's kinetic energy turns entirely into heat as it brakes">
+        {/* KE bar (motion, green) */}
+        <rect x="64" y={baseY - barH} width={barW} height={barH} rx="3" fill={COMP_COLOR} />
+        <text x={64 + barW / 2} y={baseY + 14} textAnchor="middle" fill={COMP_COLOR} fontSize="11" fontWeight="800">KE</text>
+
+        {/* arrow: becomes */}
+        <line x1="150" y1={baseY - barH / 2} x2="196" y2={baseY - barH / 2} stroke="#888" strokeWidth="2.5" />
+        <polygon points={`204,${baseY - barH / 2} 192,${baseY - barH / 2 - 7} 192,${baseY - barH / 2 + 7}`} fill="#888" />
+        <text x="177" y={baseY - barH / 2 - 12} textAnchor="middle" fill="#888" fontSize="10" fontWeight="700">braking</text>
+
+        {/* E_th bar (heat, red) — same size: all of it converts */}
+        <rect x="232" y={baseY - barH} width={barW} height={barH} rx="3" fill={FRIC_COLOR} />
+        <text x={232 + barW / 2} y={baseY + 14} textAnchor="middle" fill={FRIC_COLOR} fontSize="11" fontWeight="800">E<tspan dy="3" fontSize="8">th</tspan></text>
+      </svg>
+
+      <div className="wfd__legend">
+        <Key color={COMP_COLOR}>KE = the car's energy of motion</Key>
+        <Key color={FRIC_COLOR}>E<sub>th</sub> = heat in the brakes &amp; tires</Key>
+      </div>
+
+      <div className="wfd__calc">
+        <div className="wfd__formula">
+          <span style={{ color: COMP_COLOR }}>KE</span> = <span style={{ color: FRIC_COLOR }}>E<sub>th</sub></span> = <span style={{ color: FRIC_COLOR }}>F<sub>f</sub></span> · d
+        </div>
+        <div className="wfd__plug">Friction does negative work until every joule of motion has become heat — then the car stops.</div>
       </div>
     </div>
   )

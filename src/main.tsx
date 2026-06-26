@@ -6,6 +6,7 @@ import { AppShell } from './components/AppShell'
 import { HomePage } from './pages/HomePage'
 import { LessonPage } from './pages/LessonPage'
 import { ProgressPage } from './pages/ProgressPage'
+import { PracticePage } from './pages/PracticePage'
 import './index.css'
 import './App.css'
 
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
           <Route element={<AppShell />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/progress" element={<ProgressPage />} />
+            <Route path="/practice/:conceptId" element={<PracticePage />} />
             <Route path="/lesson/:lessonId" element={<LessonRoute />} />
           </Route>
         </Routes>

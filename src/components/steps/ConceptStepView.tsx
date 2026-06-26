@@ -18,6 +18,7 @@ import {
   PEZeroDiagram,
   EnergyChainDiagram,
   FrictionEnergyDiagram,
+  BrakingEnergyDiagram,
   PowerSpeedDiagram,
 } from '../diagrams/ConceptDiagrams'
 import { KineticEnergyDiagram } from '../diagrams/KineticEnergyDiagram'
@@ -80,6 +81,8 @@ export function ConceptStepView({ step, onContinue }: Props) {
       {step.visual === 'energy_chain' && <EnergyChainDiagram />}
 
       {step.visual === 'friction_energy' && <FrictionEnergyDiagram />}
+
+      {step.visual === 'braking_energy' && <BrakingEnergyDiagram />}
 
       {step.visual === 'power_speed' && <PowerSpeedDiagram />}
 

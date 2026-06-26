@@ -1,18 +1,36 @@
 import type { ReactNode } from 'react'
 
 const PHYS =
-  /(Δ)([A-Z]{1,3})_([a-z0-9]+)|(Δ)([A-Z]+)|([A-Z]{1,3})_([a-z0-9]+)|(μ)_([a-z0-9]+)/g
+  /(Δ)([A-Z]{1,3})_([A-Za-z0-9]+)|(Δ)([A-Z]+)|([A-Z]{1,3})_([A-Za-z0-9]+)|(μ)_([A-Za-z0-9]+)/g
 
 function parsePhysicsTokens(text: string, keyPrefix: string): ReactNode[] {
   const nodes: ReactNode[] = []
   let last = 0
   let i = 0
+  let op = 0
   let match: RegExpExecArray | null
+
+  // Push plain text, but give the multiplication dot (·) breathing room so
+  // symbols like "F_f·d" don't crowd together.
+  const pushText = (str: string) => {
+    if (!str) return
+    const parts = str.split('·')
+    parts.forEach((part, idx) => {
+      if (part) nodes.push(part)
+      if (idx < parts.length - 1) {
+        nodes.push(
+          <span key={`${keyPrefix}-op-${op++}`} className="phys-op">
+            ·
+          </span>,
+        )
+      }
+    })
+  }
 
   PHYS.lastIndex = 0
   while ((match = PHYS.exec(text)) !== null) {
     if (match.index > last) {
-      nodes.push(text.slice(last, match.index))
+      pushText(text.slice(last, match.index))
     }
 
     const key = `${keyPrefix}-${i++}`
@@ -52,7 +70,7 @@ function parsePhysicsTokens(text: string, keyPrefix: string): ReactNode[] {
   }
 
   if (last < text.length) {
-    nodes.push(text.slice(last))
+    pushText(text.slice(last))
   }
 
   return nodes

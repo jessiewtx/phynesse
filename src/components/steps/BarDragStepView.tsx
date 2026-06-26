@@ -7,6 +7,7 @@ import { Feedback } from '../Feedback'
 import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
 import { WhyPanel } from '../WhyPanel'
 import { buildSolution } from '../../lib/solution'
+import { aiEnabled } from '../../lib/ai'
 
 type Props = {
   step: BarDragStep
@@ -156,13 +157,16 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
         </div>
       )}
 
-      {step.givens && step.givens.length > 0 && (
-        <div className="bar-drag__givens">
-          {step.givens.map(({ label, value }) => (
-            <span key={label} className="bar-drag__given">
-              <PhysicsText text={label} /> = {value}
-            </span>
-          ))}
+      {step.givens && step.givens.length > 0 && attempt > 0 && (
+        <div className="bar-drag__givens-reveal">
+          <span className="bar-drag__givens-label">First hint · here's what you're given</span>
+          <div className="bar-drag__givens">
+            {step.givens.map(({ label, value }) => (
+              <span key={label} className="bar-drag__given">
+                <PhysicsText text={label} /> = {value}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
@@ -271,7 +275,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
 
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
 
-      {!solved && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
+      {!solved && !aiEnabled && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
         <StuckHelp answer={`${step.correctValue} ${step.unit}`} solution={solution} formulas={step.formulas} />
       )}
 

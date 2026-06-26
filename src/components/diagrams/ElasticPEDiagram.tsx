@@ -20,7 +20,7 @@ export function ElasticPEDiagram() {
         <rect x="92" y="40" width="22" height="32" rx="3" fill="#3d4450" />
         <text x="60" y="92" textAnchor="middle" fill="#5c5c58" fontSize="11" fontFamily="system-ui">small x</text>
         <rect x="140" y="48" width="20" height="16" rx="3" fill="rgba(236,72,153,0.18)" stroke="#ec4899" />
-        <text x="150" y="60" textAnchor="middle" fill="#db2777" fontSize="8" fontWeight="700" fontFamily="system-ui">PE_s</text>
+        <text x="150" y="60" textAnchor="middle" fill="#db2777" fontSize="8" fontWeight="700" fontFamily="system-ui">PE<tspan dy="2" fontSize="6">s</tspan></text>
 
         {/* double compression */}
         <rect x="20" y="116" width="8" height="44" fill="#5c5c58" />
@@ -28,7 +28,7 @@ export function ElasticPEDiagram() {
         <rect x="64" y="122" width="22" height="32" rx="3" fill="#3d4450" />
         <text x="120" y="174" textAnchor="middle" fill="#5c5c58" fontSize="11" fontFamily="system-ui">2x compression</text>
         <rect x="140" y="98" width="20" height="64" rx="3" fill="#ec4899" />
-        <text x="150" y="134" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="700" fontFamily="system-ui">4×PE_s</text>
+        <text x="150" y="134" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="700" fontFamily="system-ui">4×PE<tspan dy="2" fontSize="6">s</tspan></text>
       </svg>
       <figcaption id="epe-diagram-caption" className="concept-diagram__caption">
         Compress a spring twice as far → four times the stored energy (x is squared).

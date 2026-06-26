@@ -12,12 +12,49 @@ import {
   saveLessonProgress,
   type LessonStatus,
 } from '../lib/progressFirestore'
-import type { StepDraft } from '../types/lesson'
+import type { Step, StepDraft } from '../types/lesson'
 import { displayFirstName } from '../lib/displayName'
 import { completeLesson, type CompletionResult } from '../lib/streak'
 import { StreakCelebrationOverlay } from '../components/StreakCelebrationOverlay'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { notifyLearnerDataChanged } from '../lib/useLearnerData'
+import { AiTutorSidebar } from '../components/AiTutorSidebar'
+import { buildSolution } from '../lib/solution'
+import { LESSON_CONCEPT } from '../lib/practiceConcepts'
+import { aiEnabled, AI_HELP_AFTER, type StruggleContext } from '../lib/ai'
+
+/** Builds the AI helper's context from whatever step the learner is on, so the
+ *  tutor always knows the current material (not a stale earlier problem). */
+function tutorContextForStep(step: Step | undefined): StruggleContext | null {
+  if (!step) return null
+  if (step.type === 'bar_drag' || step.type === 'predict_numeric') {
+    return {
+      kind: 'problem',
+      prompt: step.prompt,
+      formulas: step.formulas,
+      givens: step.givens,
+      correctValue: step.correctValue,
+      unit: step.unit,
+      solution: buildSolution(step),
+    }
+  }
+  if (step.type === 'concept') {
+    const head = step.title ? `${step.title}. ` : ''
+    return {
+      kind: 'concept',
+      prompt: `${head}${step.body}`,
+      formulas: step.equation ? [step.equation] : undefined,
+    }
+  }
+  if (step.type === 'compare_slider') {
+    return {
+      kind: 'explore',
+      prompt: `${step.prompt} ${step.task}`,
+      formulas: [step.formula],
+    }
+  }
+  return null
+}
 
 export function LessonPage() {
   const { user, isSignedIn, authReady } = useAuth()
@@ -31,6 +68,13 @@ export function LessonPage() {
   const [celebration, setCelebration] = useState<CompletionResult | null>(null)
   const [showCelebration, setShowCelebration] = useState(false)
   const [showRestartConfirm, setShowRestartConfirm] = useState(false)
+
+  // AI study helper. It is always available via a button and is grounded in
+  // WHATEVER step the learner is currently on. It also auto-opens after a couple
+  // of misses on a numeric problem.
+  const [tutorOpen, setTutorOpen] = useState(false)
+  const wrongCounts = useRef<Record<number, number>>({})
+  const triggeredSteps = useRef<Set<number>>(new Set())
 
   useEffect(() => {
     if (!lesson || !lessonId) return
@@ -135,6 +179,7 @@ export function LessonPage() {
   const advance = useCallback(() => {
     if (!lesson) return
     setStepDraft(null)
+    setTutorOpen(false)
     setStepIndex((i) => i + 1)
   }, [lesson])
 
@@ -168,6 +213,7 @@ export function LessonPage() {
 
   const handleBack = useCallback(() => {
     if (stepIndex <= 0) return
+    setTutorOpen(false)
     setStepIndex(stepIndex - 1)
     setStepDraft(null)
   }, [stepIndex])
@@ -180,6 +226,9 @@ export function LessonPage() {
     setShowRestartConfirm(false)
     setStepIndex(0)
     setStepDraft(null)
+    wrongCounts.current = {}
+    triggeredSteps.current = new Set()
+    setTutorOpen(false)
   }, [])
 
   const handleAttempt = useCallback(
@@ -191,6 +240,15 @@ export function LessonPage() {
       } else {
         logGuestAttempt(record)
       }
+
+      if (correct) return
+      // After a couple of misses on this question, auto-open the study helper.
+      const n = (wrongCounts.current[stepIndex] ?? 0) + 1
+      wrongCounts.current[stepIndex] = n
+      if (!aiEnabled) return
+      if (n < AI_HELP_AFTER || triggeredSteps.current.has(stepIndex)) return
+      triggeredSteps.current.add(stepIndex)
+      setTutorOpen(true)
     },
     [user, lessonId, stepIndex],
   )
@@ -215,6 +273,7 @@ export function LessonPage() {
   }
 
   const step = lesson.steps[stepIndex]
+  const tutorContext = tutorContextForStep(step)
   if (!step) {
     return (
       <div className="lesson-page">
@@ -327,6 +386,25 @@ export function LessonPage() {
           onAttempt={handleAttempt}
         />
       </main>
+
+      {aiEnabled && tutorContext && !tutorOpen && (
+        <button type="button" className="tutor-fab" onClick={() => setTutorOpen(true)}>
+          <span className="tutor-fab__avatar">
+            <img src="/brock.png" alt="" />
+          </span>
+          Ask Brock
+        </button>
+      )}
+
+      {aiEnabled && tutorOpen && tutorContext && (
+        <AiTutorSidebar
+          key={stepIndex}
+          lessonTitle={lesson.title}
+          conceptId={lessonId ? LESSON_CONCEPT[lessonId] : undefined}
+          question={tutorContext}
+          onClose={() => setTutorOpen(false)}
+        />
+      )}
     </div>
   )
 }

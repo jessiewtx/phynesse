@@ -20,6 +20,15 @@ function Key({ color, children }: { color: string; children: React.ReactNode }) 
   )
 }
 
+/** Subscript inside an SVG <text> (e.g. the "A" in F_A). Always rendered last. */
+function Sub({ children }: { children: React.ReactNode }) {
+  return (
+    <tspan dy="3" fontSize="9">
+      {children}
+    </tspan>
+  )
+}
+
 function Box({ x, y, w, h, label }: { x: number; y: number; w: number; h: number; label?: string }) {
   return (
     <g>
@@ -70,7 +79,7 @@ export function AnglePullProblem() {
     <Frame
       legend={
         <>
-          <Key color={F_COLOR}>F = pull</Key>
+          <Key color={F_COLOR}>F<sub>A</sub> = pull</Key>
           <Key color="#555">θ = angle</Key>
           <Key color={D_COLOR}>d = distance</Key>
         </>
@@ -124,7 +133,7 @@ export function AnglePullProblem() {
         points={`${tx},${ty} ${baseX + perpX * aHalf},${baseY + perpY * aHalf} ${baseX - perpX * aHalf},${baseY - perpY * aHalf}`}
         fill={F_COLOR}
       />
-      <text x={tx - 10} y={ty - 9} textAnchor="end" fill={F_COLOR} fontSize="13" fontWeight="800">F</text>
+      <text x={tx - 10} y={ty - 9} textAnchor="end" fill={F_COLOR} fontSize="13" fontWeight="800">F<Sub>A</Sub></text>
       {/* horizontal reference (the 0° baseline the angle is measured from) */}
       <line x1={ox} y1={oy} x2={ox + 52} y2={oy} stroke="#b8bdc6" strokeWidth="1.4" strokeDasharray="4 4" />
       {/* angle */}
@@ -148,7 +157,7 @@ export function SimplePushProblem() {
     <Frame
       legend={
         <>
-          <Key color={F_COLOR}>F = push</Key>
+          <Key color={F_COLOR}>F<sub>A</sub> = push</Key>
           <Key color={D_COLOR}>d = distance moved</Key>
         </>
       }
@@ -158,7 +167,7 @@ export function SimplePushProblem() {
       {/* push */}
       <line x1={boxX + BOX} y1={cy} x2={boxX + BOX + 70} y2={cy} stroke={F_COLOR} strokeWidth="7" strokeLinecap="round" />
       <polygon points={`${boxX + BOX + 84},${cy} ${boxX + BOX + 70},${cy - 9} ${boxX + BOX + 70},${cy + 9}`} fill={F_COLOR} />
-      <text x={boxX + BOX + 48} y={cy - 13} textAnchor="middle" fill={F_COLOR} fontSize="13" fontWeight="800">F</text>
+      <text x={boxX + BOX + 48} y={cy - 13} textAnchor="middle" fill={F_COLOR} fontSize="13" fontWeight="800">F<Sub>A</Sub></text>
       {/* distance */}
       <line x1={boxX + BOX / 2} y1={groundY + 14} x2={boxX + BOX / 2 + 160} y2={groundY + 14} stroke={D_COLOR} strokeWidth="2" />
       <polygon points={`${boxX + BOX / 2 + 160},${groundY + 14} ${boxX + BOX / 2 + 150},${groundY + 10} ${boxX + BOX / 2 + 150},${groundY + 18}`} fill={D_COLOR} />
@@ -177,8 +186,8 @@ export function PushFrictionProblem() {
     <Frame
       legend={
         <>
-          <Key color={F_COLOR}>F = your push</Key>
-          <Key color={FRIC_COLOR}>f = friction</Key>
+          <Key color={F_COLOR}>F<sub>A</sub> = your push</Key>
+          <Key color={FRIC_COLOR}>F<sub>f</sub> = friction</Key>
           <Key color={D_COLOR}>d = distance</Key>
         </>
       }
@@ -188,11 +197,11 @@ export function PushFrictionProblem() {
       {/* push */}
       <line x1={boxX + BOX} y1={cy} x2={boxX + BOX + 64} y2={cy} stroke={F_COLOR} strokeWidth="7" strokeLinecap="round" />
       <polygon points={`${boxX + BOX + 78},${cy} ${boxX + BOX + 64},${cy - 9} ${boxX + BOX + 64},${cy + 9}`} fill={F_COLOR} />
-      <text x={boxX + BOX + 44} y={cy - 13} textAnchor="middle" fill={F_COLOR} fontSize="13" fontWeight="800">F</text>
+      <text x={boxX + BOX + 44} y={cy - 13} textAnchor="middle" fill={F_COLOR} fontSize="13" fontWeight="800">F<Sub>A</Sub></text>
       {/* friction */}
       <line x1={boxX} y1={cy} x2={boxX - 40} y2={cy} stroke={FRIC_COLOR} strokeWidth="7" strokeLinecap="round" />
       <polygon points={`${boxX - 54},${cy} ${boxX - 40},${cy - 9} ${boxX - 40},${cy + 9}`} fill={FRIC_COLOR} />
-      <text x={boxX - 28} y={cy - 13} textAnchor="middle" fill={FRIC_COLOR} fontSize="13" fontWeight="800">f</text>
+      <text x={boxX - 28} y={cy - 13} textAnchor="middle" fill={FRIC_COLOR} fontSize="13" fontWeight="800">F<Sub>f</Sub></text>
       {/* distance */}
       <line x1={boxX + BOX / 2} y1={groundY + 14} x2={boxX + BOX / 2 + 120} y2={groundY + 14} stroke={D_COLOR} strokeWidth="2" />
       <polygon points={`${boxX + BOX / 2 + 120},${groundY + 14} ${boxX + BOX / 2 + 110},${groundY + 10} ${boxX + BOX / 2 + 110},${groundY + 18}`} fill={D_COLOR} />
@@ -213,7 +222,7 @@ export function ForceDistanceProblem() {
     <Frame
       legend={
         <>
-          <Key color={F_COLOR}>F = your push</Key>
+          <Key color={F_COLOR}>F<sub>A</sub> = your push</Key>
           <Key color={D_COLOR}>d = distance pushed</Key>
           <Key color={V_COLOR}>v = final speed</Key>
         </>
@@ -230,7 +239,7 @@ export function ForceDistanceProblem() {
       {/* push */}
       <line x1={boxX - 66} y1={cy} x2={boxX - 16} y2={cy} stroke={F_COLOR} strokeWidth="7" strokeLinecap="round" />
       <polygon points={`${boxX - 4},${cy} ${boxX - 18},${cy - 9} ${boxX - 18},${cy + 9}`} fill={F_COLOR} />
-      <text x={boxX - 40} y={cy - 13} textAnchor="middle" fill={F_COLOR} fontSize="13" fontWeight="800">F</text>
+      <text x={boxX - 40} y={cy - 13} textAnchor="middle" fill={F_COLOR} fontSize="13" fontWeight="800">F<Sub>A</Sub></text>
       {/* final speed */}
       <line x1={boxX + boxW + 30} y1={cy} x2={boxX + boxW + 92} y2={cy} stroke={V_COLOR} strokeWidth="6" strokeLinecap="round" />
       <polygon points={`${boxX + boxW + 106},${cy} ${boxX + boxW + 92},${cy - 8} ${boxX + boxW + 92},${cy + 8}`} fill={V_COLOR} />
@@ -255,7 +264,7 @@ export function BrakingProblem() {
       legend={
         <>
           <Key color={V_COLOR}>v = speed</Key>
-          <Key color={FRIC_COLOR}>f = braking friction</Key>
+          <Key color={FRIC_COLOR}>F<sub>f</sub> = braking friction</Key>
           <Key color={D_COLOR}>d = stopping distance</Key>
         </>
       }
@@ -273,7 +282,7 @@ export function BrakingProblem() {
       {/* friction backward */}
       <line x1={carX} y1={groundY - 6} x2={carX - 36} y2={groundY - 6} stroke={FRIC_COLOR} strokeWidth="6" strokeLinecap="round" />
       <polygon points={`${carX - 48},${groundY - 6} ${carX - 36},${groundY - 12} ${carX - 36},${groundY}`} fill={FRIC_COLOR} />
-      <text x={carX - 26} y={groundY - 14} textAnchor="middle" fill={FRIC_COLOR} fontSize="12" fontWeight="800">f</text>
+      <text x={carX - 26} y={groundY - 14} textAnchor="middle" fill={FRIC_COLOR} fontSize="12" fontWeight="800">F<Sub>f</Sub></text>
       {/* stopping distance */}
       <line x1={carX + carW / 2} y1={groundY + 14} x2={300} y2={groundY + 14} stroke={D_COLOR} strokeWidth="2" strokeDasharray="5 4" />
       <line x1={300} y1={groundY + 6} x2={300} y2={groundY + 22} stroke={D_COLOR} strokeWidth="2" />
@@ -309,7 +318,7 @@ function RampBase({ friction }: { friction: boolean }) {
       <rect x={blkx - 13} y={blky - 22} width="26" height="18" rx="3" fill="#3d4450" stroke="#8b95a8" strokeWidth="1.5" transform={`rotate(-32 ${blkx} ${blky - 11})`} />
       {friction && (
         <>
-          <text x={blkx - 30} y={blky + 6} fill={FRIC_COLOR} fontSize="12" fontWeight="800">f</text>
+          <text x={blkx - 34} y={blky + 6} fill={FRIC_COLOR} fontSize="12" fontWeight="800">F<Sub>f</Sub></text>
           {[0, 1, 2].map((i) => (
             <path key={i} d={`M ${blkx + 6 + i * 7} ${blky - 26} q 3 -5 6 0`} fill="none" stroke={FRIC_COLOR} strokeWidth="1.4" />
           ))}
@@ -342,7 +351,7 @@ export function RampFrictionProblem() {
         <>
           <Key color={D_COLOR}>d = slope length</Key>
           <Key color={H_COLOR}>h = vertical height</Key>
-          <Key color={FRIC_COLOR}>f = friction (heat)</Key>
+          <Key color={FRIC_COLOR}>F<sub>f</sub> = friction (heat)</Key>
         </>
       }
     >
@@ -395,7 +404,7 @@ export function PowerCarProblem() {
     <Frame
       legend={
         <>
-          <Key color={F_COLOR}>F = drive force</Key>
+          <Key color={F_COLOR}>F<sub>A</sub> = drive force</Key>
           <Key color={V_COLOR}>v = constant speed</Key>
         </>
       }
@@ -407,7 +416,7 @@ export function PowerCarProblem() {
       <circle cx={carX + carW - 20} cy={groundY - 6} r="9" fill="#20242c" />
       <line x1={carX + carW + 4} y1={cy} x2={carX + carW + 64} y2={cy} stroke={F_COLOR} strokeWidth="7" strokeLinecap="round" />
       <polygon points={`${carX + carW + 78},${cy} ${carX + carW + 64},${cy - 9} ${carX + carW + 64},${cy + 9}`} fill={F_COLOR} />
-      <text x={carX + carW + 44} y={cy - 14} textAnchor="middle" fill={F_COLOR} fontSize="13" fontWeight="800">F</text>
+      <text x={carX + carW + 44} y={cy - 14} textAnchor="middle" fill={F_COLOR} fontSize="13" fontWeight="800">F<Sub>A</Sub></text>
       <line x1={carX - 4} y1={groundY - carH - 28} x2={carX - 64} y2={groundY - carH - 28} stroke={V_COLOR} strokeWidth="6" strokeLinecap="round" />
       <polygon points={`${carX - 78},${groundY - carH - 28} ${carX - 64},${groundY - carH - 34} ${carX - 64},${groundY - carH - 22}`} fill={V_COLOR} />
       <text x={carX - 44} y={groundY - carH - 34} textAnchor="middle" fill={V_COLOR} fontSize="13" fontWeight="800">v</text>

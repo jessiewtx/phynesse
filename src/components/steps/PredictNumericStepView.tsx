@@ -7,6 +7,7 @@ import { SixSevenPopup } from '../SixSevenPopup'
 import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
 import { WhyPanel } from '../WhyPanel'
 import { buildSolution } from '../../lib/solution'
+import { aiEnabled } from '../../lib/ai'
 import { ProblemVisualView } from '../diagrams/ProblemVisualView'
 
 type Props = {
@@ -91,13 +92,16 @@ export function PredictNumericStepView({
         </div>
       )}
 
-      {step.givens && step.givens.length > 0 && (
-        <div className="bar-drag__givens">
-          {step.givens.map(({ label, value }) => (
-            <span key={label} className="bar-drag__given">
-              <PhysicsText text={label} /> = {value}
-            </span>
-          ))}
+      {step.givens && step.givens.length > 0 && attempt > 0 && (
+        <div className="bar-drag__givens-reveal">
+          <span className="bar-drag__givens-label">First hint · here's what you're given</span>
+          <div className="bar-drag__givens">
+            {step.givens.map(({ label, value }) => (
+              <span key={label} className="bar-drag__given">
+                <PhysicsText text={label} /> = {value}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
@@ -130,7 +134,7 @@ export function PredictNumericStepView({
       </div>
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
       {sixSeven && <SixSevenPopup onClose={() => setSixSeven(false)} />}
-      {!solved && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
+      {!solved && !aiEnabled && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
         <StuckHelp
           answer={`${step.correctValue} ${step.unit}`}
           solution={solution}

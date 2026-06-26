@@ -178,7 +178,7 @@ export function ElasticPEExplorer() {
       {/* Energy split */}
       <div className="spring-energy">
         <div className="spring-energy__row">
-          <span className="spring-energy__tag">PE_s</span>
+          <span className="spring-energy__tag">PE<sub>s</sub></span>
           <div className="spring-energy__track">
             <div className="spring-energy__fill spring-energy__fill--pe" style={{ width: `${(u / MAX_U) * 100}%` }} />
           </div>
@@ -223,8 +223,8 @@ export function ElasticPEExplorer() {
 
       <p className={`ke-explorer__goal ${hit ? 'ke-explorer__goal--hit' : ''}`}>
         {hit
-          ? '✓ Nice — PE_s ≈ 50 J. Notice a small extra pull adds a lot of energy (x is squared).'
-          : 'Goal: load the spring until PE_s ≈ 50 J — then release and watch it become motion.'}
+          ? '✓ Nice — stored energy ≈ 50 J. Notice a small extra pull adds a lot of energy (x is squared).'
+          : 'Goal: load the spring until the stored energy ≈ 50 J — then release and watch it become motion.'}
       </p>
     </div>
   )
