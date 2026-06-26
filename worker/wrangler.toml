@@ -1,0 +1,8 @@
+name = "phynesse-openai-proxy"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# The OpenAI key is stored as an encrypted secret, NOT here:
+#   npx wrangler secret put OPENAI_API_KEY
+#
+# Optionally pin a model the proxy will accept by default (the app already sends one).

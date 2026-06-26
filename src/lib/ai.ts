@@ -10,17 +10,25 @@ import {
 
 const flagOff = (import.meta.env.VITE_AI_ENABLED as string | undefined) === 'false'
 
-/** OpenAI is the preferred provider when a key is present (more reliable than
- *  Gemini's tiny free tier). WARNING: a client-side key is exposed in the
- *  browser bundle — only use VITE_OPENAI_API_KEY for LOCAL dev. For the deployed
- *  site, route through a server proxy instead so the key stays secret. */
+/** OpenAI is the preferred provider (more reliable than Gemini's tiny free tier).
+ *  Two ways to enable it:
+ *    1. VITE_OPENAI_PROXY_URL — a server-side proxy (Cloudflare Worker) that holds
+ *       the key and injects it. The browser never sees the key, so this is the
+ *       SAFE option for the deployed site.
+ *    2. VITE_OPENAI_API_KEY — calls OpenAI directly with the key. This bakes the
+ *       key into the browser bundle, so use it for LOCAL dev ONLY. */
 const OPENAI_KEY = import.meta.env.VITE_OPENAI_API_KEY as string | undefined
 const OPENAI_MODEL = (import.meta.env.VITE_OPENAI_MODEL as string | undefined) || 'gpt-4o-mini'
 /** Override for company gateways / proxies (no trailing slash). */
 const OPENAI_BASE_URL =
   (import.meta.env.VITE_OPENAI_BASE_URL as string | undefined)?.replace(/\/$/, '') ||
   'https://api.openai.com/v1'
-export const openaiEnabled = !!OPENAI_KEY
+/** Server-side proxy endpoint that injects the key (preferred for production). */
+const OPENAI_PROXY_URL = (import.meta.env.VITE_OPENAI_PROXY_URL as string | undefined)?.replace(
+  /\/$/,
+  '',
+)
+export const openaiEnabled = !!OPENAI_KEY || !!OPENAI_PROXY_URL
 
 /** Master switch. With this false, the app falls back to its non-AI behavior. */
 export const aiEnabled = (isFirebaseConfigured || openaiEnabled) && !flagOff
@@ -114,14 +122,17 @@ async function openaiComplete(
   messages: { role: ChatRole; content: string }[],
   opts?: { json?: boolean },
 ): Promise<string | null> {
-  if (!OPENAI_KEY) return null
+  if (!OPENAI_KEY && !OPENAI_PROXY_URL) return null
+  // Prefer the proxy (key stays server-side); otherwise call OpenAI directly.
+  const usingProxy = !!OPENAI_PROXY_URL
+  const endpoint = usingProxy ? OPENAI_PROXY_URL! : `${OPENAI_BASE_URL}/chat/completions`
   try {
     const res = await withTimeout(
-      fetch(`${OPENAI_BASE_URL}/chat/completions`, {
+      fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${OPENAI_KEY}`,
+          ...(usingProxy ? {} : { Authorization: `Bearer ${OPENAI_KEY}` }),
         },
         body: JSON.stringify({
           model: OPENAI_MODEL,
