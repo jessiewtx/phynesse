@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { getAllLessons } from '../lib/lessons'
 import { useLearnerData } from '../lib/useLearnerData'
 import { useTricky } from '../lib/useTricky'
+import { useBosses } from '../lib/useBosses'
 import { buildMastery, levelMeta } from '../lib/mastery'
 import { displayFirstName } from '../lib/displayName'
 import { SignInPanel } from './SignInPanel'
@@ -51,6 +52,7 @@ export function AppSidebar({ onNavigate }: Props) {
   const lessons = getAllLessons()
   const { progressMap, attempts, streak } = useLearnerData()
   const { due } = useTricky()
+  const { active: activeBoss } = useBosses()
 
   const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
 
@@ -93,6 +95,17 @@ export function AppSidebar({ onNavigate }: Props) {
           Tricky problems
           {due.length > 0 && <span className="app-sidebar__badge">{due.length}</span>}
         </Link>
+        {activeBoss.length > 0 && (
+          <Link
+            to="/boss"
+            className={`app-sidebar__link ${location.pathname === '/boss' ? 'app-sidebar__link--active' : ''}`}
+            onClick={onNavigate}
+          >
+            <span className="app-sidebar__link-icon">⚔️</span>
+            Boss battles
+            <span className="app-sidebar__badge app-sidebar__badge--boss">{activeBoss.length}</span>
+          </Link>
+        )}
       </nav>
 
       <div className="app-sidebar__mastery">

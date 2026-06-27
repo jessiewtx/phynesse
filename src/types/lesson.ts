@@ -26,6 +26,7 @@ export type ConceptStep = {
     | 'ke_tool'
     | 'ramp_height'
     | 'pe_zero'
+    | 'pe_ke_trade'
     | 'energy_chain'
     | 'friction_energy'
     | 'braking_energy'

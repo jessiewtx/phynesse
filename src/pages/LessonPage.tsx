@@ -24,6 +24,8 @@ import { aiEnabled, AI_HELP_AFTER } from '../lib/ai'
 import { tutorContextForStep } from '../lib/tutorContext'
 import { captureTricky } from '../lib/tricky'
 import { notifyTrickyChanged } from '../lib/useTricky'
+import { classifyMiss, givenNumbers, recordMiss } from '../lib/bosses'
+import { notifyBossesChanged } from '../lib/useBosses'
 
 /** Misses on the same problem before it's filed into the tricky-problems notebook. */
 const CAPTURE_AFTER = 2
@@ -240,6 +242,22 @@ export function LessonPage() {
           stepIndex,
           step: current,
         }).then(() => notifyTrickyChanged())
+      }
+
+      // Watch for a *repeated* error pattern across problems. Classify this miss
+      // against the engine's correct value; if it's a recognizable slip on a
+      // concept-backed problem, log it so a targeted boss can spawn.
+      const conceptId = LESSON_CONCEPT[lessonId]
+      if (
+        conceptId &&
+        current &&
+        (current.type === 'bar_drag' || current.type === 'predict_numeric') &&
+        typeof answer === 'number'
+      ) {
+        const slip = classifyMiss(current.correctValue, answer, givenNumbers(current.givens))
+        if (slip) {
+          void recordMiss(user?.uid ?? null, conceptId, slip).then(() => notifyBossesChanged())
+        }
       }
 
       // After a couple of misses on this question, auto-open the study helper.

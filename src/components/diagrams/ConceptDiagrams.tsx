@@ -390,40 +390,166 @@ export function KEToolDiagram() {
 
 /* ---------------- L3: h = d·sin θ ---------------- */
 export function RampHeightDiagram() {
-  const ax = 60
-  const ay = 124 // bottom-left
-  const bx = 300
-  const by = 124 // bottom-right
-  const cx = 300
-  const cy = 36 // top
-  const theta = '30°'
-  // block sits partway up the hypotenuse
-  const t = 0.5
-  const blkx = ax + (cx - ax) * t
-  const blky = ay + (cy - ay) * t
+  // Interactive 30° ramp. Drag the critter UP the slope and watch the distance
+  // travelled (d) and the vertical height it has actually gained (h = d·sin30°)
+  // grow together in real time.
+  const VBW = 320
+  const VBH = 176
+  const DEG = 30
+  const ang = (DEG * Math.PI) / 180
+  const ux = Math.cos(ang)
+  const uy = -Math.sin(ang)
+  const DMAX = 6 // metres along the slope
+  const PXM = 26 // px per metre along the slope
+  const ax = 52 // angle vertex (bottom of ramp)
+  const ay = 150
+  const cx = ax + DMAX * PXM * ux // top of ramp
+  const cy = ay + DMAX * PXM * uy
+  const bx = cx // right-angle corner
+  const by = ay
+
+  const [d, setD] = useState(3)
+  const [touched, setTouched] = useState(false)
+  const ref = useRef<SVGSVGElement | null>(null)
+  const dragging = useRef(false)
+
+  const h = Math.round(d * Math.sin(ang) * 100) / 100 // h = d·sin30°
+  const px = ax + d * PXM * ux
+  const py = ay + d * PXM * uy
+
+  const setFromClient = (clientX: number, clientY: number) => {
+    const svg = ref.current
+    if (!svg) return
+    const rect = svg.getBoundingClientRect()
+    const lx = ((clientX - rect.left) / rect.width) * VBW
+    const ly = ((clientY - rect.top) / rect.height) * VBH
+    const along = ((lx - ax) * ux + (ly - ay) * uy) / PXM // metres along slope
+    const snapped = Math.min(DMAX, Math.max(0, Math.round(along / 0.5) * 0.5))
+    setD(snapped)
+  }
+
+  const onDown = (e: RPointer<SVGSVGElement>) => {
+    dragging.current = true
+    setTouched(true)
+    e.currentTarget.setPointerCapture(e.pointerId)
+    setFromClient(e.clientX, e.clientY)
+  }
+  const onMove = (e: RPointer<SVGSVGElement>) => {
+    if (dragging.current) setFromClient(e.clientX, e.clientY)
+  }
+  const onUp = () => {
+    dragging.current = false
+  }
+  const onKey = (e: RKey<SVGSVGElement>) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      setTouched(true)
+      setD((x) => Math.min(DMAX, x + 0.5))
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      setTouched(true)
+      setD((x) => Math.max(0, x - 0.5))
+    }
+  }
+
+  const r = 30
   return (
     <div className="wfd">
-      <svg viewBox="0 0 360 156" className="wfd__svg" role="img" aria-label="A right-triangle ramp showing height equals d sin theta">
-        {/* triangle */}
-        <polygon points={`${ax},${ay} ${bx},${by} ${cx},${cy}`} fill="rgba(123,92,255,0.08)" stroke="#9aa3ad" strokeWidth="1.5" />
+      <svg
+        ref={ref}
+        viewBox={`0 0 ${VBW} ${VBH}`}
+        className="wfd__svg ramp-lab"
+        role="slider"
+        tabIndex={0}
+        aria-label="Distance up the ramp"
+        aria-valuemin={0}
+        aria-valuemax={DMAX}
+        aria-valuenow={d}
+        aria-valuetext={`d = ${d} m, h = ${h} m`}
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
+        onKeyDown={onKey}
+      >
+        {/* filled triangle for reference */}
+        <polygon points={`${ax},${ay} ${bx},${by} ${cx},${cy}`} fill="rgba(123,92,255,0.07)" stroke="#cfd5de" strokeWidth="1.2" />
 
-        {/* hypotenuse d (orange) */}
-        <line x1={ax} y1={ay} x2={cx} y2={cy} stroke={D_COLOR} strokeWidth="4" />
-        <text x={(ax + cx) / 2 - 16} y={(ay + cy) / 2 - 6} fill={D_COLOR} fontSize="13" fontWeight="800">d</text>
+        {/* ground */}
+        <line x1={ax - 28} y1={ay} x2={bx + 26} y2={by} stroke="#9aa3ad" strokeWidth="2" strokeLinecap="round" />
 
-        {/* vertical height h (green) */}
-        <line x1={cx + 14} y1={cy} x2={cx + 14} y2={by} stroke={COMP_COLOR} strokeWidth="3" />
-        <polygon points={`${cx + 14},${cy} ${cx + 10},${cy + 10} ${cx + 18},${cy + 10}`} fill={COMP_COLOR} />
-        <polygon points={`${cx + 14},${by} ${cx + 10},${by - 10} ${cx + 18},${by - 10}`} fill={COMP_COLOR} />
-        <text x={cx + 22} y={(cy + by) / 2} fill={COMP_COLOR} fontSize="13" fontWeight="800">h</text>
+        {/* full ramp "track" — the path the critter can glide along */}
+        <line x1={ax} y1={ay} x2={cx} y2={cy} stroke="#c4ccd6" strokeWidth="6" strokeLinecap="round" />
+        {/* distance travelled so far (orange) */}
+        <line x1={ax} y1={ay} x2={px} y2={py} stroke={D_COLOR} strokeWidth="6" strokeLinecap="round" />
 
-        {/* angle */}
-        <path d={`M ${ax + 34} ${ay} A 34 34 0 0 0 ${ax + 34 * Math.cos(-Math.atan2(cy - ay, cx - ax))} ${ay - 34 * Math.sin(Math.atan2(ay - cy, cx - ax))}`} fill="none" stroke="#555" strokeWidth="1.4" />
-        <text x={ax + 40} y={ay - 8} fill="#555" fontSize="11" fontWeight="700">θ = {theta}</text>
+        {/* live vertical height h at the critter's position (green) */}
+        {d > 0 && (
+          <>
+            <line x1={px} y1={py} x2={px} y2={ay} stroke={COMP_COLOR} strokeWidth="2.5" strokeDasharray="1 0" />
+            <line x1={px - 6} y1={py} x2={px + 6} y2={py} stroke={COMP_COLOR} strokeWidth="2" />
+            <text x={px + 9} y={Math.max((py + ay) / 2 + 4, py + 20)} fill={COMP_COLOR} fontSize="13" fontWeight="800">
+              h = {h} m
+            </text>
+          </>
+        )}
 
-        {/* block */}
-        <rect x={blkx - 12} y={blky - 20} width="24" height="18" rx="3" fill="#3d4450" stroke="#8b95a8" strokeWidth="1.5" transform={`rotate(-30 ${blkx} ${blky - 11})`} />
+        {/* right-angle marker */}
+        <polyline points={`${bx - 11},${by} ${bx - 11},${by - 11} ${bx},${by - 11}`} fill="none" stroke="#9aa3ad" strokeWidth="1.3" />
+
+        {/* explicit ramp angle, placed in the open space on the right */}
+        <text x={(bx + VBW) / 2 + 6} y={ay - 34} textAnchor="middle" fill="#555" fontSize="17" fontWeight="800">
+          θ = 30°
+        </text>
+
+        {/* angle wedge (sampled so it's always the correct convex arc) */}
+        <polyline
+          points={Array.from({ length: 13 }, (_, i) => {
+            const a = (DEG * i) / 12
+            const rad = (a * Math.PI) / 180
+            return `${(ax + r * Math.cos(rad)).toFixed(1)},${(ay - r * Math.sin(rad)).toFixed(1)}`
+          }).join(' ')}
+          fill="none"
+          stroke="#555"
+          strokeWidth="1.5"
+        />
+        <text
+          x={ax + (r + 9) * Math.cos((DEG / 2) * (Math.PI / 180))}
+          y={ay - (r + 9) * Math.sin((DEG / 2) * (Math.PI / 180)) + 4}
+          fill="#555"
+          fontSize="12"
+          fontWeight="700"
+        >
+          θ
+        </text>
+
+        {/* glide hint until first interaction */}
+        {!touched && (
+          <g className="ramp-lab__hint" transform={`translate(${px + 16 * ux}, ${py + 16 * uy})`}>
+            <g transform={`rotate(${-(DEG)})`}>
+              <path d="M0 -13 L6 -6 L-6 -6 Z" fill={PE_COLOR} />
+              <path d="M0 13 L6 6 L-6 6 Z" fill={PE_COLOR} />
+            </g>
+          </g>
+        )}
+
+        {/* the critter, gliding on the slope */}
+        <g transform={`rotate(${-DEG} ${px} ${py})`} style={{ cursor: 'grab' }}>
+          <ellipse cx={px - 8} cy={py} rx="4.5" ry="3.2" fill="#6d4ad1" />
+          <ellipse cx={px + 8} cy={py} rx="4.5" ry="3.2" fill="#6d4ad1" />
+          <ellipse cx={px} cy={py - 14} rx="16" ry="14" fill="#8b5cf6" />
+          <ellipse cx={px} cy={py - 10} rx="9.5" ry="7.5" fill="#ece4fb" />
+          <circle cx={px - 8.5} cy={py - 11} r="2.4" fill="#ff8fb8" opacity="0.7" />
+          <circle cx={px + 8.5} cy={py - 11} r="2.4" fill="#ff8fb8" opacity="0.7" />
+          <circle cx={px - 5} cy={py - 17} r="3.2" fill="#fff" />
+          <circle cx={px + 5} cy={py - 17} r="3.2" fill="#fff" />
+          <circle cx={px - 5} cy={py - 17} r="1.6" fill="#2b2240" />
+          <circle cx={px + 5} cy={py - 17} r="1.6" fill="#2b2240" />
+          <path d={`M ${px - 3} ${py - 10} Q ${px} ${py - 7} ${px + 3} ${py - 10}`} fill="none" stroke="#2b2240" strokeWidth="1.2" strokeLinecap="round" />
+        </g>
       </svg>
+
+      <p className="ramp-lab__caption">Drag the critter up and down the ramp</p>
 
       <div className="wfd__legend">
         <Key color={D_COLOR}>d = distance along the ramp</Key>
@@ -432,10 +558,10 @@ export function RampHeightDiagram() {
 
       <div className="wfd__calc">
         <div className="wfd__formula">
-          <span style={{ color: COMP_COLOR }}>h</span> = <span style={{ color: D_COLOR }}>d</span> · sin θ
+          <span style={{ color: COMP_COLOR }}>h</span> = <span style={{ color: D_COLOR }}>d</span> · sin&nbsp;30°
         </div>
         <div className="wfd__plug">
-          <span style={{ color: COMP_COLOR }}>h</span> = <span style={{ color: D_COLOR }}>6&nbsp;m</span> × sin&nbsp;30° = <strong>3&nbsp;m</strong>
+          <span style={{ color: D_COLOR }}>d = {d}&nbsp;m</span> &nbsp;×&nbsp; sin&nbsp;30° &nbsp;=&nbsp; <span style={{ color: COMP_COLOR }}>h = {h}&nbsp;m</span>
         </div>
       </div>
     </div>
@@ -444,28 +570,37 @@ export function RampHeightDiagram() {
 
 /* ---------------- L3: ΔPE_g = mg·Δh (zero is your choice) ---------------- */
 export function PEZeroDiagram() {
-  const topY = 40
-  const botY = 104
   const boxX = 150
-  const BOX = 34
+  const BOX = 32
+  const startTop = 26
+  const endTop = 86
+  const startMid = startTop + BOX / 2 // 42
+  const endMid = endTop + BOX / 2 // 102
+  const deskY = endTop + BOX // 118 — purple zero choice (the desk)
+  const floorY = 148 // blue zero choice (the floor)
+  const arrowX = boxX + BOX + 28
   return (
     <div className="wfd">
-      <svg viewBox="0 0 360 156" className="wfd__svg" role="img" aria-label="Same drop measured from two reference levels">
-        {/* two candidate zero levels */}
-        <line x1="30" y1={botY} x2="330" y2={botY} stroke={F_COLOR} strokeWidth="1.6" strokeDasharray="5 4" />
-        <text x="34" y={botY - 6} fill={F_COLOR} fontSize="10" fontWeight="700">PE = 0 (floor A)</text>
-        <line x1="30" y1={topY + 24} x2="330" y2={topY + 24} stroke={PE_COLOR} strokeWidth="1.6" strokeDasharray="5 4" />
-        <text x="34" y={topY + 18} fill={PE_COLOR} fontSize="10" fontWeight="700">PE = 0 (floor B)</text>
+      <svg viewBox="0 0 360 168" className="wfd__svg" role="img" aria-label="Same drop measured from two reference levels">
+        {/* two candidate zero levels (your choice) */}
+        <line x1="30" y1={floorY} x2="330" y2={floorY} stroke={F_COLOR} strokeWidth="1.6" strokeDasharray="5 4" />
+        <text x="34" y={floorY - 6} fill={F_COLOR} fontSize="10" fontWeight="700">PE = 0 (floor)</text>
+        <line x1="30" y1={deskY} x2="300" y2={deskY} stroke={PE_COLOR} strokeWidth="1.6" strokeDasharray="5 4" />
+        <text x="34" y={deskY - 6} fill={PE_COLOR} fontSize="10" fontWeight="700">PE = 0 (desk)</text>
 
-        {/* object at two positions */}
-        <Box x={boxX} y={topY} w={BOX} h={BOX} ghost label="start" />
-        <Box x={boxX} y={botY - BOX} w={BOX} h={BOX} label="end" />
+        {/* faint guides tying the Δh arrow ends to each box position */}
+        <line x1={boxX + BOX} y1={startMid} x2={arrowX} y2={startMid} stroke="#c4ccd6" strokeWidth="1.2" strokeDasharray="3 3" />
+        <line x1={boxX + BOX} y1={endMid} x2={arrowX} y2={endMid} stroke="#c4ccd6" strokeWidth="1.2" strokeDasharray="3 3" />
 
-        {/* Δh (green) — same no matter which floor */}
-        <line x1={boxX + BOX + 18} y1={topY + BOX / 2} x2={boxX + BOX + 18} y2={botY - BOX / 2} stroke={COMP_COLOR} strokeWidth="3" />
-        <polygon points={`${boxX + BOX + 18},${topY + BOX / 2} ${boxX + BOX + 14},${topY + BOX / 2 + 10} ${boxX + BOX + 22},${topY + BOX / 2 + 10}`} fill={COMP_COLOR} />
-        <polygon points={`${boxX + BOX + 18},${botY - BOX / 2} ${boxX + BOX + 14},${botY - BOX / 2 - 10} ${boxX + BOX + 22},${botY - BOX / 2 - 10}`} fill={COMP_COLOR} />
-        <text x={boxX + BOX + 26} y={(topY + botY) / 2} fill={COMP_COLOR} fontSize="13" fontWeight="800">Δh</text>
+        {/* object at two positions, clearly separated */}
+        <Box x={boxX} y={startTop} w={BOX} h={BOX} ghost label="start" />
+        <Box x={boxX} y={endTop} w={BOX} h={BOX} label="end" />
+
+        {/* Δh (green) — the actual drop, same no matter which zero line */}
+        <line x1={arrowX} y1={startMid} x2={arrowX} y2={endMid} stroke={COMP_COLOR} strokeWidth="3" />
+        <polygon points={`${arrowX},${startMid} ${arrowX - 4},${startMid + 10} ${arrowX + 4},${startMid + 10}`} fill={COMP_COLOR} />
+        <polygon points={`${arrowX},${endMid} ${arrowX - 4},${endMid - 10} ${arrowX + 4},${endMid - 10}`} fill={COMP_COLOR} />
+        <text x={arrowX + 9} y={(startMid + endMid) / 2 + 5} fill={COMP_COLOR} fontSize="14" fontWeight="800">Δh</text>
       </svg>
 
       <div className="wfd__legend">
@@ -479,6 +614,154 @@ export function PEZeroDiagram() {
         </div>
         <div className="wfd__plug">
           ΔPE<sub>g</sub> = (2)(9.8)(<span style={{ color: COMP_COLOR }}>1.5</span>) = <strong>29.4&nbsp;J</strong>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ---------------- L3: the great trade PE_g ⇄ KE (interactive seesaw) ---------------- */
+export function PEKETradeDiagram() {
+  const VBW = 360
+  const VBH = 184
+  // downhill ramp: high at top-left, low at bottom-right
+  const Tx = 56
+  const Ty = 48
+  const Lx = 56
+  const groundY = 150
+  const Rx = 200
+  const Ry = groundY
+
+  const [p, setP] = useState(0.85) // 1 = top (all PE), 0 = bottom (all KE)
+  const ref = useRef<SVGSVGElement | null>(null)
+  const dragging = useRef(false)
+
+  const PE = Math.round(p * 100)
+  const KE = 100 - PE
+  const bxp = Rx + p * (Tx - Rx)
+  const byp = Ry + p * (Ty - Ry)
+
+  // two seesaw bars on the right
+  const barBase = groundY
+  const barH = 100
+  const peX = 250
+  const keX = 298
+  const barW = 30
+
+  const setFromClient = (clientX: number, clientY: number) => {
+    const svg = ref.current
+    if (!svg) return
+    const rect = svg.getBoundingClientRect()
+    const lx = ((clientX - rect.left) / rect.width) * VBW
+    const ly = ((clientY - rect.top) / rect.height) * VBH
+    const abx = Tx - Rx
+    const aby = Ty - Ry
+    const t = ((lx - Rx) * abx + (ly - Ry) * aby) / (abx * abx + aby * aby)
+    setP(Math.min(1, Math.max(0, Math.round(t * 20) / 20)))
+  }
+  const onDown = (e: RPointer<SVGSVGElement>) => {
+    dragging.current = true
+    e.currentTarget.setPointerCapture(e.pointerId)
+    setFromClient(e.clientX, e.clientY)
+  }
+  const onMove = (e: RPointer<SVGSVGElement>) => {
+    if (dragging.current) setFromClient(e.clientX, e.clientY)
+  }
+  const onUp = () => {
+    dragging.current = false
+  }
+  const onKey = (e: RKey<SVGSVGElement>) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault()
+      setP((x) => Math.min(1, x + 0.05))
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault()
+      setP((x) => Math.max(0, x - 0.05))
+    }
+  }
+
+  const speed = 1 - p // faster near the bottom
+  return (
+    <div className="wfd">
+      <svg
+        ref={ref}
+        viewBox={`0 0 ${VBW} ${VBH}`}
+        className="wfd__svg ramp-lab"
+        role="slider"
+        tabIndex={0}
+        aria-label="Position on the hill"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={PE}
+        aria-valuetext={`PE ${PE}, KE ${KE}`}
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
+        onKeyDown={onKey}
+      >
+        {/* hill */}
+        <polygon points={`${Tx},${Ty} ${Lx},${groundY} ${Rx},${Ry}`} fill="rgba(123,92,255,0.07)" stroke="#cfd5de" strokeWidth="1.2" />
+        <line x1="24" y1={groundY} x2={Rx + 18} y2={groundY} stroke="#9aa3ad" strokeWidth="2" strokeLinecap="round" />
+        <line x1={Tx} y1={Ty} x2={Rx} y2={Ry} stroke="#c4ccd6" strokeWidth="5" strokeLinecap="round" />
+
+        {/* speed streaks (more as it speeds up near the bottom) */}
+        {speed > 0.08 &&
+          [0, 1, 2].map((i) => (
+            <line
+              key={i}
+              x1={bxp - 14 - i * 9}
+              y1={byp - 4 + i * 5}
+              x2={bxp - 14 - i * 9 - (8 + speed * 26)}
+              y2={byp - 4 + i * 5}
+              stroke={COMP_COLOR}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              opacity={0.25 + speed * 0.6}
+            />
+          ))}
+
+        {/* the rolling ball */}
+        <circle cx={bxp} cy={byp - 13} r="13" fill="#8b5cf6" />
+        <circle cx={bxp} cy={byp - 13} r="13" fill="none" stroke="#6d4ad1" strokeWidth="1.5" />
+        <circle cx={bxp - 4} cy={byp - 15} r="2.4" fill="#fff" />
+        <circle cx={bxp + 4} cy={byp - 15} r="2.4" fill="#fff" />
+        <circle cx={bxp - 4} cy={byp - 15} r="1.2" fill="#2b2240" />
+        <circle cx={bxp + 4} cy={byp - 15} r="1.2" fill="#2b2240" />
+
+        {/* seesaw bars: PE shrinks while KE grows; the total is constant */}
+        {[
+          { x: peX, label: 'PE', color: PE_COLOR, frac: p, val: PE },
+          { x: keX, label: 'KE', color: COMP_COLOR, frac: 1 - p, val: KE },
+        ].map((b) => (
+          <g key={b.label}>
+            <rect x={b.x} y={barBase - barH} width={barW} height={barH} rx="6" fill="#eef0f5" stroke="#d8dce6" strokeWidth="1" />
+            <rect x={b.x} y={barBase - b.frac * barH} width={barW} height={b.frac * barH} rx="6" fill={b.color} />
+            <text x={b.x + barW / 2} y={barBase + 14} textAnchor="middle" fill={b.color} fontSize="12" fontWeight="800">
+              {b.label}
+            </text>
+          </g>
+        ))}
+        {/* total bracket */}
+        <line x1={peX - 8} y1={barBase - barH} x2={keX + barW + 8} y2={barBase - barH} stroke="#9aa3ad" strokeWidth="1.2" strokeDasharray="3 3" />
+        <text x={(peX + keX + barW) / 2} y={barBase - barH - 6} textAnchor="middle" fill="#6b7280" fontSize="10" fontWeight="700">
+          total
+        </text>
+      </svg>
+
+      <p className="ramp-lab__caption">Drag the ball up and down the hill</p>
+
+      <div className="wfd__legend">
+        <Key color={PE_COLOR}>PE<sub>g</sub> = stored height</Key>
+        <Key color={COMP_COLOR}>KE = motion</Key>
+      </div>
+
+      <div className="wfd__calc">
+        <div className="wfd__formula">
+          <span style={{ color: PE_COLOR }}>PE<sub>g</sub></span> + <span style={{ color: COMP_COLOR }}>KE</span> = constant
+        </div>
+        <div className="wfd__plug">
+          <span style={{ color: PE_COLOR }}>{PE}</span> + <span style={{ color: COMP_COLOR }}>{KE}</span> = <strong>100</strong>
         </div>
       </div>
     </div>

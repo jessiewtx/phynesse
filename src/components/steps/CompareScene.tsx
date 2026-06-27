@@ -165,7 +165,7 @@ function dragHint(scene: SceneKind): string {
     case 'spring':
       return 'Drag the block → squeeze the spring against the wall'
     case 'height':
-      return 'Drag the box up and down the pole'
+      return 'Drag the critter up and down the pole'
     case 'time':
       return 'Drag the stopwatch marker to set the time'
     default:
@@ -295,16 +295,15 @@ function SpringScene({ v, base, max, unit, moved }: { v: number; base: number; m
   )
 }
 
-/* ---------------- height: drag the box up a pole ---------------- */
+/* ---------------- height: drag a critter up a pole ---------------- */
 function HeightScene({ v, base, max, unit, moved }: { v: number; base: number; max: number; unit: string; moved: boolean }) {
   const TOP = 30
   const VTRACK = GROUND_Y - TOP
   const pxPerM = VTRACK / max
-  const poleX = 150
-  const BW = 56
-  const BH = 34
+  const poleX = 176
   const boxBottom = GROUND_Y - v * pxPerM
   const baseBottom = GROUND_Y - base * pxPerM
+  const critterCx = poleX + 46
   return (
     <>
       <Ground />
@@ -313,23 +312,51 @@ function HeightScene({ v, base, max, unit, moved }: { v: number; base: number; m
 
       {moved && (
         <g className="cmp__ghost">
-          <rect x={poleX + 18} y={baseBottom - BH} width={BW} height={BH} rx="6" />
-          <text x={poleX + 18 + BW + 4} y={baseBottom - BH / 2 + 4} textAnchor="start">{fmt(base)} {unit}</text>
+          <ellipse cx={critterCx} cy={baseBottom - 22} rx="25" ry="22" />
+          <text x={critterCx} y={baseBottom - 50}>{fmt(base)} {unit}</text>
         </g>
       )}
 
-      {/* vertical measure */}
+      {/* vertical measure — label sits well left of the pole */}
       <g className="cmp__measure">
         <line x1={poleX} y1={GROUND_Y} x2={poleX} y2={boxBottom} className="cmp__measure-line" />
         <line x1={poleX - 8} y1={GROUND_Y} x2={poleX + 8} y2={GROUND_Y} className="cmp__measure-tick" />
         <line x1={poleX - 8} y1={boxBottom} x2={poleX + 8} y2={boxBottom} className="cmp__measure-tick" />
-        <text x={poleX - 12} y={(GROUND_Y + boxBottom) / 2 + 5} className="cmp__measure-label" textAnchor="end">
+        <text x={poleX - 18} y={(GROUND_Y + boxBottom) / 2 + 5} className="cmp__measure-label cmp__measure-label--end">
           h = {fmt(v)} {unit}
         </text>
       </g>
 
-      <rect x={poleX + 18} y={boxBottom - BH} width={BW} height={BH} rx="6" className="cmp__box" />
+      {/* platform ledge the critter stands on */}
+      <rect x={poleX} y={boxBottom - 3} width="74" height="6" rx="3" className="cmp__ledge" />
+
+      <MiniCritter cx={critterCx} footY={boxBottom} />
     </>
+  )
+}
+
+/* a small purple critter (matches the PE explorer) standing on its feet */
+function MiniCritter({ cx, footY }: { cx: number; footY: number }) {
+  const rx = 25
+  const ry = 22
+  const cy = footY - ry
+  const eyeDX = 8
+  const eyeY = cy - 5
+  return (
+    <g className="cmp__critter">
+      <ellipse cx={cx - 11} cy={footY} rx="6" ry="4" fill="#6d4ad1" />
+      <ellipse cx={cx + 11} cy={footY} rx="6" ry="4" fill="#6d4ad1" />
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="#8b5cf6" />
+      <ellipse cx={cx} cy={cy + 6} rx={rx * 0.6} ry={ry * 0.55} fill="#ece4fb" />
+      <circle cx={cx - eyeDX - 4} cy={eyeY + 6} r="3.4" fill="#ff8fb8" opacity="0.7" />
+      <circle cx={cx + eyeDX + 4} cy={eyeY + 6} r="3.4" fill="#ff8fb8" opacity="0.7" />
+      <circle cx={cx - eyeDX} cy={eyeY} r="5" fill="#fff" />
+      <circle cx={cx + eyeDX} cy={eyeY} r="5" fill="#fff" />
+      <circle cx={cx - eyeDX} cy={eyeY} r="2.5" fill="#2b2240" />
+      <circle cx={cx + eyeDX} cy={eyeY} r="2.5" fill="#2b2240" />
+      <path d={`M ${cx - 5} ${cy + 8} Q ${cx} ${cy + 12} ${cx + 5} ${cy + 8}`}
+        fill="none" stroke="#2b2240" strokeWidth="1.8" strokeLinecap="round" />
+    </g>
   )
 }
 

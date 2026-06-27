@@ -293,37 +293,89 @@ export function BrakingProblem() {
 
 /* ---------------- ramp (down-slide) ---------------- */
 function RampBase({ friction }: { friction: boolean }) {
+  // True 30° ramp: rise = run · tan 30°.
   const ax = 56
-  const ay = 120
-  const bx = 300
-  const cy = 36
-  const t = 0.46
-  const blkx = bx + (ax - bx) * t
-  const blky = cy + (ay - cy) * t
+  const ay = 126 // bottom-left (angle vertex)
+  const run = 170
+  const bx = ax + run // right-angle corner
+  const by = ay
+  const cx = bx
+  const cy = ay - run * Math.tan((30 * Math.PI) / 180) // top — exact 30°
+  const ang = Math.atan2(ay - cy, cx - ax) // = 30°
+  const r = 32
+  const t = 0.45
+  const blkx = ax + (cx - ax) * t
+  const blky = ay + (cy - ay) * t
   return (
     <>
-      <polygon points={`${ax},${ay} ${bx},${ay} ${bx},${cy}`} fill="rgba(123,92,255,0.07)" stroke="#9aa3ad" strokeWidth="1.5" />
+      <polygon points={`${ax},${ay} ${bx},${by} ${cx},${cy}`} fill="rgba(123,92,255,0.07)" stroke="#cfd5de" strokeWidth="1.2" />
+      {/* ground */}
+      <line x1={ax - 24} y1={ay} x2={bx + 22} y2={by} stroke="#9aa3ad" strokeWidth="2" strokeLinecap="round" />
       {/* slope length d */}
-      <line x1={ax} y1={ay} x2={bx} y2={cy} stroke={D_COLOR} strokeWidth="4" />
-      <text x={(ax + bx) / 2 - 14} y={(ay + cy) / 2 - 6} fill={D_COLOR} fontSize="13" fontWeight="800">d</text>
+      <line x1={ax} y1={ay} x2={cx} y2={cy} stroke={D_COLOR} strokeWidth="4" strokeLinecap="round" />
+      <text x={ax + (cx - ax) * 0.74 - 4} y={ay + (cy - ay) * 0.74 - 9} fill={D_COLOR} fontSize="14" fontWeight="800">d</text>
       {/* height h */}
-      <line x1={bx + 14} y1={cy} x2={bx + 14} y2={ay} stroke={H_COLOR} strokeWidth="3" />
+      <line x1={bx + 14} y1={cy} x2={bx + 14} y2={by} stroke={H_COLOR} strokeWidth="3" />
       <polygon points={`${bx + 14},${cy} ${bx + 10},${cy + 10} ${bx + 18},${cy + 10}`} fill={H_COLOR} />
-      <polygon points={`${bx + 14},${ay} ${bx + 10},${ay - 10} ${bx + 18},${ay - 10}`} fill={H_COLOR} />
-      <text x={bx + 22} y={(cy + ay) / 2} fill={H_COLOR} fontSize="13" fontWeight="800">h</text>
-      {/* angle */}
-      <text x={ax + 30} y={ay - 8} fill="#555" fontSize="11" fontWeight="700">θ</text>
-      <path d={`M ${ax + 36} ${ay} A 36 36 0 0 0 ${ax + 36 * Math.cos(Math.atan2(ay - cy, bx - ax))} ${ay - 36 * Math.sin(Math.atan2(ay - cy, bx - ax))}`} fill="none" stroke="#555" strokeWidth="1.4" />
-      {/* block */}
-      <rect x={blkx - 13} y={blky - 22} width="26" height="18" rx="3" fill="#3d4450" stroke="#8b95a8" strokeWidth="1.5" transform={`rotate(-32 ${blkx} ${blky - 11})`} />
-      {friction && (
-        <>
-          <text x={blkx - 34} y={blky + 6} fill={FRIC_COLOR} fontSize="12" fontWeight="800">F<Sub>f</Sub></text>
-          {[0, 1, 2].map((i) => (
-            <path key={i} d={`M ${blkx + 6 + i * 7} ${blky - 26} q 3 -5 6 0`} fill="none" stroke={FRIC_COLOR} strokeWidth="1.4" />
-          ))}
-        </>
-      )}
+      <polygon points={`${bx + 14},${by} ${bx + 10},${by - 10} ${bx + 18},${by - 10}`} fill={H_COLOR} />
+      <text x={bx + 22} y={(cy + by) / 2 + 4} fill={H_COLOR} fontSize="14" fontWeight="800">h</text>
+      {/* right-angle marker */}
+      <polyline points={`${bx - 11},${by} ${bx - 11},${by - 11} ${bx},${by - 11}`} fill="none" stroke="#9aa3ad" strokeWidth="1.3" />
+      {/* angle wedge (sampled so it's always the correct convex arc) */}
+      <polyline
+        points={Array.from({ length: 13 }, (_, i) => {
+          const a = (ang * i) / 12
+          return `${(ax + r * Math.cos(a)).toFixed(1)},${(ay - r * Math.sin(a)).toFixed(1)}`
+        }).join(' ')}
+        fill="none"
+        stroke="#555"
+        strokeWidth="1.5"
+      />
+      <text x={ax + (r + 10) * Math.cos(ang / 2)} y={ay - (r + 10) * Math.sin(ang / 2) + 4} fill="#555" fontSize="12" fontWeight="700">θ</text>
+      {/* critter sitting flush on the slope */}
+      <g transform={`rotate(${-(ang * 180) / Math.PI} ${blkx} ${blky})`}>
+        <ellipse cx={blkx - 8} cy={blky} rx="4.5" ry="3.2" fill="#6d4ad1" />
+        <ellipse cx={blkx + 8} cy={blky} rx="4.5" ry="3.2" fill="#6d4ad1" />
+        <ellipse cx={blkx} cy={blky - 14} rx="16" ry="14" fill="#8b5cf6" />
+        <ellipse cx={blkx} cy={blky - 10} rx="9.5" ry="7.5" fill="#ece4fb" />
+        <circle cx={blkx - 8.5} cy={blky - 11} r="2.4" fill="#ff8fb8" opacity="0.7" />
+        <circle cx={blkx + 8.5} cy={blky - 11} r="2.4" fill="#ff8fb8" opacity="0.7" />
+        <circle cx={blkx - 5} cy={blky - 17} r="3.2" fill="#fff" />
+        <circle cx={blkx + 5} cy={blky - 17} r="3.2" fill="#fff" />
+        <circle cx={blkx - 5} cy={blky - 17} r="1.6" fill="#2b2240" />
+        <circle cx={blkx + 5} cy={blky - 17} r="1.6" fill="#2b2240" />
+        <path d={`M ${blkx - 3} ${blky - 10} Q ${blkx} ${blky - 7} ${blkx + 3} ${blky - 10}`} fill="none" stroke="#2b2240" strokeWidth="1.2" strokeLinecap="round" />
+      </g>
+      {friction &&
+        (() => {
+          // The crate slides DOWN the ramp, so friction acts UP the slope.
+          const ux = Math.cos(ang)
+          const uy = -Math.sin(ang) // up-slope unit (toward the top)
+          const nx = -Math.sin(ang)
+          const ny = -Math.cos(ang) // outward normal (off the surface)
+          const at = (tt: number): [number, number] => [ax + (cx - ax) * tt, ay + (cy - ay) * tt]
+          const off = 6
+          const [tx, ty] = at(0.2)
+          const [hx, hy] = at(0.4)
+          const tailX = tx + nx * off
+          const tailY = ty + ny * off
+          const headX = hx + nx * off
+          const headY = hy + ny * off
+          const lblX = tailX - ux * 3 + nx * 12
+          const lblY = tailY - uy * 3 + ny * 12
+          return (
+            <>
+              <line x1={tailX} y1={tailY} x2={headX} y2={headY} stroke={FRIC_COLOR} strokeWidth="3.5" strokeLinecap="round" />
+              <polygon
+                points={`${headX},${headY} ${headX - ux * 9 + nx * 5},${headY - uy * 9 + ny * 5} ${headX - ux * 9 - nx * 5},${headY - uy * 9 - ny * 5}`}
+                fill={FRIC_COLOR}
+              />
+              <text x={lblX} y={lblY} textAnchor="middle" fill={FRIC_COLOR} fontSize="12" fontWeight="800">
+                F<Sub>f</Sub>
+              </text>
+            </>
+          )
+        })()}
     </>
   )
 }
@@ -351,7 +403,7 @@ export function RampFrictionProblem() {
         <>
           <Key color={D_COLOR}>d = slope length</Key>
           <Key color={H_COLOR}>h = vertical height</Key>
-          <Key color={FRIC_COLOR}>F<sub>f</sub> = friction (heat)</Key>
+          <Key color={FRIC_COLOR}>F<sub>f</sub> = friction force (up the slope)</Key>
         </>
       }
     >

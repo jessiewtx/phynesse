@@ -6,6 +6,8 @@ import { PredictNumericStepView } from '../components/steps/PredictNumericStepVi
 import { AiTutorSidebar } from '../components/AiTutorSidebar'
 import { dueItems, gradeTricky, loadTricky, upcomingItems, type TrickyItem } from '../lib/tricky'
 import { notifyTrickyChanged } from '../lib/useTricky'
+import { classifyMiss, givenNumbers, recordMiss } from '../lib/bosses'
+import { notifyBossesChanged } from '../lib/useBosses'
 import { aiEnabled, AI_HELP_AFTER } from '../lib/ai'
 import { tutorContextForStep } from '../lib/tutorContext'
 import type { StepDraft } from '../types/lesson'
@@ -116,10 +118,18 @@ export function ReviewPage() {
   const item = queue[idx]
   const tutorContext = tutorContextForStep(item.step)
 
-  const handleAttempt = (_answer: number, correct: boolean) => {
+  const handleAttempt = (answer: number, correct: boolean) => {
     if (correct) return
     missed.current = true
     wrongCount.current += 1
+    // Feed the same miss-pattern detector bosses use, so a slip you keep making in
+    // review can still surface a targeted boss.
+    if (item.conceptId) {
+      const slip = classifyMiss(item.step.correctValue, answer, givenNumbers(item.step.givens))
+      if (slip) {
+        void recordMiss(uid, item.conceptId, slip).then(() => notifyBossesChanged())
+      }
+    }
     // After a couple of misses on this problem, auto-open Brock — just like lessons.
     if (aiEnabled && wrongCount.current >= AI_HELP_AFTER) setTutorOpen(true)
   }

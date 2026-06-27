@@ -3197,11 +3197,13 @@
 .cmp__start-label { fill: #8a94a0; font-size: 13px; font-weight: 700; text-anchor: middle; }
 
 .cmp__ghost rect { fill: none; stroke: #b6bec8; stroke-width: 2; stroke-dasharray: 4 5; }
+.cmp__ghost ellipse { fill: none; stroke: #b6bec8; stroke-width: 2; stroke-dasharray: 4 5; }
 .cmp__ghost text { fill: #9aa3ad; font-size: 13px; font-weight: 700; text-anchor: middle; }
 
 .cmp__measure-line { stroke: var(--accent); stroke-width: 2.5; }
 .cmp__measure-tick { stroke: var(--accent); stroke-width: 2.5; }
 .cmp__measure-label { fill: var(--accent); font-size: 16px; font-weight: 800; text-anchor: middle; }
+.cmp__measure-label--end { text-anchor: end; }
 
 .cmp__person line { stroke: #3a3f4a; stroke-width: 3.5; stroke-linecap: round; fill: none; }
 .cmp__person circle { fill: #3a3f4a; }
@@ -3234,6 +3236,25 @@
 
 /* height scene */
 .cmp__pole { stroke: #b9c2cc; stroke-width: 4; stroke-linecap: round; }
+.cmp__ledge { fill: #b9c2cc; }
+.cmp__critter { filter: drop-shadow(0 3px 4px rgba(109, 74, 209, 0.28)); }
+
+/* interactive ramp lab (h = d·sin θ) */
+.ramp-lab { cursor: grab; touch-action: none; outline: none; }
+.ramp-lab:active { cursor: grabbing; }
+.ramp-lab:focus-visible { outline: 2px solid rgba(123, 92, 255, 0.5); border-radius: 12px; }
+.ramp-lab__hint { animation: ramp-hint 1.2s ease-in-out infinite; }
+@keyframes ramp-hint {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+.ramp-lab__caption {
+  margin: 0.1rem 0 0;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-3);
+}
 
 /* time scene */
 .cmp__clock-face { fill: #fff; stroke: #3a3f4a; stroke-width: 3; }
@@ -4922,3 +4943,674 @@
   justify-content: center;
   margin-top: 0.5rem;
 }
+
+/* ── Adaptive coach banner ── */
+
+.coach-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  margin-bottom: 1.25rem;
+  border-radius: 1.1rem;
+  border: 1px solid var(--accent-soft);
+  background: linear-gradient(120deg, var(--accent-soft), var(--surface) 72%);
+  text-decoration: none;
+  color: var(--text-1);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.coach-banner:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(123, 92, 255, 0.16);
+}
+
+.coach-banner__avatar {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #eafbe7;
+  display: grid;
+  place-items: center;
+}
+
+.coach-banner__avatar img {
+  width: 130%;
+  height: 130%;
+  object-fit: cover;
+}
+
+.coach-banner__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+}
+
+.coach-banner__eyebrow {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-hover);
+}
+
+.coach-banner__title {
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.coach-banner__emoji { font-size: 1.1rem; }
+
+.coach-banner__note {
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+
+.coach-banner__cta {
+  font-weight: 800;
+  color: var(--accent-hover);
+  white-space: nowrap;
+}
+
+/* ── Boss banners (home) ── */
+
+.boss-banner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.boss-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid #f0d4d4;
+  background: linear-gradient(120deg, #fff1f1, var(--surface) 72%);
+  text-decoration: none;
+  color: var(--text-1);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.boss-banner:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(220, 70, 70, 0.16);
+}
+
+.boss-banner__avatar {
+  font-size: 1.9rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.boss-banner__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+}
+
+.boss-banner__title { font-weight: 800; font-size: 1rem; }
+.boss-banner__note { font-size: 0.85rem; color: var(--text-2); }
+
+.boss-banner__cta {
+  font-weight: 800;
+  color: #d6453f;
+  white-space: nowrap;
+}
+
+.app-sidebar__badge--boss { background: #d6453f; }
+
+/* ── Boss battle page ── */
+
+.boss-empty,
+.boss-won {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  max-width: 32rem;
+  text-align: center;
+}
+
+.boss-empty__icon { font-size: 3rem; line-height: 1; }
+.boss-empty__title,
+.boss-won__title { margin: 0; font-size: 1.6rem; font-weight: 800; }
+.boss-empty__note,
+.boss-won__note { margin: 0; color: var(--text-2); }
+
+.boss-won__actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.boss-won__burst {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.boss-won__boss {
+  font-size: 4rem;
+  line-height: 1;
+  filter: grayscale(0.4);
+  animation: boss-fall 0.9s ease-in forwards;
+}
+
+.boss-won__pow {
+  position: absolute;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #d6453f;
+  font-size: 1.4rem;
+  transform: rotate(-8deg) scale(0);
+  animation: boss-pow 0.5s 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+}
+
+@keyframes boss-fall {
+  0% { transform: translateY(0) rotate(0); opacity: 1; }
+  60% { transform: translateY(6px) rotate(8deg); opacity: 1; }
+  100% { transform: translateY(40px) rotate(40deg); opacity: 0.15; }
+}
+
+@keyframes boss-pow {
+  to { transform: rotate(-8deg) scale(1); }
+}
+
+/* intro card */
+.boss-intro {
+  --accent: #7b5cff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.7rem;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 1.6rem;
+  border-radius: 1.25rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.boss-intro__avatar {
+  font-size: 3.4rem;
+  line-height: 1;
+  animation: boss-bob 2.2s ease-in-out infinite;
+}
+
+@keyframes boss-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.boss-intro__name { margin: 0; font-size: 1.5rem; font-weight: 900; }
+.boss-intro__tagline { margin: 0; color: var(--text-2); max-width: 26rem; }
+
+.boss-intro__tip {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-align: left;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.9rem;
+  background: #eafbe7;
+  border: 1px solid #cdeccb;
+  margin: 0.3rem 0;
+}
+
+.boss-intro__tip-avatar {
+  flex-shrink: 0;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  display: grid;
+  place-items: center;
+}
+
+.boss-intro__tip-avatar img { width: 132%; height: 132%; object-fit: cover; }
+.boss-intro__tip-text { font-size: 0.9rem; color: #2c5b2a; }
+
+.boss-intro__rules {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.2rem 0 0.4rem;
+}
+
+.boss-intro__hp-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.boss-intro__rules-text { margin: 0; font-size: 0.9rem; color: var(--text-2); max-width: 24rem; }
+
+/* HP pips */
+.boss-hp { display: inline-flex; gap: 0.35rem; }
+
+.boss-hp__pip {
+  width: 1.5rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  transition: background 0.25s, transform 0.25s;
+}
+
+.boss-hp__pip--full { background: #d6453f; }
+.boss-hp__pip--down { background: var(--border); transform: scaleX(0.82); }
+
+/* battle HUD */
+.boss-hud {
+  --accent: #7b5cff;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.boss-hud__avatar { font-size: 1.8rem; line-height: 1; flex-shrink: 0; }
+
+.boss-hud__bar { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+.boss-hud__name { font-weight: 800; font-size: 0.9rem; }
+.boss-hud__streak { font-size: 0.82rem; font-weight: 700; color: var(--text-2); white-space: nowrap; }
+
+/* ── Gravitational PE "lift & drop" lab ── */
+
+.gpe {
+  border-radius: 16px;
+  background: #f0f2f8;
+  border: 1.5px solid var(--border);
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.gpe__stage-wrap {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.gpe__ruler {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 9px 0 14px;
+  width: 28px;
+  text-align: right;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-3);
+}
+
+/* Sky scene the critter gets hoisted into */
+.gpe-scene {
+  position: relative;
+  flex: 1;
+  min-height: 272px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  touch-action: none;
+  background: linear-gradient(180deg, #dcefff 0%, #ede7ff 52%, #faf7ff 100%);
+}
+
+.gpe-scene__sun {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #ffe27a, #ffd23f);
+  box-shadow: 0 0 14px rgba(255, 210, 63, 0.6);
+}
+
+.gpe-scene__cloud {
+  position: absolute;
+  background: #fff;
+  border-radius: 999px;
+  opacity: 0.9;
+  box-shadow: 16px 4px 0 -4px #fff, -16px 5px 0 -5px #fff;
+}
+.gpe-scene__cloud--a { top: 22%; left: 16%; width: 34px; height: 14px; }
+.gpe-scene__cloud--b { top: 40%; left: 60%; width: 26px; height: 11px; opacity: 0.75; }
+
+/* overhead crane */
+.gpe-scene__beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: linear-gradient(180deg, #c2ad94, #9c8467);
+  border-bottom: 2px solid #826a4c;
+}
+.gpe-scene__pulley {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #6b6f7a;
+  border: 2px solid #4b4f59;
+  z-index: 2;
+}
+
+.gpe-scene__ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22px;
+  background: linear-gradient(180deg, #8fdc7a, #5fb964);
+  border-top: 3px solid #4aa554;
+}
+.gpe-scene__ground::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: radial-gradient(circle at 10px 6px, #8fdc7a 5px, transparent 6px) repeat-x;
+  background-size: 20px 6px;
+}
+
+/* the draggable critter wrapper */
+.gpe-critter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  outline: none;
+  z-index: 3;
+}
+.gpe-critter.is-draggable { cursor: grab; }
+.gpe-critter.is-draggable:active { cursor: grabbing; }
+
+.gpe-critter__rope {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 600px;
+  background: repeating-linear-gradient(180deg, #b9a890 0 4px, #a8967c 4px 8px);
+}
+
+.gpe-critter__svg {
+  width: 76px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 5px 6px rgba(109, 74, 209, 0.3));
+}
+
+/* height/mass label — absolute so it never lifts the critter off the ground */
+.gpe-critter__tag {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 2px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #6d4ad1;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1px 6px;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* bobbing up/down chevrons: a wordless "you can drag me vertically" cue */
+.gpe-critter__cue {
+  position: absolute;
+  left: calc(100% - 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px;
+  animation: gpe-cue 1.3s ease-in-out infinite;
+  opacity: 0.85;
+  cursor: grab;
+  touch-action: none;
+}
+.gpe-critter.is-draggable:active .gpe-critter__cue { cursor: grabbing; }
+@keyframes gpe-cue {
+  0%, 100% { transform: translateY(-50%) scaleY(0.82); opacity: 0.55; }
+  50% { transform: translateY(-50%) scaleY(1.12); opacity: 0.95; }
+}
+.gpe-critter.is-draggable:hover .gpe-critter__cue,
+.gpe-critter.is-draggable:focus-visible .gpe-critter__cue { opacity: 1; }
+
+/* scissors that slide in and snip the rope just above the critter's head */
+.gpe-critter__scissors {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 4px;
+  z-index: 6;
+  pointer-events: none;
+}
+.gpe-critter__scissors-i {
+  display: inline-block;
+  font-size: 1.4rem;
+  transform-origin: center;
+  animation: gpe-snip 0.43s ease;
+}
+@keyframes gpe-snip {
+  0% { transform: translateX(-30px) rotate(-12deg) scale(0.85); opacity: 0; }
+  45% { transform: translateX(0) rotate(0deg) scale(1); opacity: 1; }
+  60% { transform: translateX(0) rotate(-20deg); }
+  75% { transform: translateX(0) rotate(2deg); }
+  100% { transform: translateX(0) rotate(0deg); opacity: 1; }
+}
+
+/* short severed rope left hanging from the pulley after the cut */
+.gpe-scene__stub {
+  position: absolute;
+  top: 17px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 16px;
+  background: repeating-linear-gradient(180deg, #b9a890 0 4px, #a8967c 4px 8px);
+  border-radius: 2px;
+  z-index: 2;
+}
+
+.gpe-critter.is-draggable:focus-visible .gpe-critter__svg {
+  filter: drop-shadow(0 0 0 3px rgba(139, 92, 246, 0.5)) drop-shadow(0 5px 6px rgba(109, 74, 209, 0.3));
+}
+
+/* a gentle nervous sway up high */
+.gpe-critter.is-nervous .gpe-critter__svg { animation: gpe-sway 1.6s ease-in-out infinite; transform-origin: 50% 0; }
+@keyframes gpe-sway {
+  0%, 100% { transform: rotate(-3.5deg); }
+  50% { transform: rotate(3.5deg); }
+}
+
+/* squash on landing */
+.gpe-critter.is-dizzy .gpe-critter__svg { animation: gpe-thud 0.35s ease; }
+@keyframes gpe-thud {
+  0% { transform: scaleY(0.96) scaleX(1.02); }
+  35% { transform: scaleY(0.72) scaleX(1.2); }
+  100% { transform: scaleY(1) scaleX(1); }
+}
+
+.gpe__meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 76px;
+}
+
+.gpe__bars {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.gpe__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.gpe__bar {
+  position: relative;
+  flex: 1;
+  width: 26px;
+  border-radius: 10px;
+  background: #e3e6f0;
+  border: 1.5px solid var(--border-mid);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.gpe__bar-ke {
+  width: 100%;
+  background: #10b981;
+}
+
+.gpe__bar-pe {
+  width: 100%;
+  background: #8b5cf6;
+}
+
+.gpe__bar-label {
+  font-size: 0.66rem;
+  font-weight: 800;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.gpe__bar-label--pe { color: #7c5ce0; }
+.gpe__bar-label--ke { color: #0f9e74; }
+
+.gpe__bar-unit {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-3);
+}
+
+.gpe__formula {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-2);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.gpe__formula strong { color: #7c5ce0; }
+
+.gpe__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.gpe__mass-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gpe__ctrl-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.gpe__mass-ctrl button {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1.5px solid var(--border-mid);
+  background: #fff;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #7c5ce0;
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gpe__mass-ctrl button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.gpe__ctrl-val {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-1);
+  min-width: 44px;
+  text-align: center;
+}
+
+.gpe__drop {
+  padding: 0.55rem 1.15rem;
+  border-radius: 9px;
+  border: none;
+  background: #8b5cf6;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(139, 92, 246, 0.3);
+}
+.gpe__drop:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.gpe__drop--reset {
+  background: #fff;
+  color: #7c5ce0;
+  border: 1.5px solid #c9b8f7;
+  box-shadow: none;
+}
+
+.gpe__goal-text {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-2);
+  text-align: center;
+}
+.gpe__goal-text.is-hit { color: #0f9e74; }

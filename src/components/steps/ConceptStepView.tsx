@@ -16,6 +16,7 @@ import {
   KEToolDiagram,
   RampHeightDiagram,
   PEZeroDiagram,
+  PEKETradeDiagram,
   EnergyChainDiagram,
   FrictionEnergyDiagram,
   BrakingEnergyDiagram,
@@ -80,6 +81,8 @@ export function ConceptStepView({ step, onContinue }: Props) {
       {step.visual === 'ramp_height' && <RampHeightDiagram />}
 
       {step.visual === 'pe_zero' && <PEZeroDiagram />}
+
+      {step.visual === 'pe_ke_trade' && <PEKETradeDiagram />}
 
       {step.visual === 'energy_chain' && <EnergyChainDiagram />}
 

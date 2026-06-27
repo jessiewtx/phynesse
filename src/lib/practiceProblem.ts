@@ -12,9 +12,10 @@ export function toBarDragStep(p: GeneratedProblem): BarDragStep {
   }))
   const maxValue = Math.max(5, Math.ceil((p.value * 1.4) / 5) * 5)
   const givensText = givens.map((g) => `${g.label} = ${g.value}`).join(', ')
-  // Exact grading for clean-arithmetic concepts; gravitational PE keeps a small
-  // tolerance only because it rounds through g = 9.8.
-  const tolerance = p.conceptId === 'grav_pe' ? 0.02 : 0
+  // Exact grading for clean-arithmetic concepts. Gravitational PE keeps a ~3%
+  // tolerance so BOTH conventions AP Physics 1 allows — g = 9.8 and g = 10 —
+  // are accepted (they differ by ~2%).
+  const tolerance = p.conceptId === 'grav_pe' ? 0.03 : 0
   return {
     type: 'bar_drag',
     prompt: p.scenario,

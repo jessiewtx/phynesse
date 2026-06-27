@@ -42,7 +42,7 @@
       "prompt": "Warm-up. You climb a staircase carrying a **12 kg** backpack, rising **5.0 m** from the floor. Relative to the floor, how much gravitational PE is now stored in the pack? (g = 9.8 m/s²)",
       "correctValue": 588,
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0.03,
       "visual": "stairs",
       "formulas": ["PE_g = mgh"],
       "givens": [
@@ -59,7 +59,7 @@
     {
       "type": "concept",
       "title": "Height on a ramp",
-      "body": "Objects rarely fall straight down — they **slide along ramps**. So which distance goes into PE_g: the long slope, or the vertical rise?\n\nOnly the **vertical** height counts. Gravity pulls straight down, so it only \"sees\" how far up or down you've actually moved — not how far you traveled along the incline.\n\nFor a ramp of length **d** tilted at angle **θ**, basic trig gives the vertical height: **h = d·sin θ**. That single relationship is the bridge between every ramp problem and energy. Glide along the slope below and watch the vertical height it really gains.",
+      "body": "Objects rarely fall straight down — they **slide along ramps**. So which distance goes into PE_g: the long slope, or the vertical rise?\n\nOnly the **vertical** height counts. Gravity pulls straight down, so it only \"sees\" how far up or down you've actually moved — not how far you traveled along the incline.\n\nFor a ramp of length **d** tilted at angle **θ**, basic trig gives the vertical height: **h = d·sin θ**. That single relationship is the bridge between every ramp problem and energy. Drag the critter up and down the slope below — watch the distance **d** it travels and the vertical height **h** it really gains grow together.",
       "equation": "h = d·sin θ",
       "visual": "ramp_height"
     },
@@ -86,7 +86,7 @@
       "prompt": "**Part B —** Over that 2.0 m vertical drop, how much gravitational PE does the **2.0 kg** block lose? (g = 9.8 m/s²)",
       "correctValue": 39.2,
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0.03,
       "visual": "ramp",
       "formulas": ["ΔPE_g = mg·Δh"],
       "givens": [
@@ -148,9 +148,9 @@
     {
       "type": "concept",
       "title": "The great trade: PE ⇄ KE",
-      "body": "Stored height doesn't just sit there forever — let go, and gravity **trades it for speed**.\n\nAs an object falls or slides downhill, its height shrinks, so its gravitational PE drops. With no friction, that energy doesn't vanish — it pours straight into **kinetic energy**, and the object speeds up. Climb back up and the trade runs in reverse: speed converts back into stored height.\n\nThis back-and-forth is the engine behind roller coasters, pendulums, and skateboard ramps. Watch the two bars below seesaw as the object moves: whatever PE gives up, KE gains — the total stays put.",
+      "body": "Stored height doesn't just sit there forever — let go, and gravity **trades it for speed**.\n\nAs an object falls or slides downhill, its height shrinks, so its gravitational PE drops. With no friction, that energy doesn't vanish — it pours straight into **kinetic energy**, and the object speeds up. Climb back up and the trade runs in reverse: speed converts back into stored height.\n\nThis back-and-forth is the engine behind roller coasters, pendulums, and skateboard ramps. Drag the ball up and down the hill below and watch the two bars seesaw: whatever PE gives up, KE gains — the total stays put.",
       "equation": "PE_g → KE (frictionless)",
-      "visual": "energy_chain"
+      "visual": "pe_ke_trade"
     },
     {
       "type": "predict_numeric",
@@ -200,7 +200,7 @@
       "prompt": "**Part B —** How much gravitational PE does the **4.0 kg** crate lose over that 3.0 m vertical drop? (g = 9.8 m/s²)",
       "correctValue": 117.6,
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0.03,
       "visual": "ramp_friction",
       "formulas": ["ΔPE_g = mg·Δh"],
       "givens": [

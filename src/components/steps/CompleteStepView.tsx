@@ -7,6 +7,7 @@ import { LESSON_CONCEPT } from '../../lib/practiceConcepts'
 import { CONCEPTS } from '../../lib/physics'
 import { IconParty, IconFlame } from '../Illustrations'
 import { useEnterAdvance } from '../../lib/useEnterAdvance'
+import { PhysicsText } from '../../lib/physicsText'
 import type { CompleteStep } from '../../types/lesson'
 
 type Props = {
@@ -40,7 +41,7 @@ export function CompleteStepView({ step, lessonId, onFinish, onRestart }: Props)
     <div className="step step--complete complete-card">
       <div className="complete-card__burst" aria-hidden="true"><IconParty size={56} /></div>
       <h2 className="complete-card__title">{step.title}</h2>
-      <p className="complete-card__body">{step.body}</p>
+      <p className="complete-card__body"><PhysicsText text={step.body} /></p>
 
       {/* What you just earned */}
       <div className="complete-card__earned">

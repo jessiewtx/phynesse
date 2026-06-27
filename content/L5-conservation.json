@@ -46,7 +46,7 @@
       "correctValue": 39.2,
       "visual": "ramp_friction",
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0.03,
       "formulas": ["PE_g = mgh"],
       "givens": [
         { "label": "m", "value": "2.0 kg" },
@@ -64,7 +64,7 @@
       "correctValue": 29.2,
       "visual": "ramp_friction",
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0.04,
       "formulas": ["KE = PE_g − E_th"],
       "givens": [
         { "label": "PE_g", "value": "39.2 J" },

@@ -64,7 +64,7 @@
       "correctValue": 2866.5,
       "visual": "stairs",
       "unit": "J",
-      "tolerance": 0.02,
+      "tolerance": 0.03,
       "formulas": ["W = mgh"],
       "givens": [
         { "label": "m", "value": "65 kg" },
@@ -82,7 +82,7 @@
       "correctValue": 573.3,
       "visual": "stairs",
       "unit": "W",
-      "tolerance": 0.02,
+      "tolerance": 0.03,
       "formulas": ["P = W / Δt"],
       "givens": [
         { "label": "W", "value": "2867 J" },

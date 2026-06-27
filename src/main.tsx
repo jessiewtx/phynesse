@@ -8,6 +8,7 @@ import { LessonPage } from './pages/LessonPage'
 import { ProgressPage } from './pages/ProgressPage'
 import { PracticePage } from './pages/PracticePage'
 import { ReviewPage } from './pages/ReviewPage'
+import { BossPage } from './pages/BossPage'
 import './index.css'
 import './App.css'
 
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<HomePage />} />
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/review" element={<ReviewPage />} />
+            <Route path="/boss" element={<BossPage />} />
             <Route path="/practice/:conceptId" element={<PracticePage />} />
             <Route path="/lesson/:lessonId" element={<LessonRoute />} />
           </Route>

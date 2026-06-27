@@ -8,6 +8,9 @@ import { useAuth } from '../contexts/AuthContext'
 import { getAllLessons } from '../lib/lessons'
 import { useLearnerData } from '../lib/useLearnerData'
 import { useTricky } from '../lib/useTricky'
+import { useBosses } from '../lib/useBosses'
+import { BOSS_CATALOG } from '../lib/bosses'
+import { CONCEPTS, type ConceptId } from '../lib/physics'
 import { buildMastery, levelMeta, relativeTime } from '../lib/mastery'
 import { displayFirstName } from '../lib/displayName'
 
@@ -16,12 +19,71 @@ export function HomePage() {
   const lessons = getAllLessons()
   const { progressMap, attempts, streak } = useLearnerData()
   const { due: trickyDue } = useTricky()
+  const { active: activeBoss } = useBosses()
 
   const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
 
   const started = m.completedCount > 0 || attempts.length > 0 || Object.keys(progressMap).length > 0
   const rec = m.recommendation
   const ctaLessonId = rec.lesson ? rec.lesson.lessonId : lessons[0].id
+
+  // Adaptive coach: read the learner's struggles and surface the single best next
+  // move. Priority: crush a recurring-mistake boss → generate FRESH problems on the
+  // concept they keep missing (new numbers, same idea — distinct from the tricky
+  // notebook, which replays the exact problems) → refresh a fading lesson → the
+  // recommended next lesson. The "adapt the path" feature, grounded in progress.
+  const topBoss = activeBoss[0]
+  const bossMeta = topBoss ? BOSS_CATALOG[topBoss.misconceptionId] : null
+
+  // The concept the learner has missed most (from the tricky notebook), used to
+  // hand Coach Brock a target for fresh, similar practice.
+  const conceptCounts: Record<string, number> = {}
+  for (const t of trickyDue) {
+    if (t.conceptId) conceptCounts[t.conceptId] = (conceptCounts[t.conceptId] ?? 0) + 1
+  }
+  const weakConcept = Object.entries(conceptCounts).sort((a, b) => b[1] - a[1])[0]?.[0] as
+    | ConceptId
+    | undefined
+  const coach: { eyebrow: string; title: string; note: string; to: string; cta: string; emoji: string } | null =
+    !started
+      ? null
+      : topBoss && bossMeta
+        ? {
+            eyebrow: 'Coach Brock · your best next move',
+            title: `Take on ${bossMeta.name}`,
+            note: `${bossMeta.tagline} Let's knock it out together — three clean solves and it's gone.`,
+            to: `/boss?id=${encodeURIComponent(topBoss.id)}`,
+            cta: 'Fight the boss',
+            emoji: '⚔️',
+          }
+        : weakConcept
+          ? {
+              eyebrow: 'Coach Brock · your best next move',
+              title: `Fresh ${CONCEPTS[weakConcept].name} reps`,
+              note: `${CONCEPTS[weakConcept].name} has been tripping you up, so I'll whip up brand-new problems — same idea, different numbers — to get it solid.`,
+              to: `/practice/${weakConcept}`,
+              cta: 'Generate problems',
+              emoji: '✨',
+            }
+          : m.reviewQueue.length > 0
+            ? {
+                eyebrow: 'Coach Brock · your best next move',
+                title: `Refresh ${m.reviewQueue[0].title}`,
+                note: `It's faded to ${Math.round(m.reviewQueue[0].retention * 100)}% retained — one quick pass and it's fresh again. I'll keep it short.`,
+                to: `/lesson/${m.reviewQueue[0].lessonId}`,
+                cta: 'Review lesson',
+                emoji: '↻',
+              }
+            : rec.lesson
+              ? {
+                  eyebrow: 'Coach Brock · your best next move',
+                  title: rec.kind === 'resume' ? `Resume ${rec.lesson.title}` : `Up next: ${rec.lesson.title}`,
+                  note: rec.reason,
+                  to: `/lesson/${rec.lesson.lessonId}`,
+                  cta: rec.kind === 'resume' ? 'Resume' : 'Start lesson',
+                  emoji: '🎯',
+                }
+              : null
   const greeting = isSignedIn && user ? `Welcome back, ${displayFirstName(user)}` : 'Work, Power & Energy'
 
   const ctaVerb = !rec.lesson
@@ -60,6 +122,24 @@ export function HomePage() {
           <HomeHeroArt />
         </div>
       </section>
+
+      {/* ── Adaptive coach (best next move) ── */}
+      {coach && (
+        <Link to={coach.to} className="coach-banner">
+          <span className="coach-banner__avatar">
+            <img src="/brock.png" alt="" />
+          </span>
+          <span className="coach-banner__body">
+            <span className="coach-banner__eyebrow">{coach.eyebrow}</span>
+            <span className="coach-banner__title">
+              <span className="coach-banner__emoji" aria-hidden>{coach.emoji}</span>
+              {coach.title}
+            </span>
+            <span className="coach-banner__note">{coach.note}</span>
+          </span>
+          <span className="coach-banner__cta">{coach.cta} →</span>
+        </Link>
+      )}
 
       {/* ── Dashboard band ── */}
       <section className="home-dash">
@@ -131,6 +211,28 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Boss battles (repeated-mistake confrontation) ── */}
+      {activeBoss.length > 0 && (
+        <section className="home-section">
+          <h2 className="home-section__label">Boss battles</h2>
+          <div className="boss-banner-list">
+            {activeBoss.slice(0, 3).map((b) => {
+              const meta = BOSS_CATALOG[b.misconceptionId]
+              return (
+                <Link key={b.id} to={`/boss?id=${encodeURIComponent(b.id)}`} className="boss-banner">
+                  <span className="boss-banner__avatar" aria-hidden>{meta.emoji}</span>
+                  <span className="boss-banner__body">
+                    <span className="boss-banner__title">{meta.name}</span>
+                    <span className="boss-banner__note">{meta.tagline}</span>
+                  </span>
+                  <span className="boss-banner__cta">Fight →</span>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ── Tricky problems (spaced retrieval) ── */}
       {trickyDue.length > 0 && (

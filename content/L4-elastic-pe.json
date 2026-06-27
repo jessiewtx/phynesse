@@ -12,7 +12,7 @@
     {
       "type": "concept",
       "title": "The formula",
-      "body": "**k** is the spring constant — how stiff it is (N/m). **x** is how far it's pushed or pulled from its natural length (m).\n\nLike kinetic energy, **x is squared** — stretch counts double.\n\nLoad the spring below (push it in or pull it out) and change its stiffness — notice how the squeeze swings the energy far more than stiffness does.",
+      "body": "**k** is the spring constant — how stiff it is (N/m). **x** is how far it's pushed or pulled from its natural length (m).\n\nBecause **x is squared**, the squeeze has more leverage than the stiffness: doubling **x** stores **4× the energy**, while doubling **k** only **doubles** it. (And since x is squared, pushing in or pulling out by the *same distance* stores the *same* energy.)\n\nLoad the spring below (push it in or pull it out) and change its stiffness to see it.",
       "equation": "PE_s = ½kx²",
       "demo": "elastic_explorer"
     },
