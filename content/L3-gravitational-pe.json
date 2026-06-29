@@ -38,6 +38,47 @@
       "solution": "Gravitational PE is PE_g = mgh. Notice height appears just **once** — it isn't squared — so PE_g is *directly proportional* to height. Doubling the height from 1.5 m to 3 m doubles the stored energy, from 29.4 J to **58.8 J (2×)**.\n\nThis is the big contrast with kinetic energy (½mv²), where doubling the speed *quadruples* the energy. Height is gentle and linear; speed is not."
     },
     {
+      "type": "worked_example",
+      "title": "One worked all the way through",
+      "prompt": "A **3.0 kg** book is lifted to a shelf **2.0 m** above the floor (g = 9.8 m/s²). How much gravitational PE does it gain?",
+      "formulas": ["PE_g = mgh"],
+      "visual": "stairs",
+      "givens": [
+        { "label": "m", "value": "3.0 kg" },
+        { "label": "g", "value": "9.8 m/s²" },
+        { "label": "h", "value": "2.0 m" }
+      ],
+      "steps": [
+        "Stored gravitational energy is PE_g = mgh — three factors multiplied together.",
+        "Multiply mass by gravity first: 3.0 × 9.8 = 29.4 (that's the weight, in N).",
+        "Now bring in the height: PE_g = 29.4 × 2.0."
+      ],
+      "answer": "PE_g = 58.8 J",
+      "takeaway": "mgh is just weight (mg) times height — height enters once, so PE grows in a straight line with how high you lift."
+    },
+    {
+      "type": "completion",
+      "prompt": "Your turn — setup done. A **4.0 kg** bag is hoisted **5.0 m** up (g = 9.8 m/s²). Finish the last line.",
+      "formulas": ["PE_g = mgh"],
+      "visual": "stairs",
+      "givens": [
+        { "label": "m", "value": "4.0 kg" },
+        { "label": "g", "value": "9.8 m/s²" },
+        { "label": "h", "value": "5.0 m" }
+      ],
+      "shownSteps": [
+        "PE_g = mgh",
+        "Weight first: 4.0 × 9.8 = 39.2 N",
+        "PE_g = 39.2 × 5.0"
+      ],
+      "correctValue": 196,
+      "unit": "J",
+      "tolerance": 0,
+      "hint": "39.2 × 5.0.",
+      "solution": "PE_g = 39.2 × 5.0 = **196 J**. (4.0 × 9.8 = 39.2 N of weight, lifted 5.0 m.)",
+      "calibrate": true
+    },
+    {
       "type": "predict_numeric",
       "prompt": "Warm-up. You climb a staircase carrying a **12 kg** backpack, rising **5.0 m** from the floor. Relative to the floor, how much gravitational PE is now stored in the pack? (g = 9.8 m/s²)",
       "correctValue": 588,
@@ -84,6 +125,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part B —** Over that 2.0 m vertical drop, how much gravitational PE does the **2.0 kg** block lose? (g = 9.8 m/s²)",
+      "showGivens": true,
       "correctValue": 39.2,
       "unit": "J",
       "tolerance": 0.03,
@@ -103,6 +145,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part C —** With **no friction**, every joule of lost PE turns into motion. How fast is the **2.0 kg** block moving at the bottom of the ramp?",
+      "showGivens": true,
       "correctValue": 6.26,
       "unit": "m/s",
       "tolerance": 0.03,
@@ -198,6 +241,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part B —** How much gravitational PE does the **4.0 kg** crate lose over that 3.0 m vertical drop? (g = 9.8 m/s²)",
+      "showGivens": true,
       "correctValue": 117.6,
       "unit": "J",
       "tolerance": 0.03,
@@ -217,6 +261,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part C —** Friction does negative work the whole 6.0 m down the slope, with a force of 5.0 N. Using mgh − W_friction = ½mv², how fast is the **4.0 kg** crate moving at the bottom?",
+      "showGivens": true,
       "correctValue": 6.6,
       "unit": "m/s",
       "tolerance": 0.04,

@@ -1,4 +1,4 @@
-import { useRef, type PointerEvent as RPointer, type KeyboardEvent as RKey } from 'react'
+import { useEffect, useRef, useState, type PointerEvent as RPointer, type KeyboardEvent as RKey } from 'react'
 
 type SceneKind = 'distance' | 'speed' | 'height' | 'spring' | 'time'
 
@@ -15,6 +15,13 @@ type Props = {
   disabled: boolean
   moved: boolean
   onChange: (v: number) => void
+  /** Height scene only: enable the falling-drop animation + button. */
+  drop?: boolean
+  /** The computed result (final speed) shown climbing during the drop. */
+  resultValue?: number
+  resultUnit?: string
+  /** Reports the fall progress (0→1) so the result bar can climb in sync; null when idle. */
+  onDropProgress?: (f: number | null) => void
 }
 
 const W = 620
@@ -55,9 +62,49 @@ export function CompareScene({
   disabled,
   moved,
   onChange,
+  drop = false,
+  resultValue,
+  resultUnit,
+  onDropProgress,
 }: Props) {
   const ref = useRef<SVGSVGElement | null>(null)
   const dragging = useRef(false)
+
+  // Free-fall: dropF runs 0→1 while falling, then HOLDS at 1 (critter rests on the
+  // ground, result bar stays revealed) until the learner resets to try a new height.
+  const [dropF, setDropF] = useState<number | null>(null)
+  const timers = useRef<number[]>([])
+  const dropping = dropF !== null // any non-idle state — drag is locked
+  const animating = dropF !== null && dropF < 1
+  const landed = dropF !== null && dropF >= 1
+
+  useEffect(() => {
+    return () => {
+      timers.current.forEach((t) => clearTimeout(t))
+      timers.current = []
+    }
+  }, [])
+
+  const runDrop = () => {
+    if (dropF !== null || disabled) return
+    const DURATION = 850
+    const start = performance.now()
+    const tick = () => {
+      const f = Math.min(1, (performance.now() - start) / DURATION)
+      setDropF(f)
+      onDropProgress?.(f)
+      // at f >= 1 we stop ticking and leave the critter grounded / bar revealed
+      if (f < 1) timers.current.push(window.setTimeout(tick, 16))
+    }
+    tick()
+  }
+
+  const resetDrop = () => {
+    timers.current.forEach((t) => clearTimeout(t))
+    timers.current = []
+    setDropF(null)
+    onDropProgress?.(null)
+  }
 
   const snap = (raw: number) => onChange(Math.round(raw / stepSize) * stepSize)
 
@@ -104,7 +151,7 @@ export function CompareScene({
   }
 
   const onPointerDown = (e: RPointer<SVGSVGElement>) => {
-    if (disabled) return
+    if (disabled || dropping) return
     dragging.current = true
     e.currentTarget.setPointerCapture(e.pointerId)
     setFromClient(e.clientX, e.clientY)
@@ -148,10 +195,45 @@ export function CompareScene({
         {scene === 'distance' && <DistanceScene v={v} base={base} max={max} unit={unit} moved={moved} constLabel={constLabel} />}
         {scene === 'speed' && <SpeedScene v={v} base={base} min={min} max={max} unit={unit} moved={moved} />}
         {scene === 'spring' && <SpringScene v={v} base={base} max={max} unit={unit} moved={moved} />}
-        {scene === 'height' && <HeightScene v={v} base={base} max={max} unit={unit} moved={moved} />}
+        {scene === 'height' && (
+          <HeightScene
+            v={v}
+            base={base}
+            max={max}
+            unit={unit}
+            moved={moved && !dropping}
+            dropF={dropF}
+            resultValue={resultValue}
+            resultUnit={resultUnit}
+          />
+        )}
         {scene === 'time' && <TimeScene v={v} base={base} min={min} max={max} unit={unit} moved={moved} />}
       </svg>
-      <p className="cmp__hint-drag">{dragHint(scene)}</p>
+      {scene === 'height' && drop ? (
+        <div className="cmp__drop-bar">
+          {landed ? (
+            <button type="button" className="btn btn--ghost cmp__drop-btn" onClick={resetDrop}>
+              ↺ Reset height
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn--ghost cmp__drop-btn"
+              onClick={runDrop}
+              disabled={animating || disabled}
+            >
+              {animating ? 'Dropping…' : '▶ Drop it'}
+            </button>
+          )}
+          <span className="cmp__hint-drag">
+            {landed
+              ? 'Landed — hit reset to try a different height'
+              : 'Drag the critter up the pole, then drop it to reveal the speed'}
+          </span>
+        </div>
+      ) : (
+        <p className="cmp__hint-drag">{dragHint(scene)}</p>
+      )}
     </div>
   )
 }
@@ -295,15 +377,41 @@ function SpringScene({ v, base, max, unit, moved }: { v: number; base: number; m
   )
 }
 
-/* ---------------- height: drag a critter up a pole ---------------- */
-function HeightScene({ v, base, max, unit, moved }: { v: number; base: number; max: number; unit: string; moved: boolean }) {
+/* ---------------- height: drag a critter up a pole, then drop it ---------------- */
+function HeightScene({
+  v,
+  base,
+  max,
+  unit,
+  moved,
+  dropF = null,
+  resultValue,
+  resultUnit,
+}: {
+  v: number
+  base: number
+  max: number
+  unit: string
+  moved: boolean
+  dropF?: number | null
+  resultValue?: number
+  resultUnit?: string
+}) {
   const TOP = 30
   const VTRACK = GROUND_Y - TOP
   const pxPerM = VTRACK / max
   const poleX = 176
-  const boxBottom = GROUND_Y - v * pxPerM
+  const releaseBottom = GROUND_Y - v * pxPerM
   const baseBottom = GROUND_Y - base * pxPerM
   const critterCx = poleX + 46
+
+  const dropping = dropF != null
+  // free fall: distance fallen ∝ t², so foot position eases downward as f².
+  const footY = dropping ? releaseBottom + (GROUND_Y - releaseBottom) * dropF * dropF : releaseBottom
+  // speed at time-fraction f is f × v_final (v = g·t, and t = f·T)
+  const liveSpeed = dropping && resultValue != null ? dropF * resultValue : null
+  const landed = dropF != null && dropF >= 1
+
   return (
     <>
       <Ground />
@@ -317,20 +425,48 @@ function HeightScene({ v, base, max, unit, moved }: { v: number; base: number; m
         </g>
       )}
 
+      {/* release-height marker stays put so you see where it fell FROM */}
+      {dropping && (
+        <line x1={poleX} y1={releaseBottom} x2={critterCx + 34} y2={releaseBottom} className="cmp__release-line" />
+      )}
+
       {/* vertical measure — label sits well left of the pole */}
       <g className="cmp__measure">
-        <line x1={poleX} y1={GROUND_Y} x2={poleX} y2={boxBottom} className="cmp__measure-line" />
+        <line x1={poleX} y1={GROUND_Y} x2={poleX} y2={releaseBottom} className="cmp__measure-line" />
         <line x1={poleX - 8} y1={GROUND_Y} x2={poleX + 8} y2={GROUND_Y} className="cmp__measure-tick" />
-        <line x1={poleX - 8} y1={boxBottom} x2={poleX + 8} y2={boxBottom} className="cmp__measure-tick" />
-        <text x={poleX - 18} y={(GROUND_Y + boxBottom) / 2 + 5} className="cmp__measure-label cmp__measure-label--end">
+        <line x1={poleX - 8} y1={releaseBottom} x2={poleX + 8} y2={releaseBottom} className="cmp__measure-tick" />
+        <text x={poleX - 18} y={(GROUND_Y + releaseBottom) / 2 + 5} className="cmp__measure-label cmp__measure-label--end">
           h = {fmt(v)} {unit}
         </text>
       </g>
 
-      {/* platform ledge the critter stands on */}
-      <rect x={poleX} y={boxBottom - 3} width="74" height="6" rx="3" className="cmp__ledge" />
+      {/* platform ledge at the release point */}
+      <rect x={poleX} y={releaseBottom - 3} width="74" height="6" rx="3" className="cmp__ledge" />
 
-      <MiniCritter cx={critterCx} footY={boxBottom} />
+      {/* motion streaks trailing above the falling critter */}
+      {dropping && !landed && dropF > 0.04 && (
+        <g className="cmp__fall-streaks" style={{ opacity: 0.3 + dropF * 0.5 }}>
+          {[0, 1, 2].map((i) => {
+            const len = 10 + dropF * 26
+            const sx = critterCx - 14 + i * 14
+            const sy = footY - 30 - i * 4
+            return <line key={i} x1={sx} y1={sy - len} x2={sx} y2={sy} />
+          })}
+        </g>
+      )}
+
+      <MiniCritter cx={critterCx} footY={footY} />
+
+      {/* live speed readout climbing as it falls */}
+      {liveSpeed != null && (
+        <text
+          x={critterCx + 40}
+          y={footY - 16}
+          className={`cmp__live-speed${landed ? ' cmp__live-speed--landed' : ''}`}
+        >
+          v = {fmt(Math.round(liveSpeed * 10) / 10)} {resultUnit}
+        </text>
+      )}
     </>
   )
 }

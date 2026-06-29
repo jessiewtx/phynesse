@@ -28,11 +28,29 @@ export function tutorContextForStep(step: Step | undefined): StruggleContext | n
       formulas: step.equation ? [step.equation] : undefined,
     }
   }
+  if (step.type === 'completion') {
+    return {
+      kind: 'problem',
+      prompt: step.prompt,
+      formulas: step.formulas,
+      givens: step.givens,
+      correctValue: step.correctValue,
+      unit: step.unit,
+      solution: step.solution,
+    }
+  }
   if (step.type === 'compare_slider') {
     return {
       kind: 'explore',
       prompt: `${step.prompt} ${step.task}`,
       formulas: [step.formula],
+    }
+  }
+  if (step.type === 'fill_blanks') {
+    return {
+      kind: 'concept',
+      prompt: `${step.prompt}\n${step.lines.join('\n')}`,
+      formulas: ['W = F·d·cosθ'],
     }
   }
   return null

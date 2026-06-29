@@ -11,6 +11,7 @@ const LESSON_COLORS = ['#19c3d6', '#ff4d6d', '#ffc31e', '#3a82f7', '#9b5cff', '#
 type Props = {
   lessons: Lesson[]
   progressMap: Record<string, StoredLessonProgress>
+  capstone?: { status: 'done' | 'available' | 'locked'; to?: string }
 }
 
 type StationNode = {
@@ -76,7 +77,7 @@ function smoothPath(pts: Point[]) {
   return d
 }
 
-export function LessonPath({ lessons, progressMap }: Props) {
+export function LessonPath({ lessons, progressMap, capstone }: Props) {
   const currentIndex = lessons.findIndex(
     (l) => isLessonUnlocked(l, progressMap) && progressMap[l.id]?.status !== 'completed',
   )
@@ -102,12 +103,14 @@ export function LessonPath({ lessons, progressMap }: Props) {
     }
   })
 
+  const capstoneStatus = capstone?.status ?? 'available'
   stations.push({
     key: 'capstone',
-    label: 'Capstone',
-    color: '#9ca3af',
-    status: 'locked',
-    icon: 'flag',
+    label: 'Mixed practice',
+    color: capstoneStatus === 'done' ? '#ffc31e' : '#9b5cff',
+    status: capstoneStatus,
+    to: capstone?.to ?? '/capstone',
+    icon: capstoneStatus === 'done' ? 'check' : 'flag',
   })
 
   const completedCount = lessons.filter((l) => progressMap[l.id]?.status === 'completed').length

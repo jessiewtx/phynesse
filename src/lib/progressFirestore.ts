@@ -16,8 +16,30 @@ export type StoredLessonProgress = {
   lessonId: string
   stepIndex: number
   stepDraft?: StepDraft | null
+  drafts?: Record<string, StepDraft>
   status: LessonStatus
   updatedAt: string
+}
+
+/** Firestore rejects documents containing `undefined`, so drop undefined fields
+ *  from each draft before persisting the per-step draft map. */
+function sanitizeDrafts(
+  drafts?: Record<number, StepDraft>,
+): Record<string, StepDraft> | undefined {
+  if (!drafts) return undefined
+  const out: Record<string, StepDraft> = {}
+  for (const [key, draft] of Object.entries(drafts)) {
+    if (!draft) continue
+    const clean: StepDraft = {
+      showWrongFeedback: draft.showWrongFeedback,
+      attemptCount: draft.attemptCount,
+    }
+    if (draft.answer !== undefined) clean.answer = draft.answer
+    if (draft.feedbackText !== undefined) clean.feedbackText = draft.feedbackText
+    if (draft.solved !== undefined) clean.solved = draft.solved
+    out[key] = clean
+  }
+  return out
 }
 
 export type StepAttemptRecord = {
@@ -27,6 +49,8 @@ export type StepAttemptRecord = {
   answer: string | number
   correct: boolean
   hintShown?: string
+  /** Learner's self-rated confidence at submit time (calibration). */
+  confidence?: 'guess' | 'think' | 'sure'
   createdAt: string
 }
 
@@ -60,7 +84,7 @@ export async function fetchAllLessonProgress(
 export async function saveLessonProgress(
   uid: string,
   lessonId: string,
-  data: Pick<LessonProgress, 'stepIndex' | 'stepDraft'> & {
+  data: Pick<LessonProgress, 'stepIndex' | 'stepDraft' | 'drafts'> & {
     status: LessonStatus
     totalSteps: number
   },
@@ -72,12 +96,15 @@ export async function saveLessonProgress(
         ? 'in_progress'
         : 'not_started'
 
+  const drafts = sanitizeDrafts(data.drafts)
+
   await setDoc(
     progressRef(uid, lessonId),
     {
       lessonId,
       stepIndex: data.stepIndex,
       stepDraft: data.stepDraft ?? null,
+      ...(drafts ? { drafts } : {}),
       status: data.stepIndex >= data.totalSteps ? 'completed' : status,
       updatedAt: new Date().toISOString(),
     },
@@ -97,7 +124,7 @@ export async function logStepAttempt(
 ): Promise<void> {
   if (!db) return
   const id = crypto.randomUUID()
-  const { createdAt, hintShown, ...rest } = record
+  const { createdAt, hintShown, confidence, ...rest } = record
   // Firestore rejects documents containing `undefined` field values, which
   // would silently drop the write. Correct answers carry no hint, so we must
   // omit `hintShown` entirely rather than set it to undefined — otherwise every
@@ -107,6 +134,7 @@ export async function logStepAttempt(
     createdAt: createdAt ?? new Date().toISOString(),
   }
   if (hintShown !== undefined) data.hintShown = hintShown
+  if (confidence !== undefined) data.confidence = confidence
   await setDoc(doc(db, 'users', uid, 'attempts', id), data)
 }
 

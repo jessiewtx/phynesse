@@ -72,6 +72,47 @@
       "demo": "angle_explorer"
     },
     {
+      "type": "worked_example",
+      "title": "Watch the angle case worked through",
+      "prompt": "A worker pulls a sled **4.0 m** with a **50 N** rope held at **60° above horizontal**. How much work does the rope do? (cos 60° = 0.50)",
+      "formulas": ["W = F·d·cos θ"],
+      "visual": "angle_pull",
+      "givens": [
+        { "label": "F", "value": "50 N" },
+        { "label": "d", "value": "4.0 m" },
+        { "label": "θ", "value": "60°" }
+      ],
+      "steps": [
+        "Only the part of the pull **along the ground** does work, so start from W = F·d·cos θ.",
+        "**Take the component first** — the step people skip: F·cos θ = 50 × 0.50 = 25 N.",
+        "Now multiply by the distance: W = 25 × 4.0."
+      ],
+      "answer": "W = 100 J",
+      "takeaway": "Resolve the force along the motion *before* multiplying by distance — the angle only touches the force, never the distance."
+    },
+    {
+      "type": "completion",
+      "prompt": "Your turn — the setup's done. A rope pulls a crate **5.0 m** with **20 N** at **60°** (cos 60° = 0.50). Just finish the last line.",
+      "formulas": ["W = F·d·cos θ"],
+      "visual": "angle_pull",
+      "givens": [
+        { "label": "F", "value": "20 N" },
+        { "label": "d", "value": "5.0 m" },
+        { "label": "θ", "value": "60°" }
+      ],
+      "shownSteps": [
+        "W = F·d·cos θ",
+        "Component along the motion: 20 × 0.50 = 10 N",
+        "W = 10 × 5.0"
+      ],
+      "correctValue": 50,
+      "unit": "J",
+      "tolerance": 0,
+      "hint": "10 N along the ground × 5.0 m.",
+      "solution": "W = 10 × 5.0 = **50 J**. The 20 N at 60° gives a 10 N component along the motion; over 5.0 m that's 50 J.",
+      "calibrate": true
+    },
+    {
       "type": "predict_numeric",
       "prompt": "A child drags a wagon **12 m** along flat ground, pulling the handle with **40 N** at **35° above horizontal**. How much work does the rope do on the wagon? (cos 35° ≈ 0.819)",
       "correctValue": 393,
@@ -144,6 +185,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part B —** Using the work-energy theorem, how fast is the **4.0 kg** crate moving after that 5.0 m? (It started from rest, and W_net = 90 J.)",
+      "showGivens": true,
       "correctValue": 6.7,
       "unit": "m/s",
       "tolerance": 0.03,

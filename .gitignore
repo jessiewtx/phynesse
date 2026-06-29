@@ -16,6 +16,11 @@ dist-ssr
 .env.*.local
 .firebase
 
+# Agent / Firebase plugin skill scaffolding (not part of the app)
+.agents/
+.claude/
+skills-lock.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

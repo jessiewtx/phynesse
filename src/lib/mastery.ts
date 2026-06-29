@@ -2,6 +2,7 @@ import type { Lesson } from '../types/lesson'
 import { isLessonUnlocked, lessonCompletionIndex } from './lessons'
 import type { StepAttemptRecord, StoredLessonProgress } from './progressFirestore'
 import { STUCK_THRESHOLD } from '../components/StuckHelp'
+import { estimateMemory, REVIEW_RETENTION_THRESHOLD } from './memory'
 
 /**
  * A lightweight mastery model in the spirit of Khan Academy / Brilliant.
@@ -56,6 +57,15 @@ function problemCreditFromAttempts(ordered: StepAttemptRecord[]): number {
   return sawCorrect ? best : 0
 }
 
+/**
+ * The mastery bar a lesson must clear to count as "mastered for progression".
+ * It's "Proficient" (70) — high enough to mean the idea is solid, low enough that
+ * one clean run clears it. This drives the *advisory* mastery gate: the next
+ * lesson is never hard-locked (learner autonomy matters), but until the
+ * prerequisite is at the bar the UI clearly flags "master this first."
+ */
+export const MASTERY_BAR = 70
+
 export type MasteryLevel =
   | 'locked'
   | 'not_started'
@@ -81,11 +91,25 @@ export type LessonMastery = {
   correct: number
   lastPracticed: number | null
   daysSince: number | null
-  /** 0–1 estimated retention right now (1 = fresh). */
+  /** 0–1 estimated retention right now from the forgetting-curve model (1 = fresh). */
   retention: number
+  /** Memory stability in days — how slowly this concept is currently fading. */
+  stability: number
+  /** ms timestamp when this concept is predicted to fall due for review. */
+  dueAt: number | null
+  /** Count of spaced successful retrievals feeding the memory estimate. */
+  retrievals: number
   dueForReview: boolean
   /** 0–1 how far through the lesson's steps the learner is. */
   progressFraction: number
+  /** The lesson that should be mastered before this one (previous in sequence). */
+  prereqId: string | null
+  prereqTitle: string | null
+  /** The prerequisite's current mastery score, or null when there's no prereq. */
+  prereqScore: number | null
+  /** True when there's no prereq, or the prereq is completed at/above MASTERY_BAR.
+   *  Advisory only — an un-ready lesson is still openable, just flagged. */
+  ready: boolean
 }
 
 export type MasterySnapshot = {
@@ -130,7 +154,7 @@ export const STRANDS: Strand[] = [
 const DAY_MS = 86_400_000
 
 /** Step types that are actually graded (and therefore feed mastery scoring). */
-const GRADED_STEP_TYPES = new Set(['bar_drag', 'predict_numeric', 'compare_slider'])
+const GRADED_STEP_TYPES = new Set(['bar_drag', 'predict_numeric', 'compare_slider', 'completion'])
 
 /**
  * Keep only attempts that still line up with a graded step in the CURRENT lesson.
@@ -238,15 +262,22 @@ function computeLessonMastery(
   }
 
   // When the learner last touched this lesson (for "practiced 3d ago" labels).
-  // Mastery itself does NOT decay — once you've earned a level it stays put, so
-  // there's no busywork of redoing a lesson just to hold your score.
+  // The mastery SCORE itself does NOT decay — once you've earned a level it stays
+  // put, so there's no busywork of redoing a lesson just to hold your number.
   const attemptTimes = graded.map((a) => Date.parse(a.createdAt)).filter((t) => !Number.isNaN(t))
   const lastPracticed = Math.max(
     attemptTimes.length ? Math.max(...attemptTimes) : 0,
     parseTime(progress?.updatedAt) ?? 0,
   ) || null
   const daysSince = lastPracticed != null ? (now - lastPracticed) / DAY_MS : null
-  const retention = 1
+
+  // Memory, on the other hand, DOES fade. The forgetting-curve model estimates how
+  // well the learner would recall this concept right now from their spaced retrievals
+  // (folding lesson completion in as a retrieval). This never lowers the score; it
+  // only drives spaced review — a gentle "refresh me" nudge as a concept fades.
+  const memory = estimateMemory(graded, completed ? (parseTime(progress?.updatedAt) ?? null) : null, now)
+  const retention = completed ? memory.retention : 1
+  const dueForReview = completed && memory.retrievals > 0 && memory.retention < REVIEW_RETENTION_THRESHOLD
 
   const score = Math.round(peak)
 
@@ -272,8 +303,17 @@ function computeLessonMastery(
     lastPracticed,
     daysSince,
     retention,
-    dueForReview: false,
+    stability: memory.stability,
+    dueAt: memory.dueAt,
+    retrievals: memory.retrievals,
+    dueForReview,
     progressFraction,
+    // Prerequisite/readiness is a cross-lesson relationship, so it's filled in by
+    // buildMastery once every lesson's score is known. Safe defaults here.
+    prereqId: null,
+    prereqTitle: null,
+    prereqScore: null,
+    ready: true,
   }
 }
 
@@ -291,6 +331,19 @@ export function buildMastery(
   const list = lessons.map((lesson) =>
     computeLessonMastery(lesson, progressMap[lesson.id], attemptsByLesson[lesson.id] ?? [], progressMap, now),
   )
+
+  // Mastery-learning readiness: each lesson's prerequisite is the previous one in
+  // sequence. A lesson is "ready" when its prereq is completed AND at the mastery
+  // bar. We mutate the list items in place (they're shared with byId below).
+  const inOrder = [...list].sort((a, b) => a.order - b.order)
+  for (let i = 1; i < inOrder.length; i++) {
+    const lm = inOrder[i]
+    const prev = inOrder[i - 1]
+    lm.prereqId = prev.lessonId
+    lm.prereqTitle = prev.title
+    lm.prereqScore = prev.score
+    lm.ready = prev.status === 'completed' && prev.score >= MASTERY_BAR
+  }
 
   const byId: Record<string, LessonMastery> = {}
   const counts = emptyCounts()

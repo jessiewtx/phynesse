@@ -9,6 +9,7 @@ import { getAllLessons } from '../lib/lessons'
 import { useLearnerData } from '../lib/useLearnerData'
 import { useTricky } from '../lib/useTricky'
 import { useBosses } from '../lib/useBosses'
+import { useCapstone } from '../lib/useCapstone'
 import { BOSS_CATALOG } from '../lib/bosses'
 import { CONCEPTS, type ConceptId } from '../lib/physics'
 import { buildMastery, levelMeta, relativeTime } from '../lib/mastery'
@@ -20,8 +21,13 @@ export function HomePage() {
   const { progressMap, attempts, streak } = useLearnerData()
   const { due: trickyDue } = useTricky()
   const { active: activeBoss } = useBosses()
+  const { result: capstoneResult } = useCapstone()
 
   const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
+  const capstonePassed = capstoneResult?.passed ?? false
+  // Mixed practice is open to everyone — the path node just reflects whether the
+  // learner has cleared it yet.
+  const capstoneStatus: 'done' | 'available' = capstonePassed ? 'done' : 'available'
 
   const started = m.completedCount > 0 || attempts.length > 0 || Object.keys(progressMap).length > 0
   const rec = m.recommendation
@@ -55,6 +61,15 @@ export function HomePage() {
             to: `/boss?id=${encodeURIComponent(topBoss.id)}`,
             cta: 'Fight the boss',
             emoji: '⚔️',
+          }
+        : !m.next && !capstonePassed
+        ? {
+            eyebrow: 'Coach Brock · your best next move',
+            title: 'Try Mixed Practice',
+            note: "You've worked through the lessons — now let's mix them up. I'll jump between concepts so you practice spotting which idea each problem needs.",
+            to: '/capstone',
+            cta: 'Start mixed practice',
+            emoji: '🔀',
           }
         : weakConcept
           ? {
@@ -253,6 +268,25 @@ export function HomePage() {
         </section>
       )}
 
+      {/* ── Mixed practice (interleaving — open to everyone) ── */}
+      <section className="home-section">
+        <h2 className="home-section__label">Mixed practice</h2>
+        <Link to="/capstone" className="capstone-banner">
+          <span className="capstone-banner__icon">{capstonePassed ? '🏆' : '🔀'}</span>
+          <span className="capstone-banner__body">
+            <span className="capstone-banner__title">
+              {capstonePassed ? 'Mixed challenge cleared — go again' : 'Mix it up: interleaved practice'}
+            </span>
+            <span className="capstone-banner__note">
+              {capstonePassed
+                ? `Your best first-try score: ${Math.round((capstoneResult?.bestScore ?? 0) * 100)}%. Keep it sharp with a fresh mix.`
+                : 'Problems jump between every concept, so you practice picking the right idea — not just repeating the last one. Anytime, as often as you like.'}
+            </span>
+          </span>
+          <span className="capstone-banner__cta">{capstonePassed ? 'New mix →' : 'Start →'}</span>
+        </Link>
+      </section>
+
       {/* ── Review strip ── */}
       {m.reviewQueue.length > 0 && (
         <section className="home-section">
@@ -278,7 +312,11 @@ export function HomePage() {
       {/* ── Lesson path ── */}
       <section className="home-section home-section--path">
         <h2 className="home-section__label">Your path</h2>
-        <LessonPath lessons={lessons} progressMap={progressMap} />
+        <LessonPath
+          lessons={lessons}
+          progressMap={progressMap}
+          capstone={{ status: capstoneStatus, to: '/capstone' }}
+        />
       </section>
 
       {/* ── Outcomes ── */}

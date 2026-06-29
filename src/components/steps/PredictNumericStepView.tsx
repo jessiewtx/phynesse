@@ -1,14 +1,17 @@
-import { useState } from 'react'
-import type { PredictNumericStep, StepDraft } from '../../types/lesson'
+import { useRef, useState } from 'react'
+import type { Confidence, PredictNumericStep, StepDraft } from '../../types/lesson'
 import { gradeNumeric, hintForNumeric } from '../../lib/grading'
 import { PhysicsText } from '../../lib/physicsText'
 import { Feedback } from '../Feedback'
 import { SixSevenPopup } from '../SixSevenPopup'
 import { StuckHelp, STUCK_THRESHOLD } from '../StuckHelp'
 import { WhyPanel } from '../WhyPanel'
+import { ConfidencePicker } from '../ConfidencePicker'
+import { calibrationMessage } from '../../lib/calibration'
 import { buildSolution } from '../../lib/solution'
 import { aiEnabled } from '../../lib/ai'
 import { useEnterAdvance } from '../../lib/useEnterAdvance'
+import { useAutoFocus } from '../../lib/useAutoFocus'
 import { ProblemVisualView } from '../diagrams/ProblemVisualView'
 
 type Props = {
@@ -16,7 +19,12 @@ type Props = {
   draft: StepDraft | null
   onDraftChange: (draft: StepDraft | null) => void
   onCorrect: () => void
-  onAttempt?: (answer: number, correct: boolean, hint?: string) => void
+  onAttempt?: (
+    answer: number,
+    correct: boolean,
+    hint?: string,
+    confidence?: Confidence,
+  ) => void
 }
 
 /** True when a value's significant digits are "67" — i.e. 6.7 × 10ⁿ
@@ -40,24 +48,37 @@ export function PredictNumericStepView({
     draft?.answer !== undefined ? String(draft.answer) : '',
   )
   const [attempt, setAttempt] = useState(draft?.attemptCount ?? 0)
-  const [solved, setSolved] = useState(false)
+  const [solved, setSolved] = useState(draft?.solved ?? false)
   const [sixSeven, setSixSeven] = useState(false)
+  const [confidence, setConfidence] = useState<Confidence | null>(null)
+  const [calibNote, setCalibNote] = useState<string | null>(null)
+  const calibrate = step.calibrate === true
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'error'; text: string } | null>(
-    () =>
-      draft?.showWrongFeedback && draft.feedbackText
+    () => {
+      if (draft?.solved)
+        return { variant: 'success', text: `Correct! ${step.correctValue} ${step.unit}` }
+      return draft?.showWrongFeedback && draft.feedbackText
         ? { variant: 'error', text: draft.feedbackText }
-        : null,
+        : null
+    },
   )
   const solution = buildSolution(step)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEnterAdvance(onCorrect, solved)
+  // Land in the answer box on every problem so the learner can just start typing.
+  useAutoFocus(inputRef, !solved)
+
+  const canSubmit = !calibrate || confidence !== null
 
   const submit = () => {
+    if (!canSubmit) return
     const num = Number(value)
     const result = gradeNumeric(num, step.correctValue, step.tolerance)
+    if (calibrate && confidence) setCalibNote(calibrationMessage(confidence, result.correct))
     if (result.correct) {
-      onAttempt?.(num, true)
-      onDraftChange(null)
+      onAttempt?.(num, true, undefined, confidence ?? undefined)
+      onDraftChange({ answer: num, showWrongFeedback: false, attemptCount: attempt, solved: true })
       setSolved(true)
       setFeedback({ variant: 'success', text: `Correct! ${step.correctValue} ${step.unit}` })
       if (isSixSeven(step.correctValue)) setSixSeven(true)
@@ -65,7 +86,8 @@ export function PredictNumericStepView({
       const nextAttempt = attempt + 1
       const hint = hintForNumeric(step.hints, attempt)
       setAttempt(nextAttempt)
-      onAttempt?.(num, false, hint)
+      onAttempt?.(num, false, hint, confidence ?? undefined)
+      setConfidence(null)
       const errorText = hint ?? 'Try again.'
       setFeedback({ variant: 'error', text: errorText })
       onDraftChange({
@@ -95,9 +117,11 @@ export function PredictNumericStepView({
         </div>
       )}
 
-      {step.givens && step.givens.length > 0 && attempt > 0 && (
+      {step.givens && step.givens.length > 0 && (step.showGivens || attempt > 0) && (
         <div className="bar-drag__givens-reveal">
-          <span className="bar-drag__givens-label">First hint · here's what you're given</span>
+          <span className="bar-drag__givens-label">
+            {step.showGivens ? 'Given' : "First hint · here's what you're given"}
+          </span>
           <div className="bar-drag__givens">
             {step.givens.map(({ label, value }) => (
               <span key={label} className="bar-drag__given">
@@ -110,6 +134,7 @@ export function PredictNumericStepView({
 
       <div className="numeric-input">
         <input
+          ref={inputRef}
           type="number"
           inputMode="decimal"
           value={value}
@@ -136,7 +161,12 @@ export function PredictNumericStepView({
         />
         <span className="numeric-input__unit">{step.unit}</span>
       </div>
+      {calibrate && !solved && (
+        <ConfidencePicker value={confidence} onChange={setConfidence} />
+      )}
+
       {feedback && <Feedback variant={feedback.variant}>{feedback.text}</Feedback>}
+      {calibNote && <p className="calib-note">{calibNote}</p>}
       {sixSeven && <SixSevenPopup onClose={() => setSixSeven(false)} />}
       {!solved && !aiEnabled && attempt >= STUCK_THRESHOLD && feedback?.variant === 'error' && (
         <StuckHelp
@@ -153,8 +183,17 @@ export function PredictNumericStepView({
           Continue →
         </button>
       ) : (
-        <button type="button" className="btn btn--primary" onClick={submit}>
-          {feedback?.variant === 'error' ? 'Try again' : 'Check'}
+        <button
+          type="button"
+          className="btn btn--primary"
+          onClick={submit}
+          disabled={!canSubmit && value.trim() !== ''}
+        >
+          {!canSubmit && value.trim() !== ''
+            ? 'Rate your confidence to check'
+            : feedback?.variant === 'error'
+              ? 'Try again'
+              : 'Check'}
         </button>
       )}
     </div>

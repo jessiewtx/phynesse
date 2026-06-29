@@ -18,11 +18,13 @@ export function saveProgress(
   lessonId: string,
   stepIndex: number,
   stepDraft?: StepDraft | null,
+  drafts?: Record<number, StepDraft>,
 ): void {
   const data: LessonProgress = {
     lessonId,
     stepIndex,
     stepDraft: stepDraft ?? null,
+    ...(drafts ? { drafts } : {}),
     updatedAt: new Date().toISOString(),
   }
   localStorage.setItem(`${PREFIX}${lessonId}`, JSON.stringify(data))

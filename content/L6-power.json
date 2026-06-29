@@ -2,17 +2,17 @@
   "id": "L6",
   "title": "Power",
   "order": 6,
-  "summary": "How fast energy moves. Use P = W/Δt and P = F·v on cars and stair sprints.",
+  "summary": "How fast energy moves. Wield P = W/Δt and P = F·v on cars, climbs, and hard accelerations — and see why power grows with v while energy grows with v².",
   "steps": [
     {
       "type": "concept",
       "title": "How fast you move energy",
-      "body": "Two movers carry the same stack of boxes up the same stairs. One takes 1 minute, the other takes 10. They did the **same work** — but the fast one was far more **powerful**.\n\n**Power** is the rate at which energy is transferred."
+      "body": "Two movers carry the same stack of boxes up the same stairs. One takes 1 minute, the other takes 10. They did the **same work** — but the fast one was far more **powerful**.\n\n**Power** is the *rate* at which energy is transferred. Same job + less time = more power."
     },
     {
       "type": "concept",
       "title": "The formula",
-      "body": "**W** is the work done (J), **Δt** is the time it took (s). Power is measured in **watts (W)**, where 1 watt = 1 joule per second.\n\nSet the work and the time below — watch power shoot up as you shrink the time. Same job, done faster, means more power.",
+      "body": "**W** is the work done (J), **Δt** is the time it took (s). Power is measured in **watts (W)**, where 1 watt = 1 joule per second.\n\nSet the work and the time below — watch power shoot up as you shrink the time.",
       "equation": "P = W / Δt",
       "demo": "power_explorer"
     },
@@ -36,9 +36,62 @@
     {
       "type": "concept",
       "title": "Power and speed",
-      "body": "There's a second face of power. If a force F pushes something moving at speed v, the work piles up as F·d while the distance grows as d = v·Δt. Divide and the time cancels:\n\nP = W/Δt = F·d/Δt = F·v.\n\nSo for steady motion against a steady force, power is simply force times speed.",
+      "body": "There's a second face of power. If a force F pushes something moving at speed v, the work piles up as F·d while the distance grows as d = v·Δt. Divide and the time cancels:\n\nP = W/Δt = F·d/Δt = F·v.\n\nSo for steady motion against a steady force, power is simply **force times speed**.",
       "equation": "P = F·v",
       "visual": "power_speed"
+    },
+    {
+      "type": "compare_slider",
+      "prompt": "A car pushes against a steady **F = 600 N** of drag. Drag the car's **speed** and watch the power the engine must deliver.",
+      "formula": "P = F·v",
+      "varSymbol": "v",
+      "varName": "speed",
+      "varUnit": "m/s",
+      "scene": "speed",
+      "min": 5,
+      "max": 25,
+      "stepSize": 5,
+      "base": 10,
+      "constants": [{ "symbol": "F", "value": "600 N" }],
+      "result": { "symbol": "P", "unit": "W", "coeff": 600, "power": 1 },
+      "task": "**Double** the speed — drag it from 10 m/s to 20 m/s. Then compare the two power bars.",
+      "solution": "With a fixed force, P = F·v is **linear** in speed: doubling v from 10 to 20 m/s exactly doubles the power, 6000 W → 12,000 W. Worth pausing on — the *kinetic energy* of that car grows with v² (quadruples), but the *power* to push it against a steady force grows only with v. Energy and power scale with speed differently."
+    },
+    {
+      "type": "worked_example",
+      "title": "Watch a P = F·v problem worked",
+      "prompt": "A car's engine drives it forward with a steady **600 N** while it cruises at a constant **25 m/s**. How much power is the engine delivering?",
+      "formulas": ["P = F·v"],
+      "givens": [
+        { "label": "F", "value": "600 N" },
+        { "label": "v", "value": "25 m/s" }
+      ],
+      "steps": [
+        "Steady force, steady speed — use the speed form of power directly: P = F·v.",
+        "Drop in the numbers: P = 600 × 25.",
+        "Multiply it out: P = 15,000 W."
+      ],
+      "answer": "P = 15,000 W (15 kW)",
+      "takeaway": "P = F·v is the shortcut whenever something moves at constant speed against a constant force — no work or time needed."
+    },
+    {
+      "type": "completion",
+      "prompt": "Your turn — setup's done. A motor does **3000 J** of work in **6.0 s**. What's its power output?",
+      "formulas": ["P = W / Δt"],
+      "givens": [
+        { "label": "W", "value": "3000 J" },
+        { "label": "Δt", "value": "6.0 s" }
+      ],
+      "shownSteps": [
+        "Power is work over time: P = W / Δt",
+        "P = 3000 / 6.0"
+      ],
+      "correctValue": 500,
+      "unit": "W",
+      "tolerance": 0,
+      "hint": "3000 divided by 6.0.",
+      "solution": "P = W / Δt = 3000 / 6.0 = **500 W**.",
+      "calibrate": true
     },
     {
       "type": "predict_numeric",
@@ -47,6 +100,7 @@
       "visual": "power_car",
       "unit": "W",
       "tolerance": 0,
+      "calibrate": true,
       "formulas": ["P = F_A·v"],
       "givens": [
         { "label": "F_A", "value": "900 N" },
@@ -57,6 +111,25 @@
         "P = F_A·v = 900 × 30."
       ],
       "solution": "At constant speed the engine's drive force equals the 900 N of resistance, so use P = F_A·v.\n\nP = 900 × 30 = **27,000 W** (27 kW, about 36 horsepower)."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "A **50 kg** hiker climbs a steady slope that rises **1 m for every 10 m** traveled along it (so sin θ = 0.10), moving at a constant **4.0 m/s** up the slope. Ignoring friction, what power does she generate against gravity? (g = 9.8)",
+      "correctValue": 196,
+      "visual": "ramp",
+      "unit": "W",
+      "tolerance": 0.5,
+      "formulas": ["P = F·v", "F = mg·sin θ"],
+      "givens": [
+        { "label": "m", "value": "50 kg" },
+        { "label": "sin θ", "value": "0.10" },
+        { "label": "v", "value": "4.0 m/s" }
+      ],
+      "hints": [
+        "On an incline, the force she fights is the component of gravity along the slope: F = mg·sin θ.",
+        "F = 50 × 9.8 × 0.10 = 49 N. Then P = F·v = 49 × 4.0."
+      ],
+      "solution": "Climbing at constant speed, the hiker must match the slope component of gravity: F = mg·sin θ = 50 × 9.8 × 0.10 = 49 N.\n\nThen power is force times speed along the slope: P = F·v = 49 × 4.0 = **196 W**."
     },
     {
       "type": "predict_numeric",
@@ -79,6 +152,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part B —** What is the athlete's power output on the climb?",
+      "showGivens": true,
       "correctValue": 573.3,
       "visual": "stairs",
       "unit": "W",
@@ -92,12 +166,50 @@
         "Power is the work done divided by the time it took.",
         "P = W / Δt = 2866.5 / 5.0."
       ],
-      "solution": "Power is work over time: P = W / Δt.\n\nP = 2866.5 / 5.0 ≈ **573 W** — well above a steady human output, which is why a hard stair sprint is exhausting."
+      "solution": "Power is work over time: P = W / Δt.\n\nP = 2866.5 / 5.0 ≈ **573 W** — well above a sustainable human output, which is why a hard stair sprint is exhausting."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Challenge — link motion to power.** A **1000 kg** car accelerates from rest to **20 m/s** on level ground in **8.0 s**. Ignore friction and drag.\n\n**Part A —** How much work does the engine do over those 8.0 s? (Hint: work-energy theorem.)",
+      "correctValue": 200000,
+      "visual": "power_car",
+      "unit": "J",
+      "tolerance": 0,
+      "formulas": ["W = ΔKE = ½mv²"],
+      "givens": [
+        { "label": "m", "value": "1000 kg" },
+        { "label": "v", "value": "20 m/s" }
+      ],
+      "hints": [
+        "From rest, the net work equals the kinetic energy gained: W = ½mv².",
+        "W = ½ × 1000 × 20²."
+      ],
+      "solution": "By the work-energy theorem, the work done equals the kinetic energy gained from rest: W = ½mv² = ½ × 1000 × 20² = ½ × 1000 × 400 = **200,000 J**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part B —** Over that same **8.0 s**, what was the engine's *average* power output?",
+      "showGivens": true,
+      "correctValue": 25000,
+      "visual": "power_car",
+      "unit": "W",
+      "tolerance": 0,
+      "calibrate": true,
+      "formulas": ["P_avg = W / Δt"],
+      "givens": [
+        { "label": "W", "value": "200,000 J" },
+        { "label": "Δt", "value": "8.0 s" }
+      ],
+      "hints": [
+        "Average power is the total work divided by the total time.",
+        "P = W / Δt = 200000 / 8.0."
+      ],
+      "solution": "Average power is total work over total time: P_avg = W / Δt = 200,000 / 8.0 = **25,000 W** (25 kW).\n\nThis ties the whole unit together — kinetic energy from the work-energy theorem, then power as the rate that energy was delivered."
     },
     {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You connected work, time, and power, used P = F·v for steady motion, and measured a real athlete's power climbing stairs.",
+      "body": "You connected work, time, force, and speed: used P = W/Δt and P = F·v, climbed an incline against gravity, measured a real athlete's stair-sprint power, and linked a hard acceleration to the engine power behind it.\n\nThat's the full Work, Power & Energy toolkit — now go mix it all together.",
       "nextLessonId": "L7",
       "nextLessonTitle": "Mixed Problems"
     }

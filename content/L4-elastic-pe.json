@@ -41,6 +41,45 @@
       "visual": "energy_chain"
     },
     {
+      "type": "worked_example",
+      "title": "Watch ½kx² worked through",
+      "prompt": "A spring with **k = 200 N/m** is compressed **0.40 m**. How much elastic PE is stored?",
+      "formulas": ["PE_s = ½kx²"],
+      "visual": "spring_launch",
+      "givens": [
+        { "label": "k", "value": "200 N/m" },
+        { "label": "x", "value": "0.40 m" }
+      ],
+      "steps": [
+        "Elastic PE is PE_s = ½kx² — and that x is **squared**, the step everyone rushes.",
+        "**Square the stretch first:** x² = 0.40² = 0.16.",
+        "Now bring in the rest: PE_s = ½ × 200 × 0.16."
+      ],
+      "answer": "PE_s = 16 J",
+      "takeaway": "Square the stretch *before* multiplying — doubling the squish quadruples the stored energy."
+    },
+    {
+      "type": "completion",
+      "prompt": "Your turn — setup's done. A spring with **k = 300 N/m** is compressed **0.40 m**. Finish the last line.",
+      "formulas": ["PE_s = ½kx²"],
+      "visual": "spring_launch",
+      "givens": [
+        { "label": "k", "value": "300 N/m" },
+        { "label": "x", "value": "0.40 m" }
+      ],
+      "shownSteps": [
+        "PE_s = ½kx²",
+        "Square the stretch: x² = 0.40² = 0.16",
+        "PE_s = ½ × 300 × 0.16"
+      ],
+      "correctValue": 24,
+      "unit": "J",
+      "tolerance": 0,
+      "hint": "½ × 300 × 0.16 → 150 × 0.16.",
+      "solution": "PE_s = ½ × 300 × 0.16 = **24 J**. (Half of 300 is 150; 150 × 0.16 = 24.)",
+      "calibrate": true
+    },
+    {
       "type": "predict_numeric",
       "prompt": "**Setup:** A spring with **k = 800 N/m** is compressed **0.25 m** and used to launch a **0.50 kg** block. The whole track is **frictionless**.\n\n**Part A —** How much elastic PE is stored in the compressed spring?",
       "correctValue": 25,
@@ -60,7 +99,8 @@
     },
     {
       "type": "predict_numeric",
-      "prompt": "**Part B —** The spring pushes the **0.50 kg** block along the flat. How fast is it moving as it leaves the spring?",
+      "prompt": "**Part B —** The spring drives the **0.50 kg** block forward and releases it the instant the spring reaches its natural length (**x = 0**) — the point where *all* the stored energy has turned into motion. How fast is the block moving right then?",
+      "showGivens": true,
       "correctValue": 10,
       "visual": "spring_launch",
       "unit": "m/s",
@@ -71,14 +111,15 @@
         { "label": "m", "value": "0.50 kg" }
       ],
       "hints": [
-        "Frictionless, so all 25 J of elastic PE becomes kinetic energy.",
+        "At maximum compression v = 0 (all energy is PE_s); at x = 0 it's the reverse — all 25 J has become kinetic energy.",
         "Set ½mv² = 25 and solve: v = √(2·25 / 0.50)."
       ],
-      "solution": "All the elastic PE becomes kinetic energy: ½mv² = PE_s = 25 J.\n\nv = √(2·PE_s / m) = √(2·25 / 0.50) = √100 = **10 m/s**."
+      "solution": "Energy sloshes between PE_s and KE as the spring pushes. At full compression the block is momentarily at rest (all energy is elastic PE); by the time the spring reaches its natural length (x = 0) that PE has *fully* converted to kinetic energy, so the block is at its fastest here.\n\nThat's why we can write ½mv² = PE_s = 25 J.\n\nv = √(2·PE_s / m) = √(2·25 / 0.50) = √100 = **10 m/s**."
     },
     {
       "type": "predict_numeric",
       "prompt": "**Part C —** The block now coasts up a frictionless ramp. What maximum *vertical* height does it reach? (g = 9.8)",
+      "showGivens": true,
       "correctValue": 5.1,
       "visual": "ramp",
       "unit": "m",
@@ -97,6 +138,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part D —** If that ramp is tilted at **30°**, how far does the block travel *along the ramp's surface* before stopping?",
+      "showGivens": true,
       "correctValue": 10.2,
       "visual": "ramp",
       "unit": "m",

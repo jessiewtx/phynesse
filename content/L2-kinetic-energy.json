@@ -35,11 +35,49 @@
       "solution": "Kinetic energy is KE = ½mv², and the speed is squared. Doubling the speed from 3 m/s to 6 m/s makes the v² term grow by 2² = 4, while the mass stays fixed at 2 kg. So KE jumps from 9 J to **36 J — four times as much**. That factor-of-four is the single most important idea in this lesson."
     },
     {
+      "type": "worked_example",
+      "title": "Watch one worked all the way through",
+      "prompt": "A **2.0 kg** cart rolls across the floor at **3.0 m/s**. How much kinetic energy does it carry?",
+      "formulas": ["KE = ½mv²"],
+      "givens": [
+        { "label": "m", "value": "2.0 kg" },
+        { "label": "v", "value": "3.0 m/s" }
+      ],
+      "steps": [
+        "Start from the formula: KE = ½mv².",
+        "**Square the speed first** — the step everyone rushes: v² = 3.0² = 9.0.",
+        "Now multiply it together: KE = ½ × 2.0 × 9.0."
+      ],
+      "answer": "KE = 9.0 J",
+      "takeaway": "Square the speed *before* you multiply — that one habit prevents the most common KE mistake."
+    },
+    {
+      "type": "completion",
+      "prompt": "Your turn — but we've done the setup. A **5.0 kg** cart rolls at **2.0 m/s**. Just compute the final line.",
+      "formulas": ["KE = ½mv²"],
+      "givens": [
+        { "label": "m", "value": "5.0 kg" },
+        { "label": "v", "value": "2.0 m/s" }
+      ],
+      "shownSteps": [
+        "KE = ½mv²",
+        "Square the speed: v² = 2.0² = 4.0",
+        "KE = ½ × 5.0 × 4.0"
+      ],
+      "correctValue": 10,
+      "unit": "J",
+      "tolerance": 0,
+      "hint": "½ × 5.0 × 4.0 → half of 5 is 2.5, times 4.",
+      "solution": "KE = ½ × 5.0 × 4.0 = **10 J**. (Half of 5.0 is 2.5; 2.5 × 4.0 = 10.)",
+      "calibrate": true
+    },
+    {
       "type": "predict_numeric",
-      "prompt": "Warm-up. A **3.0 kg** bowling ball rolls down the lane at **4.0 m/s**. How much kinetic energy does it carry?",
+      "prompt": "Warm-up — no scaffold this time. A **3.0 kg** bowling ball rolls down the lane at **4.0 m/s**. How much kinetic energy does it carry?",
       "correctValue": 24,
       "unit": "J",
       "tolerance": 0,
+      "calibrate": true,
       "formulas": ["KE = ½mv²"],
       "givens": [
         { "label": "m", "value": "3.0 kg" },
@@ -125,6 +163,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part B —** Same car, same brakes — but now it's driving **twice as fast, at 48 m/s**. How far does it travel before stopping now?",
+      "showGivens": true,
       "correctValue": 192,
       "unit": "m",
       "tolerance": 0,
@@ -152,6 +191,7 @@
       "correctValue": 18,
       "unit": "J",
       "tolerance": 0,
+      "calibrate": true,
       "formulas": ["KE = ½mv²"],
       "givens": [
         { "label": "m_B", "value": "1.0 kg" },
@@ -185,9 +225,11 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part B —** The crate started from rest and the net work on it was **144 J**. Using the work-energy theorem, how fast is the **8.0 kg** crate moving after the 6.0 m?",
+      "showGivens": true,
       "correctValue": 6,
       "unit": "m/s",
       "tolerance": 0,
+      "calibrate": true,
       "visual": "push_friction",
       "formulas": ["W_net = ½mv²", "v = √(2·W_net / m)"],
       "givens": [

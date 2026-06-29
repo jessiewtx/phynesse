@@ -27,6 +27,8 @@ export function CompareSliderStepView({ step, onDraftChange, onCorrect, onAttemp
   const [guess, setGuess] = useState('')
   const [solved, setSolved] = useState(false)
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'error'; text: string } | null>(null)
+  // While the critter is dropping, the NOW bar climbs 0 → current in sync with the fall.
+  const [dropF, setDropF] = useState<number | null>(null)
 
   useEnterAdvance(onCorrect, solved)
 
@@ -75,8 +77,13 @@ export function CompareSliderStepView({ step, onDraftChange, onCorrect, onAttemp
     baseResult,
     current,
   )
+  // On a drop step the NOW bar stays blank until the critter is dropped; then the speed
+  // climbs linearly (v = f · v_final) and holds. Non-drop steps reveal it normally.
+  const isDropStep = !!step.drop
+  const revealed = !isDropStep || dropF != null
+  const nowShown = !isDropStep ? current : dropF != null ? current * dropF : 0
   const basePct = maxResult > 0 ? (baseResult / maxResult) * 100 : 0
-  const nowPct = maxResult > 0 ? (current / maxResult) * 100 : 0
+  const nowPct = maxResult > 0 ? (nowShown / maxResult) * 100 : 0
 
   const submit = () => {
     const typed = Number(guess)
@@ -140,6 +147,10 @@ export function CompareSliderStepView({ step, onDraftChange, onCorrect, onAttemp
         disabled={solved}
         moved={moved}
         onChange={setValue}
+        drop={step.drop}
+        resultValue={current}
+        resultUnit={step.result.unit}
+        onDropProgress={setDropF}
       />
 
       {/* original vs now — read the values, then find the ratio */}
@@ -156,7 +167,9 @@ export function CompareSliderStepView({ step, onDraftChange, onCorrect, onAttemp
           <div className="cmp__bar-track">
             <div className="cmp__bar-fill cmp__bar-fill--now" style={{ width: `${nowPct}%` }} />
           </div>
-          <span className="cmp__bar-val">{fmt(current)} {step.result.unit}</span>
+          <span className="cmp__bar-val">
+            {revealed ? `${fmt(Math.round(nowShown * 10) / 10)} ${step.result.unit}` : '—'}
+          </span>
         </div>
       </div>
 

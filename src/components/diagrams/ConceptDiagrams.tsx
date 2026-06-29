@@ -768,6 +768,70 @@ export function PEKETradeDiagram() {
   )
 }
 
+/* ---------------- L5: where v = √(2gh) comes from ---------------- */
+export function VDerivationDiagram() {
+  const W = 360
+  const cx = W / 2
+  const CANCEL = '#e0533b' // the m that drops out — red
+  // row 1 token x-positions so the strike-throughs land on the two m's
+  const r1y = 60
+  const m1x = 122
+  const m2x = 214
+  return (
+    <div className="wfd">
+      <svg viewBox={`0 0 ${W} 246`} className="wfd__svg" role="img" aria-label="Deriving v equals square root of 2 g h from conservation of energy">
+        <text x={cx} y="22" textAnchor="middle" fill="#6b7280" fontSize="11" fontWeight="700">
+          drop from rest → all PE becomes KE
+        </text>
+
+        {/* row 1: mgh = ½mv², with the two m's struck out */}
+        <g fontSize="22" fontWeight="800" fill="#2b2240" textAnchor="middle">
+          <text x={m1x} y={r1y} fill={CANCEL}>m</text>
+          <text x={m1x + 22} y={r1y}>gh</text>
+          <text x={m1x + 52} y={r1y}>=</text>
+          <text x={m1x + 76} y={r1y}>½</text>
+          <text x={m2x} y={r1y} fill={CANCEL}>m</text>
+          <text x={m2x + 22} y={r1y}>v²</text>
+        </g>
+        <line x1={m1x - 9} y1={r1y - 16} x2={m1x + 9} y2={r1y + 4} stroke={CANCEL} strokeWidth="2.5" strokeLinecap="round" />
+        <line x1={m2x - 9} y1={r1y - 16} x2={m2x + 9} y2={r1y + 4} stroke={CANCEL} strokeWidth="2.5" strokeLinecap="round" />
+        <text x={cx} y="84" textAnchor="middle" fill={CANCEL} fontSize="11" fontWeight="700">
+          same m on both sides → it cancels
+        </text>
+
+        {/* arrow */}
+        <line x1={cx} y1="92" x2={cx} y2="108" stroke="#b9c2cc" strokeWidth="2" />
+        <polygon points={`${cx - 5},104 ${cx + 5},104 ${cx},112`} fill="#b9c2cc" />
+
+        {/* row 2: gh = ½v² */}
+        <text x={cx} y="134" textAnchor="middle" fontSize="22" fontWeight="800" fill="#2b2240">gh = ½v²</text>
+        <text x={cx + 92} y="134" textAnchor="middle" fill="#6b7280" fontSize="11" fontWeight="700">×2</text>
+
+        {/* arrow */}
+        <line x1={cx} y1="146" x2={cx} y2="162" stroke="#b9c2cc" strokeWidth="2" />
+        <polygon points={`${cx - 5},158 ${cx + 5},158 ${cx},166`} fill="#b9c2cc" />
+
+        {/* row 3: v² = 2gh */}
+        <text x={cx} y="188" textAnchor="middle" fontSize="22" fontWeight="800" fill="#2b2240">v² = 2gh</text>
+        <text x={cx + 96} y="188" textAnchor="middle" fill="#6b7280" fontSize="11" fontWeight="700">√</text>
+
+        {/* arrow */}
+        <line x1={cx} y1="200" x2={cx} y2="214" stroke="#b9c2cc" strokeWidth="2" />
+        <polygon points={`${cx - 5},210 ${cx + 5},210 ${cx},218`} fill="#b9c2cc" />
+
+        {/* result, boxed */}
+        <rect x={cx - 78} y="224" width="156" height="0.1" fill="none" />
+        <rect x={cx - 78} y="221" width="156" height="22" rx="8" fill="rgba(123,92,255,0.1)" stroke="#7b5cff" strokeWidth="1.5" />
+        <text x={cx} y="238" textAnchor="middle" fontSize="20" fontWeight="800" fill="#5b3bd1">v = √(2gh)</text>
+      </svg>
+
+      <div className="wfd__legend">
+        <Key color={CANCEL}>mass cancels — heavy or light, same speed</Key>
+      </div>
+    </div>
+  )
+}
+
 /* ---------------- L4: PE_s → KE → PE_g (energy chain) ---------------- */
 export function EnergyChainDiagram() {
   const groundY = 110
@@ -786,10 +850,11 @@ export function EnergyChainDiagram() {
         <line x1="104" y1={groundY - 14} x2="128" y2={groundY - 14} stroke="#888" strokeWidth="2" />
         <polygon points={`134,${groundY - 14} 124,${groundY - 19} 124,${groundY - 9}`} fill="#888" />
 
-        {/* 2. moving block (KE) */}
+        {/* 2. moving block (KE) — speed lines as a compact parallel stack hugging
+             the block, so they don't fan left into the connector arrow */}
         <rect x="150" y={groundY - 28} width="22" height="28" rx="3" fill="#3d4450" stroke="#8b95a8" strokeWidth="1.5" />
         {[0, 1, 2].map((i) => (
-          <line key={i} x1={148 - i * 9} y1={groundY - 8 - i * 6} x2={134 - i * 9} y2={groundY - 8 - i * 6} stroke={COMP_COLOR} strokeWidth="2.5" strokeLinecap="round" />
+          <line key={i} x1={148} y1={groundY - 8 - i * 7} x2={138} y2={groundY - 8 - i * 7} stroke={COMP_COLOR} strokeWidth="2.5" strokeLinecap="round" />
         ))}
         <text x="160" y={groundY + 18} textAnchor="middle" fill={COMP_COLOR} fontSize="11" fontWeight="800">KE</text>
 

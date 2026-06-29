@@ -1,8 +1,11 @@
-import type { Step, StepDraft } from '../types/lesson'
+import type { Confidence, Step, StepDraft } from '../types/lesson'
 import { ConceptStepView } from './steps/ConceptStepView'
 import { BarDragStepView } from './steps/BarDragStepView'
 import { PredictNumericStepView } from './steps/PredictNumericStepView'
 import { CompareSliderStepView } from './steps/CompareSliderStepView'
+import { WorkedExampleStepView } from './steps/WorkedExampleStepView'
+import { CompletionStepView } from './steps/CompletionStepView'
+import { FillBlanksStepView } from './steps/FillBlanksStepView'
 import { CompleteStepView } from './steps/CompleteStepView'
 
 type AttemptHandler = (
@@ -10,6 +13,7 @@ type AttemptHandler = (
   answer: string | number,
   correct: boolean,
   hint?: string,
+  confidence?: Confidence,
 ) => void
 
 type Props = {
@@ -33,8 +37,13 @@ export function StepRenderer({
   onRestart,
   onAttempt,
 }: Props) {
-  const log = (answer: string | number, correct: boolean, hint?: string) => {
-    onAttempt(step.type, answer, correct, hint)
+  const log = (
+    answer: string | number,
+    correct: boolean,
+    hint?: string,
+    confidence?: Confidence,
+  ) => {
+    onAttempt(step.type, answer, correct, hint, confidence)
   }
 
   switch (step.type) {
@@ -53,6 +62,30 @@ export function StepRenderer({
     case 'predict_numeric':
       return (
         <PredictNumericStepView
+          step={step}
+          draft={stepDraft}
+          onDraftChange={onDraftChange}
+          onCorrect={onAdvance}
+          onAttempt={(answer, correct, hint, confidence) =>
+            log(answer, correct, hint, confidence)
+          }
+        />
+      )
+    case 'worked_example':
+      return <WorkedExampleStepView step={step} onContinue={onAdvance} />
+    case 'completion':
+      return (
+        <CompletionStepView
+          step={step}
+          onCorrect={onAdvance}
+          onAttempt={(answer, correct, hint, confidence) =>
+            log(answer, correct, hint, confidence)
+          }
+        />
+      )
+    case 'fill_blanks':
+      return (
+        <FillBlanksStepView
           step={step}
           draft={stepDraft}
           onDraftChange={onDraftChange}

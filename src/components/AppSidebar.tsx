@@ -5,6 +5,7 @@ import { getAllLessons } from '../lib/lessons'
 import { useLearnerData } from '../lib/useLearnerData'
 import { useTricky } from '../lib/useTricky'
 import { useBosses } from '../lib/useBosses'
+import { useCapstone } from '../lib/useCapstone'
 import { buildMastery, levelMeta } from '../lib/mastery'
 import { displayFirstName } from '../lib/displayName'
 import { SignInPanel } from './SignInPanel'
@@ -53,6 +54,7 @@ export function AppSidebar({ onNavigate }: Props) {
   const { progressMap, attempts, streak } = useLearnerData()
   const { due } = useTricky()
   const { active: activeBoss } = useBosses()
+  const { result: capstoneResult } = useCapstone()
 
   const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
 
@@ -106,6 +108,14 @@ export function AppSidebar({ onNavigate }: Props) {
             <span className="app-sidebar__badge app-sidebar__badge--boss">{activeBoss.length}</span>
           </Link>
         )}
+        <Link
+          to="/capstone"
+          className={`app-sidebar__link ${location.pathname === '/capstone' ? 'app-sidebar__link--active' : ''}`}
+          onClick={onNavigate}
+        >
+          <span className="app-sidebar__link-icon">{capstoneResult?.passed ? '🏆' : '🔀'}</span>
+          Mixed practice
+        </Link>
       </nav>
 
       <div className="app-sidebar__mastery">

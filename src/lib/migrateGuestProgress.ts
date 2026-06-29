@@ -33,6 +33,7 @@ export async function migrateGuestProgress(uid: string): Promise<void> {
       await saveLessonProgress(uid, lesson.id, {
         stepIndex: local.stepIndex,
         stepDraft: local.stepDraft ?? null,
+        drafts: local.drafts,
         status: guestStatus,
         totalSteps: lesson.steps.length,
       })

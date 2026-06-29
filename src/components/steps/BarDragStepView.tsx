@@ -32,15 +32,18 @@ function formatValue(v: number): string {
 export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttempt }: Props) {
   const [value, setValue] = useState(() => initialValue(draft))
   const [attempt, setAttempt] = useState(() => draft?.attemptCount ?? 0)
-  const [solved, setSolved] = useState(false)
+  const [solved, setSolved] = useState(draft?.solved ?? false)
   // Free-text typing state so learners can key in a value (e.g. "19.6") directly.
   const [typed, setTyped] = useState<string | null>(null)
   const solution = buildSolution(step)
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'error'; text: string } | null>(
-    () =>
-      draft?.showWrongFeedback && draft.feedbackText
+    () => {
+      if (draft?.solved)
+        return { variant: 'success', text: `Nice! ${step.correctValue} ${step.unit}` }
+      return draft?.showWrongFeedback && draft.feedbackText
         ? { variant: 'error', text: draft.feedbackText }
-        : null,
+        : null
+    },
   )
   const dragging = useRef(false)
   const trackRef = useRef<HTMLDivElement>(null)
@@ -52,6 +55,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
 
   const applyValue = useCallback(
     (next: number) => {
+      if (solved) return
       const clamped = Math.max(0, Math.min(step.maxValue, next))
       if (clamped !== lastSnappedValue.current) {
         lastSnappedValue.current = clamped
@@ -65,7 +69,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
         attemptCount: attempt,
       })
     },
-    [step.maxValue, onDraftChange, feedback, attempt],
+    [step.maxValue, onDraftChange, feedback, attempt, solved],
   )
 
   const setFromClientY = useCallback(
@@ -122,7 +126,7 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
     const result = gradeNumeric(value, step.correctValue, step.tolerance)
     if (result.correct) {
       onAttempt?.(value, true)
-      onDraftChange(null)
+      onDraftChange({ answer: value, showWrongFeedback: false, attemptCount: attempt, solved: true })
       setSolved(true)
       setFeedback({
         variant: 'success',
@@ -160,9 +164,11 @@ export function BarDragStepView({ step, draft, onDraftChange, onCorrect, onAttem
         </div>
       )}
 
-      {step.givens && step.givens.length > 0 && attempt > 0 && (
+      {step.givens && step.givens.length > 0 && (step.showGivens || attempt > 0) && (
         <div className="bar-drag__givens-reveal">
-          <span className="bar-drag__givens-label">First hint · here's what you're given</span>
+          <span className="bar-drag__givens-label">
+            {step.showGivens ? 'Given' : "First hint · here's what you're given"}
+          </span>
           <div className="bar-drag__givens">
             {step.givens.map(({ label, value }) => (
               <span key={label} className="bar-drag__given">

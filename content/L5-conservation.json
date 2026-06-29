@@ -2,17 +2,17 @@
   "id": "L5",
   "title": "Conservation of Energy",
   "order": 5,
-  "summary": "Energy changes form but never disappears — budget it down a rough ramp, heat and all.",
+  "summary": "The unit's master tool. Energy changes form but never vanishes — track it through ramps, springs, and heat to crack problems kinematics can't touch.",
   "steps": [
     {
       "type": "concept",
       "title": "Energy is never lost",
-      "body": "Energy doesn't appear or disappear — it just changes form. A roller coaster at the top of the hill is all **potential energy**; at the bottom it's all **kinetic**. The total never changed.\n\nThis is the big idea of the whole unit."
+      "body": "Energy doesn't appear or disappear — it just **changes form**. A roller coaster at the top of the hill is all **potential energy**; at the bottom it's all **kinetic**. The total never changed.\n\nThis is the most powerful idea in the whole unit. Once you can track energy as it shifts between forms, you can solve problems that would be a nightmare with force-and-motion equations alone."
     },
     {
       "type": "concept",
       "title": "The rule",
-      "body": "When only **conservative** forces (like gravity or springs) act, mechanical energy stays constant — KE and PE just trade back and forth.\n\nSlide the ball down the frictionless ramp below — watch potential energy pour into kinetic energy while the total bar never moves.",
+      "body": "When only **conservative** forces (gravity, springs) act, **mechanical energy is conserved** — KE and PE just trade back and forth and their sum holds fixed.\n\nSlide the ball down the frictionless ramp below. Watch potential energy pour into kinetic energy while the **total bar never moves**.",
       "equation": "KE + PE = constant",
       "demo": "conservation_explorer"
     },
@@ -35,10 +35,132 @@
     },
     {
       "type": "concept",
+      "title": "Where v = √(2gh) comes from",
+      "body": "Before you play with it, watch the formula build itself. Drop from rest down a frictionless track and **every** joule of potential energy at the top becomes kinetic energy at the bottom — so **mgh = ½mv²**.\n\nThe **same mass** sits on both sides, so it cancels completely. Two tidy algebra steps later, the speed at the bottom falls out: v = √(2gh).",
+      "visual": "v_derivation"
+    },
+    {
+      "type": "concept",
+      "title": "How fast at the bottom?",
+      "body": "That's the move that makes conservation so useful: v = √(2gh). The speed at the bottom depends only on the **height** you fell — never on how heavy you are or what shape the track is.\n\nIn the explorer below, set the **release height** and read the speed. Then drag the **mass** slider — and watch the needle refuse to move.",
+      "equation": "v = √(2gh)",
+      "demo": "coaster_explorer"
+    },
+    {
+      "type": "compare_slider",
+      "prompt": "Drag the **release height** of a frictionless drop and watch the speed at the bottom respond. The speed grows — but not as fast as the height does.",
+      "formula": "v = √(2gh)",
+      "varSymbol": "h",
+      "varName": "release height",
+      "varUnit": "m",
+      "scene": "height",
+      "min": 1,
+      "max": 10,
+      "stepSize": 0.5,
+      "base": 2.5,
+      "result": { "symbol": "v", "unit": "m/s", "coeff": 4.4272, "power": 0.5 },
+      "drop": true,
+      "task": "**Quadruple** the height — drag it from 2.5 m up to 10 m, then hit **Drop it** and watch the speed build. Then compare the two speed bars.",
+      "solution": "Speed at the bottom is v = √(2gh), so v depends on the **square root** of height. Quadrupling the height (2.5 m → 10 m) only **doubles** the speed (7.0 m/s → 14 m/s), because √4 = 2. Height has to climb fast to buy you a little extra speed — the same square-root relationship, run in reverse, is why KE depends on v²."
+    },
+    {
+      "type": "worked_example",
+      "title": "Watch a conservation problem worked",
+      "prompt": "A **2.0 kg** cart is released from rest **2.5 m** up a **frictionless** track. How fast is it moving at the bottom? (g = 9.8)",
+      "formulas": ["mgh = ½mv²"],
+      "givens": [
+        { "label": "m", "value": "2.0 kg" },
+        { "label": "h", "value": "2.5 m" }
+      ],
+      "steps": [
+        "All the potential energy at the top becomes kinetic at the bottom: mgh = ½mv².",
+        "The mass is on both sides, so it cancels: gh = ½v², i.e. v = √(2gh).",
+        "Drop in the numbers: v = √(2 · 9.8 · 2.5) = √49."
+      ],
+      "answer": "v = 7.0 m/s",
+      "takeaway": "Notice we never needed the mass — v = √(2gh) is the same for a feather or a fridge dropped the same height."
+    },
+    {
+      "type": "completion",
+      "prompt": "Your turn — setup's done. A **3.0 kg** ball drops on a frictionless track and arrives at the bottom with **96 J** of kinetic energy. How fast is it going?",
+      "formulas": ["½mv² = KE"],
+      "givens": [
+        { "label": "KE", "value": "96 J" },
+        { "label": "m", "value": "3.0 kg" }
+      ],
+      "shownSteps": [
+        "All the energy is kinetic at the bottom: ½mv² = 96",
+        "½ · 3.0 · v² = 96",
+        "v² = 64"
+      ],
+      "correctValue": 8,
+      "unit": "m/s",
+      "tolerance": 0,
+      "hint": "v² = 64, so v is the square root of 64.",
+      "solution": "½mv² = KE → v² = 2·KE / m = 2·96 / 3.0 = 64, so v = √64 = **8.0 m/s**.",
+      "calibrate": true
+    },
+    {
+      "type": "concept",
+      "title": "The path doesn't matter either",
+      "body": "Because gravity is conservative, only the **vertical drop** decides the energy — not the route taken to get down.\n\nA steep straight slide and a long curvy one that start and end at the same heights deliver the **same speed** at the bottom (when frictionless). That's why energy methods beat kinematics here: you don't need to know the shape of the path or the angle at every instant. You just need the start and end heights.",
+      "visual": "pe_ke_trade"
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "A **4.0 kg** ball and a **1.0 kg** ball are released from rest at the **same height, 2.5 m**, on frictionless ramps of totally different shapes. How fast is the **heavier 4.0 kg** ball moving at the bottom? (g = 9.8)",
+      "correctValue": 7,
+      "unit": "m/s",
+      "tolerance": 0.05,
+      "calibrate": true,
+      "formulas": ["v = √(2gh)"],
+      "givens": [
+        { "label": "h", "value": "2.5 m" },
+        { "label": "g", "value": "9.8 m/s²" }
+      ],
+      "hints": [
+        "Speed at the bottom is v = √(2gh). Does mass appear anywhere in that formula?",
+        "v = √(2 · 9.8 · 2.5) = √49 — the 4.0 kg is a red herring."
+      ],
+      "solution": "Mass cancels out of mgh = ½mv², leaving v = √(2gh) = √(2 · 9.8 · 2.5) = √49 = **7.0 m/s**.\n\nBoth balls arrive at exactly the same speed — the 4.0 kg vs 1.0 kg and the different ramp shapes are deliberate distractions. Only the drop height matters."
+    },
+    {
+      "type": "concept",
       "title": "When friction joins in",
-      "body": "Friction doesn't destroy energy — it turns mechanical energy into **thermal energy (E_th)** that heats the surfaces. The amount lost is just the friction force acting over the distance slid: E_th = F_f·d.\n\nSo the full energy balance for a slide down a ramp is:",
+      "body": "Friction doesn't *destroy* energy — it converts mechanical energy into **thermal energy (E_th)** that heats the surfaces. The amount converted is just the friction force acting over the distance slid: E_th = F_f·d.\n\nSo the honest energy budget for a slide down a ramp is **everything in = everything out**:",
       "equation": "PE_g = KE + E_th",
       "visual": "friction_energy"
+    },
+    {
+      "type": "fill_blanks",
+      "prompt": "Before crunching numbers, nail the **signs**. A crate slides **down** a rough ramp. Drag a word into each blank — work is W = F·d·cosθ, so it's the **direction** of each force vs. the motion that sets the sign.",
+      "visual": "ramp_friction",
+      "lines": [
+        "**Friction** points {fricDir} the motion, so the work it does is {fricSign}.",
+        "The **normal force** points {normDir} the motion, so the work it does is {normSign}.",
+        "**Gravity** has a component pointing along the motion, so the work it does is {gravSign}.",
+        "Gravity pumps in more energy than friction drains, so the **net** work is positive — meaning the crate {motion}."
+      ],
+      "blanks": [
+        { "id": "fricDir", "answer": "opposite to" },
+        { "id": "fricSign", "answer": "negative" },
+        { "id": "normDir", "answer": "perpendicular to" },
+        { "id": "normSign", "answer": "zero" },
+        { "id": "gravSign", "answer": "positive" },
+        { "id": "motion", "answer": "speeds up" }
+      ],
+      "bank": [
+        "opposite to",
+        "perpendicular to",
+        "in the same direction as",
+        "negative",
+        "positive",
+        "zero",
+        "speeds up",
+        "slows down"
+      ],
+      "solution": "Work is W = F·d·cosθ, where θ is the angle between the force and the motion — the **direction** decides the sign.\n\n• **Friction** opposes the slide (θ = 180°, cos = −1), so it does **negative** work — draining kinetic energy into heat.\n• The **normal force** is perpendicular to the motion (θ = 90°, cos = 0), so it does **zero** work.\n• **Gravity's** along-slope component points the same way as the motion (θ < 90°, cos > 0), so it does **positive** work.\n\nAdd them: gravity adds more than friction removes, so the **net** work is positive. By the work–energy theorem (W_net = ΔKE), positive net work means kinetic energy rises — the crate **speeds up** as it descends, just not as fast as it would with no friction.",
+      "hint": "Same direction as the motion → positive work. Opposite → negative. Perpendicular (90°) → zero. Then net work sets whether KE rises or falls."
     },
     {
       "type": "predict_numeric",
@@ -61,6 +183,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part B —** How much kinetic energy does the **2.0 kg** sled have at the bottom, after friction takes its cut?",
+      "showGivens": true,
       "correctValue": 29.2,
       "visual": "ramp_friction",
       "unit": "J",
@@ -79,6 +202,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part C —** How fast is the **2.0 kg** sled moving at the bottom?",
+      "showGivens": true,
       "correctValue": 5.4,
       "visual": "ramp_friction",
       "unit": "m/s",
@@ -97,6 +221,7 @@
     {
       "type": "predict_numeric",
       "prompt": "**Part D —** The sled slid **4.0 m** along the ramp while losing 10 J to heat. What was the average friction force?",
+      "showGivens": true,
       "correctValue": 2.5,
       "visual": "ramp_friction",
       "unit": "N",
@@ -113,9 +238,47 @@
       "solution": "The thermal energy is the friction force acting over the slide distance: E_th = F_f·d.\n\nF_f = E_th / d = 10 / 4.0 = **2.5 N**."
     },
     {
+      "type": "predict_numeric",
+      "prompt": "**Challenge — chain three forms together.** A **1.0 kg** block is released from rest at the top of a **frictionless** ramp **2.0 m** tall, slides to the bottom, then runs along level ground into a spring.\n\n**Part A —** How much kinetic energy does the block have at the bottom of the ramp? (g = 9.8)",
+      "correctValue": 19.6,
+      "visual": "ramp",
+      "unit": "J",
+      "tolerance": 0.05,
+      "formulas": ["KE = PE_g = mgh"],
+      "givens": [
+        { "label": "m", "value": "1.0 kg" },
+        { "label": "h", "value": "2.0 m" }
+      ],
+      "hints": [
+        "The ramp is frictionless, so all the gravitational PE becomes kinetic energy: KE = mgh.",
+        "KE = 1.0 × 9.8 × 2.0."
+      ],
+      "solution": "With no friction on the ramp, every joule of gravitational PE turns into kinetic energy: KE = mgh = 1.0 × 9.8 × 2.0 = **19.6 J**."
+    },
+    {
+      "type": "predict_numeric",
+      "prompt": "**Part B —** That **19.6 J** block now crosses a **rough patch** where friction does **5.0 J** of negative work, then slams into a spring and compresses it to a dead stop. How much elastic PE is stored in the spring at maximum compression?",
+      "showGivens": true,
+      "correctValue": 14.6,
+      "visual": "spring_launch",
+      "unit": "J",
+      "tolerance": 0.05,
+      "calibrate": true,
+      "formulas": ["PE_s = KE − E_th"],
+      "givens": [
+        { "label": "KE", "value": "19.6 J" },
+        { "label": "E_th", "value": "5.0 J" }
+      ],
+      "hints": [
+        "Follow the energy: the block's KE either heats the rough patch or ends up stored in the spring.",
+        "PE_s = KE − E_th = 19.6 − 5.0."
+      ],
+      "solution": "Track every joule. The block starts the floor with 19.6 J of KE. Friction drains 5.0 J to heat, and the rest is stored in the spring at the instant the block stops:\n\nPE_s = KE − E_th = 19.6 − 5.0 = **14.6 J**.\n\nThree forms — gravitational PE → kinetic → elastic PE (with a friction tax along the way) — all bookkept with one conservation statement."
+    },
+    {
       "type": "complete",
       "title": "Lesson complete!",
-      "body": "You ran a full energy budget down a rough ramp — PE in, heat out, motion left over — and even backed out the friction force.",
+      "body": "You turned conservation of energy into a problem-solving engine: found speeds with v = √(2gh) (mass and path be damned), ran a full budget down a rough ramp, and chained gravity → motion → heat → a spring in one shot.\n\nLast stop: how *fast* energy moves. Time for **power**.",
       "nextLessonId": "L6",
       "nextLessonTitle": "Power"
     }

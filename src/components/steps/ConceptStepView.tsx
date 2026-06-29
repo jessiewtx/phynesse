@@ -7,6 +7,7 @@ import { WorkDragExplorer } from '../demos/WorkDragExplorer'
 import { GravityPEExplorer } from '../demos/GravityPEExplorer'
 import { ElasticPEExplorer } from '../demos/ElasticPEExplorer'
 import { ConservationExplorer } from '../demos/ConservationExplorer'
+import { CoasterExplorer } from '../demos/CoasterExplorer'
 import { PowerExplorer } from '../demos/PowerExplorer'
 import {
   WorkAngleDiagram,
@@ -18,6 +19,7 @@ import {
   PEZeroDiagram,
   PEKETradeDiagram,
   EnergyChainDiagram,
+  VDerivationDiagram,
   FrictionEnergyDiagram,
   BrakingEnergyDiagram,
   PowerSpeedDiagram,
@@ -66,6 +68,8 @@ export function ConceptStepView({ step, onContinue }: Props) {
 
       {step.demo === 'conservation_explorer' && <ConservationExplorer />}
 
+      {step.demo === 'coaster_explorer' && <CoasterExplorer />}
+
       {step.demo === 'power_explorer' && <PowerExplorer />}
 
       {step.visual === 'work_angle' && <WorkAngleDiagram />}
@@ -85,6 +89,8 @@ export function ConceptStepView({ step, onContinue }: Props) {
       {step.visual === 'pe_ke_trade' && <PEKETradeDiagram />}
 
       {step.visual === 'energy_chain' && <EnergyChainDiagram />}
+
+      {step.visual === 'v_derivation' && <VDerivationDiagram />}
 
       {step.visual === 'friction_energy' && <FrictionEnergyDiagram />}
 

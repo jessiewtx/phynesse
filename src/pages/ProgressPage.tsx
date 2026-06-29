@@ -12,6 +12,8 @@ import {
   type MasteryLevel,
 } from '../lib/mastery'
 import { MasteryRing } from '../components/MasteryRing'
+import { calibrationSummary, CONFIDENCE_META } from '../lib/calibration'
+import { learningEffects } from '../lib/effects'
 
 function LevelChip({ level }: { level: MasteryLevel }) {
   const meta = levelMeta(level)
@@ -37,6 +39,15 @@ export function ProgressPage() {
   const { progressMap, attempts, streak, isSignedIn, ready } = useLearnerData()
 
   const m = useMemo(() => buildMastery(lessons, progressMap, attempts), [lessons, progressMap, attempts])
+  const calib = useMemo(() => calibrationSummary(attempts), [attempts])
+  const effects = useMemo(() => learningEffects(attempts), [attempts])
+
+  // Average current recall across completed lessons — the spacing/forgetting-curve
+  // model made visible as a single "is it sticking?" number.
+  const recalled = m.lessons.filter((l) => l.status === 'completed' && l.retrievals > 0)
+  const avgRecall = recalled.length
+    ? recalled.reduce((s, l) => s + l.retention, 0) / recalled.length
+    : null
 
   const overallMeta = levelMeta(m.level)
 
@@ -90,6 +101,83 @@ export function ProgressPage() {
           You're learning as a guest. <strong>Sign in</strong> (left sidebar) to track accuracy, sync across devices,
           and get spaced-review reminders.
         </p>
+      )}
+
+      {/* ── Learning, measured (effect of the techniques on YOUR data) ── */}
+      {(effects.missed > 0 || avgRecall != null) && (
+        <section className="mx-section">
+          <div className="mx-section__head">
+            <h2 className="mx-section__title">Your learning, measured</h2>
+            <p className="mx-section__sub">
+              Not the techniques in the abstract — proof they're working, pulled from your own attempts.
+            </p>
+          </div>
+          <div className="mx-effects">
+            {effects.missed > 0 && (
+              <div className="mx-effect">
+                <span className="mx-effect__value">
+                  {effects.recovered}
+                  <span className="mx-effect__of">/{effects.missed}</span>
+                </span>
+                <span className="mx-effect__label">mistakes turned into solves</span>
+                <span className="mx-effect__note">
+                  {effects.recoveryRate != null && (
+                    <>You've recovered {Math.round(effects.recoveryRate * 100)}% of the problems you first missed. </>
+                  )}
+                  {effects.spacedRecovered > 0
+                    ? `${effects.spacedRecovered} of them you nailed in a later session — that's spaced retrieval working.`
+                    : 'Retrieval practice: getting it wrong, then earning it back.'}
+                </span>
+              </div>
+            )}
+            {avgRecall != null && (
+              <div className="mx-effect">
+                <span className="mx-effect__value">{Math.round(avgRecall * 100)}%</span>
+                <span className="mx-effect__label">recall retained</span>
+                <span className="mx-effect__note">
+                  Estimated recall right now across your {recalled.length} completed lesson
+                  {recalled.length === 1 ? '' : 's'}, from the forgetting-curve model. Reviews push it back up.
+                </span>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ── Confidence calibration ── */}
+      {calib.total >= 3 && (
+        <section className="mx-section">
+          <div className="mx-section__head">
+            <h2 className="mx-section__title">Confidence calibration</h2>
+            <p className="mx-section__sub">
+              How well your gut matches reality. Good learners are right when they feel sure — and know when they're guessing.
+            </p>
+          </div>
+          <div className={`calib-card${calib.overconfident ? ' calib-card--warn' : ''}`}>
+            <div className="calib-bars">
+              {calib.buckets.map((b) => {
+                const meta = CONFIDENCE_META[b.confidence]
+                return (
+                  <div key={b.confidence} className="calib-bar">
+                    <div className="calib-bar__head">
+                      <span className="calib-bar__name">
+                        {meta.emoji} {meta.short}
+                      </span>
+                      <span className="calib-bar__pct" style={{ color: meta.color }}>
+                        {b.attempts > 0 ? `${Math.round(b.accuracy * 100)}%` : '—'}
+                      </span>
+                    </div>
+                    <MasteryBar value={b.attempts > 0 ? b.accuracy * 100 : 0} color={meta.color} />
+                    <span className="calib-bar__count">
+                      {b.attempts > 0 ? `${b.correct}/${b.attempts} correct` : 'no answers yet'}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+            {calib.insight && <p className="calib-card__insight">{calib.insight}</p>}
+          </div>
+        </section>
       )}
 
       {/* ── Review queue ── */}
@@ -203,11 +291,21 @@ function LessonCard({ l, progressStatus }: { l: LessonMastery; progressStatus?: 
             <>
               <span>{l.score}% mastery</span>
               {l.accuracy != null && <span>· {Math.round(l.accuracy * 100)}% accuracy</span>}
+              {l.status === 'completed' && l.retrievals > 0 && (
+                <span title="Estimated recall right now, from the forgetting-curve model">
+                  · {Math.round(l.retention * 100)}% recall
+                </span>
+              )}
               {l.status === 'completed' && <span>· seen {relativeTime(l.lastPracticed)}</span>}
               {l.dueForReview && <span className="mx-lesson__due">· due for review</span>}
             </>
           )}
         </div>
+        {!l.locked && l.status !== 'completed' && !l.ready && l.prereqTitle && (l.prereqScore ?? 0) > 0 && (
+          <p className="mx-lesson__gate">
+            🔑 Master <strong>{l.prereqTitle}</strong> first — it's at {l.prereqScore}% (aim for 70%). You can still dive in.
+          </p>
+        )}
       </div>
       {!l.locked && (
         <span className="mx-lesson__cta">
